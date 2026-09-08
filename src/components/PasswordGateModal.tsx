@@ -128,13 +128,8 @@ export const PasswordGateModal: React.FC<PasswordGateModalProps> = ({
       try {
         const sep = activeUrl.includes('?') ? '&' : '?';
         const getDataEndpoint = `${activeUrl}${sep}action=getData&_t=${Date.now()}`;
-        const resData = await fetch(getDataEndpoint, {
-          cache: 'no-store',
-          headers: {
-            'Cache-Control': 'no-cache, no-store, must-revalidate',
-            'Pragma': 'no-cache',
-          },
-        });
+        // Simple GET fetch without custom headers to avoid CORS preflight (OPTIONS)
+        const resData = await fetch(getDataEndpoint);
         if (resData.ok) {
           const json = await resData.json();
           if (json && json.config && json.config.ACCESS_PASSWORD !== undefined) {
@@ -166,13 +161,7 @@ export const PasswordGateModal: React.FC<PasswordGateModalProps> = ({
       try {
         const sep = activeUrl.includes('?') ? '&' : '?';
         const verifyEndpoint = `${activeUrl}${sep}action=verifyPassword&password=${encodeURIComponent(entered)}&_t=${Date.now()}`;
-        const res = await fetch(verifyEndpoint, {
-          cache: 'no-store',
-          headers: {
-            'Cache-Control': 'no-cache, no-store, must-revalidate',
-            'Pragma': 'no-cache',
-          },
-        });
+        const res = await fetch(verifyEndpoint);
         if (res.ok) {
           const vData = await res.json();
           if (vData && vData.valid === true) {

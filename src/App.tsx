@@ -318,13 +318,8 @@ export default function App() {
     try {
       const sep = url.includes('?') ? '&' : '?';
       const endpoint = `${url}${sep}action=getData&_t=${Date.now()}`;
-      const res = await fetch(endpoint, {
-        cache: 'no-store',
-        headers: {
-          'Cache-Control': 'no-cache, no-store, must-revalidate',
-          'Pragma': 'no-cache',
-        },
-      });
+      // Note: Do NOT add custom headers like Cache-Control/Pragma because Google Apps Script does not support CORS preflight OPTIONS requests.
+      const res = await fetch(endpoint);
       if (!res.ok) return false;
       const data = await res.json();
       if (data && data.treatments && data.categories) {
