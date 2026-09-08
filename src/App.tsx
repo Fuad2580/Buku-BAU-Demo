@@ -39,7 +39,7 @@ import { SpreadsheetEditorModal } from './components/SpreadsheetEditorModal';
 import { AppsScriptDeployModal } from './components/AppsScriptDeployModal';
 import { PasswordGateModal } from './components/PasswordGateModal';
 import { GalaxyBackground } from './components/GalaxyBackground';
-import { Sparkles, FileSpreadsheet, Code2, AlertCircle, CheckCircle } from 'lucide-react';
+import { Sparkles, AlertCircle, CheckCircle } from 'lucide-react';
 
 const STORAGE_KEY = 'sozo_bau_web_app_data_v6';
 
@@ -51,10 +51,6 @@ function loadInitialSettings(): ClinicSettings {
   if (!saved) return initialClinicSettings;
   try {
     const parsed: ClinicSettings = JSON.parse(saved);
-    // Migrasi: bersihkan password usang
-    if (parsed.accessPassword === 'sozo' || parsed.accessPassword === 'sozoskinjayajaya') {
-      parsed.accessPassword = initialClinicSettings.accessPassword;
-    }
     // Pastikan webAppUrl selalu terisi default
     if (!parsed.webAppUrl || !parsed.webAppUrl.startsWith('http')) {
       parsed.webAppUrl = DEFAULT_APPS_SCRIPT_URL;
@@ -230,6 +226,111 @@ export default function App() {
       return matchCat && matchGoal && matchSearch;
     });
   }, [treatments, selectedCategoryId, skinGoalFilter, searchQuery]);
+
+  // Counts matching current search and skinGoalFilter across all 4 views
+  const countsByView = useMemo(() => {
+    const q = searchQuery.toLowerCase().trim();
+    const goal = skinGoalFilter.toLowerCase().trim();
+
+    // 1. Packages count (all matching packages)
+    const pkgCount = treatments.filter((t) => {
+      const matchGoal = !goal || (t.skinGoal && t.skinGoal.toLowerCase().includes(goal));
+      const matchSearch = !q ||
+        t.name.toLowerCase().includes(q) ||
+        (t.skinGoal && t.skinGoal.toLowerCase().includes(q)) ||
+        (t.badge && t.badge.toLowerCase().includes(q)) ||
+        t.inclusions.some((inc) => inc.toLowerCase().includes(q));
+      return matchGoal && matchSearch;
+    }).length;
+
+    // 2. Single promos count
+    const singleCount = singlePromos.filter((item) => {
+      const matchSearch = !q ||
+        item.name.toLowerCase().includes(q) ||
+        item.group.toLowerCase().includes(q) ||
+        (item.notes && item.notes.toLowerCase().includes(q)) ||
+        (item.outletRestricted && item.outletRestricted.toLowerCase().includes(q));
+
+      let matchGoal = true;
+      if (goal) {
+        if (goal.includes('glow') || goal.includes('pink') || goal.includes('pigment')) {
+          matchGoal = item.group === 'Glow & Rejuve';
+        } else if (goal.includes('slimm')) {
+          matchGoal = item.group === 'Slimming & Contouring';
+        } else if (goal.includes('acne') || goal.includes('scar')) {
+          matchGoal = item.group === 'Acne & Scar';
+        } else if (goal.includes('aging')) {
+          matchGoal = item.group === 'Anti-Aging';
+        } else if (goal.includes('hair')) {
+          matchGoal = item.group === 'Hair Grow';
+        } else {
+          matchGoal = item.name.toLowerCase().includes(goal) || item.group.toLowerCase().includes(goal);
+        }
+      }
+      return matchSearch && matchGoal;
+    }).length;
+
+    // 3. Subscriptions count
+    const subCount = subscriptions.filter((sub) => {
+      const matchSearch = !q || sub.treatmentName.toLowerCase().includes(q);
+      let matchGoal = true;
+      if (goal) {
+        const tName = sub.treatmentName.toLowerCase();
+        if (goal.includes('glow') || goal.includes('pink') || goal.includes('pigment')) {
+          matchGoal = tName.includes('glow') || tName.includes('rejuve') || tName.includes('laser') || tName.includes('vitaran') || tName.includes('pink') || tName.includes('peel');
+        } else if (goal.includes('slimm')) {
+          matchGoal = tName.includes('slimming') || tName.includes('fat') || tName.includes('body') || tName.includes('contour') || tName.includes('hifu');
+        } else if (goal.includes('acne') || goal.includes('scar')) {
+          matchGoal = tName.includes('acne') || tName.includes('scar') || tName.includes('peel') || tName.includes('subcision');
+        } else if (goal.includes('aging')) {
+          matchGoal = tName.includes('anti-aging') || tName.includes('botox') || tName.includes('filler') || tName.includes('rejur') || tName.includes('profhilo') || tName.includes('hifu');
+        } else if (goal.includes('hair')) {
+          matchGoal = tName.includes('hair');
+        } else {
+          matchGoal = tName.includes(goal);
+        }
+      }
+      return matchSearch && matchGoal;
+    }).length;
+
+    // 4. Skincare count
+    const skinCount = skincareKits.filter((kit) => {
+      const matchSearch = !q ||
+        kit.name.toLowerCase().includes(q) ||
+        (kit.freeGift && kit.freeGift.toLowerCase().includes(q)) ||
+        kit.items.some((it) => it.toLowerCase().includes(q));
+
+      let matchGoal = true;
+      if (goal) {
+        const kName = kit.name.toLowerCase();
+        const itStr = kit.items.join(' ').toLowerCase();
+        if (goal.includes('glow') || goal.includes('pink') || goal.includes('pigment')) {
+          matchGoal = kName.includes('glow') || kName.includes('bright') || itStr.includes('glow') || itStr.includes('bright') || itStr.includes('niacinamide');
+        } else if (goal.includes('acne') || goal.includes('scar')) {
+          matchGoal = kName.includes('acne') || itStr.includes('acne') || itStr.includes('salicylic') || itStr.includes('tea tree');
+        } else if (goal.includes('aging')) {
+          matchGoal = kName.includes('aging') || itStr.includes('retinol') || itStr.includes('collagen') || itStr.includes('peptide');
+        } else {
+          matchGoal = kName.includes(goal) || itStr.includes(goal);
+        }
+      }
+      return matchSearch && matchGoal;
+    }).length;
+
+    return {
+      packages: pkgCount,
+      singlePromos: singleCount,
+      subscriptions: subCount,
+      skincare: skinCount,
+    };
+  }, [treatments, singlePromos, subscriptions, skincareKits, searchQuery, skinGoalFilter]);
+
+  const handleClearAllFilters = () => {
+    setSearchQuery('');
+    setSkinGoalFilter('');
+    setSelectedCategoryId('all');
+    showToast('Filter pencarian telah direset');
+  };
 
   // Cart operations
   const handleToggleCart = (item: TreatmentItem) => {
@@ -474,6 +575,9 @@ export default function App() {
           skinGoalFilter={skinGoalFilter}
           onSelectSkinGoal={setSkinGoalFilter}
           treatmentCountsByCategory={treatmentCountsByCategory}
+          countsByView={countsByView}
+          searchQuery={searchQuery}
+          onClearFilter={handleClearAllFilters}
         />
 
         {/* VIEW 1: TREATMENT PACKAGES BY CATEGORY */}
@@ -498,11 +602,7 @@ export default function App() {
                   Coba ganti kata kunci pencarian atau pilih kategori lain untuk melihat daftar treatment lainnya.
                 </p>
                 <button
-                  onClick={() => {
-                    setSearchQuery('');
-                    setSkinGoalFilter('');
-                    setSelectedCategoryId('all');
-                  }}
+                  onClick={handleClearAllFilters}
                   className="mt-4 px-4 py-2 rounded-xl bg-[#6B1D2F] text-white text-xs font-bold hover:bg-[#521523] transition cursor-pointer"
                 >
                   Reset Filter & Tampilkan Semua
@@ -534,6 +634,11 @@ export default function App() {
             singlePromos={singlePromos}
             isMemberPrice={isMemberPrice}
             settings={settings}
+            searchQuery={searchQuery}
+            skinGoalFilter={skinGoalFilter}
+            cartItems={cartItems}
+            onToggleCart={handleToggleCart}
+            onClearFilter={handleClearAllFilters}
           />
         )}
 
@@ -543,6 +648,11 @@ export default function App() {
             subscriptions={subscriptions}
             isMemberPrice={isMemberPrice}
             settings={settings}
+            searchQuery={searchQuery}
+            skinGoalFilter={skinGoalFilter}
+            cartItems={cartItems}
+            onToggleCart={handleToggleCart}
+            onClearFilter={handleClearAllFilters}
           />
         )}
 
@@ -551,6 +661,11 @@ export default function App() {
           <SkincareKitsSection
             kits={skincareKits}
             settings={settings}
+            searchQuery={searchQuery}
+            skinGoalFilter={skinGoalFilter}
+            cartItems={cartItems}
+            onToggleCart={handleToggleCart}
+            onClearFilter={handleClearAllFilters}
           />
         )}
 
@@ -558,36 +673,16 @@ export default function App() {
       </div>
 
       {/* Footer */}
-      <footer className="bg-white text-stone-700 border-t border-stone-200 py-10 px-4 sm:px-6 shadow-xs">
-        <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6 text-xs">
-          <div>
-            <div className="flex items-center gap-2 mb-1">
-              <span className="font-serif font-bold text-base text-stone-900">SOZO SKIN CLINIC</span>
-              <span className="text-[10px] bg-gradient-to-r from-[#E6C994] to-[#C9A86A] text-stone-950 px-2 py-0.5 rounded-full font-extrabold shadow-xs">
-                BUKU BAU 2026
-              </span>
-            </div>
-            <p className="text-stone-500 max-w-lg leading-relaxed font-normal">
-              Platform interaktif Buku BAU berbasis Google Spreadsheet & Google Apps Script. 
-              Semua harga, treatment, promo baru, dan link foto/PDF tersinkronisasi otomatis.
-            </p>
+      <footer className="bg-white text-stone-700 border-t border-stone-200 py-6 px-4 sm:px-6 shadow-xs">
+        <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3 text-xs">
+          <div className="flex items-center gap-2">
+            <span className="font-serif font-bold text-base text-stone-900">SOZO SKIN CLINIC</span>
+            <span className="text-[10px] bg-gradient-to-r from-[#E6C994] to-[#C9A86A] text-stone-950 px-2 py-0.5 rounded-full font-extrabold shadow-xs">
+              BUKU BAU 2026
+            </span>
           </div>
-
-          <div className="flex flex-wrap items-center gap-3">
-            <button
-              onClick={() => setIsSpreadsheetEditorOpen(true)}
-              className="px-3.5 py-2 rounded-xl bg-stone-100 hover:bg-stone-200 text-stone-800 font-semibold transition flex items-center gap-1.5 cursor-pointer border border-stone-200"
-            >
-              <FileSpreadsheet className="w-3.5 h-3.5 text-[#8C1D35]" />
-              <span>Kelola Data Spreadsheet</span>
-            </button>
-            <button
-              onClick={() => setIsAppsScriptGuideOpen(true)}
-              className="px-3.5 py-2 rounded-xl bg-gradient-to-r from-[#8C1D35] to-[#B02848] hover:brightness-110 text-white font-bold transition flex items-center gap-1.5 cursor-pointer shadow-xs"
-            >
-              <Code2 className="w-3.5 h-3.5" />
-              <span>Deploy Google Apps Script</span>
-            </button>
+          <div className="text-stone-400 text-xs">
+            © {new Date().getFullYear()} SOZO Skin Clinic. Seluruh data disinkronkan otomatis via Google Spreadsheet.
           </div>
         </div>
       </footer>

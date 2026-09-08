@@ -40,9 +40,15 @@ export const TreatmentCalculatorModal: React.FC<TreatmentCalculatorModalProps> =
   if (!isOpen) return null;
 
   // Calculation in actual Rupiah (treatment prices in data are in thousands / "RB")
+  const getUnitPrice = (item: CartItem) => {
+    if (item.treatment.unitPriceInRupiah !== undefined) {
+      return item.treatment.unitPriceInRupiah;
+    }
+    return (useMemberPrice ? item.treatment.memberPrice : item.treatment.nonMemberPrice) * 1000;
+  };
+
   const subtotal = cartItems.reduce((sum, item) => {
-    const pricePerUnit = (useMemberPrice ? item.treatment.memberPrice : item.treatment.nonMemberPrice) * 1000;
-    return sum + (pricePerUnit * item.quantity);
+    return sum + (getUnitPrice(item) * item.quantity);
   }, 0);
 
   const rawServiceCharge = Math.round(subtotal * (settings.serviceChargePercent / 100));
@@ -65,12 +71,15 @@ export const TreatmentCalculatorModal: React.FC<TreatmentCalculatorModalProps> =
     if (customerName) msg += `Nama Pasien: ${customerName}\n`;
     msg += `Cabang: ${selectedOutlet}\n`;
     msg += `Tipe Harga: ${useMemberPrice ? 'Member' : 'Non-Member'}\n\n`;
-    msg += `Rangkaian Treatment:\n`;
+    msg += `Rangkaian Treatment & Produk Terpilih:\n`;
 
     cartItems.forEach((item, index) => {
-      const price = (useMemberPrice ? item.treatment.memberPrice : item.treatment.nonMemberPrice) * 1000;
-      msg += `${index + 1}. ${item.treatment.name} (x${item.quantity}) - ${formatRupiah(price * item.quantity)}\n`;
-      msg += `   Isi: ${item.treatment.inclusions.join(', ')}\n`;
+      const price = getUnitPrice(item);
+      const badgeText = item.treatment.badge ? ` [${item.treatment.badge}]` : '';
+      msg += `${index + 1}. ${item.treatment.name}${badgeText} (x${item.quantity}) - ${formatRupiah(price * item.quantity)}\n`;
+      if (item.treatment.inclusions && item.treatment.inclusions.length > 0) {
+        msg += `   Rincian: ${item.treatment.inclusions.join(', ')}\n`;
+      }
     });
 
     msg += `\nSubtotal: ${formatRupiah(subtotal)}\n`;
@@ -185,21 +194,30 @@ export const TreatmentCalculatorModal: React.FC<TreatmentCalculatorModalProps> =
             ) : (
               <div className="space-y-2.5">
                 {cartItems.map((item) => {
-                  const unitPrice = (useMemberPrice ? item.treatment.memberPrice : item.treatment.nonMemberPrice) * 1000;
+                  const unitPrice = getUnitPrice(item);
                   return (
                     <div
                       key={item.treatment.id}
                       className="p-3 bg-black/40 rounded-2xl border border-rose-300/20 shadow-xs flex items-center justify-between gap-3"
                     >
                       <div className="flex-1 min-w-0">
-                        <h4 className="text-xs sm:text-sm font-bold text-white truncate">
-                          {item.treatment.name}
-                        </h4>
-                        <p className="text-[11px] text-rose-200/60 truncate">
-                          {item.treatment.inclusions.join(', ')}
-                        </p>
+                        <div className="flex items-center gap-1.5 mb-0.5 flex-wrap">
+                          <h4 className="text-xs sm:text-sm font-bold text-white truncate">
+                            {item.treatment.name}
+                          </h4>
+                          {item.treatment.badge && (
+                            <span className="text-[9px] font-bold px-1.5 py-0.2 rounded bg-rose-950/80 text-[#FFAEC2] border border-rose-500/30">
+                              {item.treatment.badge}
+                            </span>
+                          )}
+                        </div>
+                        {item.treatment.inclusions && item.treatment.inclusions.length > 0 && (
+                          <p className="text-[11px] text-rose-200/60 truncate">
+                            {item.treatment.inclusions.join(', ')}
+                          </p>
+                        )}
                         <span className="text-xs font-bold text-[#FCE3B4]">
-                          {formatRupiah(unitPrice)} <span className="text-[10px] text-rose-300/50 font-normal">/sesi</span>
+                          {formatRupiah(unitPrice)} <span className="text-[10px] text-rose-300/50 font-normal">/item</span>
                         </span>
                       </div>
 

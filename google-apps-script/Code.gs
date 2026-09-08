@@ -394,11 +394,24 @@ function doGet(e) {
 
   if (e && e.parameter && e.parameter.action === 'verifyPassword') {
     var checkPw = String(e.parameter.password || '').trim();
-    var allData = getAllBauData();
-    var currentPw = (allData && allData.config && allData.config.ACCESS_PASSWORD !== undefined)
-      ? String(allData.config.ACCESS_PASSWORD).trim()
-      : "sozo";
-    var isMatch = (!currentPw || checkPw === currentPw);
+    var currentPw = "sozo";
+    try {
+      var ss = getTargetSpreadsheet();
+      if (ss) {
+        var cfgSheet = ss.getSheetByName("Pengaturan_Klinik");
+        if (cfgSheet && cfgSheet.getLastRow() > 1) {
+          var cfgVals = cfgSheet.getRange(2, 1, Math.min(cfgSheet.getLastRow() - 1, 20), 2).getValues();
+          for (var cp = 0; cp < cfgVals.length; cp++) {
+            if (String(cfgVals[cp][0]).trim() === "ACCESS_PASSWORD") {
+              currentPw = String(cfgVals[cp][1]).trim();
+              break;
+            }
+          }
+        }
+      }
+    } catch(errCp) {}
+
+    var isMatch = (!currentPw || checkPw.toLowerCase() === currentPw.toLowerCase());
     return ContentService.createTextOutput(JSON.stringify({
       valid: isMatch,
       hasPassword: Boolean(currentPw)

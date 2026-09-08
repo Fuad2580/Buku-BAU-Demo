@@ -1,7 +1,6 @@
 import React from 'react';
 import { 
   Sparkles, 
-  FileSpreadsheet, 
   Code2, 
   ShoppingCart, 
   MapPin, 
@@ -148,21 +147,11 @@ export const Header: React.FC<HeaderProps> = ({
           <button
             onClick={onRefreshData}
             disabled={isSyncing}
-            title="Sinkronisasi data terbaru dari spreadsheet"
+            title="Sinkronisasi data terbaru dari Google Spreadsheet"
             className="p-2 sm:px-3 sm:py-2 rounded-xl bg-white/10 hover:bg-white/20 text-xs font-medium flex items-center gap-1.5 transition border border-white/10 cursor-pointer"
           >
             <RefreshCw className={`w-3.5 h-3.5 text-rose-200 ${isSyncing ? 'animate-spin' : ''}`} />
-            <span className="hidden sm:inline">Sync</span>
-          </button>
-
-          {/* Edit Spreadsheet Button */}
-          <button
-            onClick={onOpenSpreadsheetEditor}
-            className="px-3 py-2 rounded-xl bg-[#85233A] hover:bg-[#992943] text-xs font-semibold text-white flex items-center gap-1.5 border border-white/15 shadow-sm transition cursor-pointer"
-          >
-            <FileSpreadsheet className="w-3.5 h-3.5 text-[#E8BF87]" />
-            <span className="hidden sm:inline">Edit Spreadsheet</span>
-            <span className="sm:hidden">Edit</span>
+            <span className="hidden sm:inline">Sync Data</span>
           </button>
 
           {/* Lock Screen Button (If password protected) */}

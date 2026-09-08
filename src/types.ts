@@ -13,6 +13,8 @@ export interface TreatmentItem {
   skinGoal?: string; // Glowing, Acne, Scar, Anti-Aging, Slimming, Hair
   sessionsCount?: number;
   photoUrl?: string; // Link foto treatment untuk preview / popup saat di-hover
+  unitPriceInRupiah?: number; // Optional exact price in IDR (e.g. for Skincare kit with non-round thousand IDR)
+  itemType?: 'package' | 'single' | 'subscription' | 'skincare';
 }
 
 export interface Category {

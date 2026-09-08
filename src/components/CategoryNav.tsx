@@ -4,7 +4,9 @@ import {
   Tag, 
   Repeat, 
   Package, 
-  Layers
+  Layers,
+  Search,
+  RotateCcw
 } from 'lucide-react';
 import { Category } from '../types';
 import { CardLightFlare } from './CardLightFlare';
@@ -18,6 +20,14 @@ interface CategoryNavProps {
   skinGoalFilter: string;
   onSelectSkinGoal: (goal: string) => void;
   treatmentCountsByCategory: Record<string, number>;
+  countsByView?: {
+    packages: number;
+    singlePromos: number;
+    subscriptions: number;
+    skincare: number;
+  };
+  searchQuery?: string;
+  onClearFilter?: () => void;
 }
 
 const SKIN_GOALS = [
@@ -42,16 +52,21 @@ export const CategoryNav: React.FC<CategoryNavProps> = ({
   skinGoalFilter,
   onSelectSkinGoal,
   treatmentCountsByCategory,
+  countsByView,
+  searchQuery,
+  onClearFilter,
 }) => {
+  const hasActiveFilter = Boolean(searchQuery || skinGoalFilter || (activeView === 'packages' && selectedCategoryId !== 'all'));
+
   return (
     <div className="space-y-4 bg-white border border-stone-200/90 p-4 rounded-3xl shadow-sm relative overflow-visible">
       
-      {/* Luminous lens flare light effect matching user reference photo */}
+      {/* Luminous lens flare light effect */}
       <CardLightFlare topPosition="left-center" />
 
       {/* View Switcher Tabs (Paket, Single Promo, Subscription, Skincare) */}
       <div className="flex flex-wrap items-center justify-between gap-3 border-b border-stone-100 pb-3">
-        <div className="flex items-center gap-1.5 p-1 bg-stone-100/90 border border-stone-200/70 rounded-2xl">
+        <div className="flex flex-wrap items-center gap-1.5 p-1 bg-stone-100/90 border border-stone-200/70 rounded-2xl">
           <button
             onClick={() => onChangeView('packages')}
             className={`px-3.5 py-2 rounded-xl text-xs font-bold transition flex items-center gap-1.5 cursor-pointer ${
@@ -62,6 +77,13 @@ export const CategoryNav: React.FC<CategoryNavProps> = ({
           >
             <Layers className="w-3.5 h-3.5" />
             <span>Paket Treatment Kategori</span>
+            {countsByView && (
+              <span className={`text-[10px] px-1.5 py-0.2 rounded-full font-mono font-bold ${
+                activeView === 'packages' ? 'bg-white/25 text-white' : 'bg-stone-200 text-stone-600'
+              }`}>
+                {countsByView.packages}
+              </span>
+            )}
           </button>
 
           <button
@@ -74,6 +96,13 @@ export const CategoryNav: React.FC<CategoryNavProps> = ({
           >
             <Tag className="w-3.5 h-3.5" />
             <span>Promo Single Treatment</span>
+            {countsByView && (
+              <span className={`text-[10px] px-1.5 py-0.2 rounded-full font-mono font-bold ${
+                activeView === 'single-promos' ? 'bg-white/25 text-white' : 'bg-stone-200 text-stone-600'
+              }`}>
+                {countsByView.singlePromos}
+              </span>
+            )}
           </button>
 
           <button
@@ -86,6 +115,13 @@ export const CategoryNav: React.FC<CategoryNavProps> = ({
           >
             <Repeat className="w-3.5 h-3.5" />
             <span>Langganan (3x / 6x / 12x)</span>
+            {countsByView && (
+              <span className={`text-[10px] px-1.5 py-0.2 rounded-full font-mono font-bold ${
+                activeView === 'subscriptions' ? 'bg-white/25 text-white' : 'bg-stone-200 text-stone-600'
+              }`}>
+                {countsByView.subscriptions}
+              </span>
+            )}
           </button>
 
           <button
@@ -98,31 +134,51 @@ export const CategoryNav: React.FC<CategoryNavProps> = ({
           >
             <Package className="w-3.5 h-3.5" />
             <span>Paket Skincare Kit</span>
+            {countsByView && (
+              <span className={`text-[10px] px-1.5 py-0.2 rounded-full font-mono font-bold ${
+                activeView === 'skincare' ? 'bg-white/25 text-white' : 'bg-stone-200 text-stone-600'
+              }`}>
+                {countsByView.skincare}
+              </span>
+            )}
           </button>
         </div>
 
-        {/* Skin Goals Pills (when in packages view) */}
-        {activeView === 'packages' && (
-          <div className="flex items-center gap-1.5 overflow-x-auto max-w-full pb-1">
-            <span className="text-xs font-bold text-stone-500 whitespace-nowrap mr-1">Goal:</span>
-            {SKIN_GOALS.map((goal) => {
-              const active = (goal === "Semua Goals" && !skinGoalFilter) || skinGoalFilter === goal;
-              return (
-                <button
-                  key={goal}
-                  onClick={() => onSelectSkinGoal(goal === "Semua Goals" ? "" : goal)}
-                  className={`px-3 py-1 rounded-lg text-xs font-medium whitespace-nowrap transition cursor-pointer ${
-                    active
-                      ? 'bg-gradient-to-r from-[#8C1D35] to-[#B02848] text-white shadow-sm font-bold border-t border-[#FFAEC2]/50'
-                      : 'bg-stone-100 text-stone-700 hover:text-stone-900 hover:bg-stone-200/80 border border-stone-200/80'
-                  }`}
-                >
-                  {goal}
-                </button>
-              );
-            })}
-          </div>
+        {/* Reset Filter Button if any filter is active */}
+        {hasActiveFilter && onClearFilter && (
+          <button
+            type="button"
+            onClick={onClearFilter}
+            className="text-xs font-bold text-[#8C1D35] hover:bg-rose-50 px-3 py-1.5 rounded-xl border border-rose-200 transition cursor-pointer flex items-center gap-1"
+          >
+            <RotateCcw className="w-3 h-3" />
+            <span>Reset Semua Filter</span>
+          </button>
         )}
+      </div>
+
+      {/* Skin Goals Pills (Universal: available across ALL views) */}
+      <div className="flex items-center gap-1.5 overflow-x-auto max-w-full pb-1 scrollbar-thin">
+        <span className="text-xs font-bold text-stone-500 whitespace-nowrap mr-1 flex items-center gap-1">
+          <Sparkles className="w-3 h-3 text-[#C9A86A]" />
+          <span>Filter Goal:</span>
+        </span>
+        {SKIN_GOALS.map((goal) => {
+          const active = (goal === "Semua Goals" && !skinGoalFilter) || skinGoalFilter === goal;
+          return (
+            <button
+              key={goal}
+              onClick={() => onSelectSkinGoal(goal === "Semua Goals" ? "" : goal)}
+              className={`px-3 py-1 rounded-lg text-xs font-medium whitespace-nowrap transition cursor-pointer ${
+                active
+                  ? 'bg-gradient-to-r from-[#8C1D35] to-[#B02848] text-white shadow-sm font-bold border-t border-[#FFAEC2]/50'
+                  : 'bg-stone-100 text-stone-700 hover:text-stone-900 hover:bg-stone-200/80 border border-stone-200/80'
+              }`}
+            >
+              {goal}
+            </button>
+          );
+        })}
       </div>
 
       {/* Categories Horizontal Scroll / Carousel when in 'packages' view */}

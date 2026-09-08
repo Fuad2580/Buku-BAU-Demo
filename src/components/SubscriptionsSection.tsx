@@ -1,20 +1,82 @@
-import React, { useState } from 'react';
-import { Repeat, Calendar, ShieldCheck, Sparkles, Image as ImageIcon } from 'lucide-react';
-import { SubscriptionItem, ClinicSettings } from '../types';
+import React, { useState, useMemo } from 'react';
+import { Repeat, Calendar, ShieldCheck, Sparkles, Image as ImageIcon, Plus, Check, Calculator, Search, RotateCcw } from 'lucide-react';
+import { SubscriptionItem, ClinicSettings, CartItem, TreatmentItem } from '../types';
 import { CardLightFlare } from './CardLightFlare';
+import { PhotoLightboxModal, PhotoLightboxData } from './PhotoLightboxModal';
 
 interface SubscriptionsSectionProps {
   subscriptions: SubscriptionItem[];
   isMemberPrice: boolean;
   settings: ClinicSettings;
+  searchQuery?: string;
+  skinGoalFilter?: string;
+  cartItems?: CartItem[];
+  onToggleCart?: (item: TreatmentItem) => void;
+  onClearFilter?: () => void;
 }
 
 export const SubscriptionsSection: React.FC<SubscriptionsSectionProps> = ({
   subscriptions,
   isMemberPrice,
-  settings,
+  searchQuery = '',
+  skinGoalFilter = '',
+  cartItems = [],
+  onToggleCart,
+  onClearFilter,
 }) => {
   const [hoveredSubId, setHoveredSubId] = useState<string | null>(null);
+  const [activeLightboxData, setActiveLightboxData] = useState<PhotoLightboxData | null>(null);
+
+  // Filter subscriptions based on search query and skin goal
+  const filteredSubscriptions = useMemo(() => {
+    return subscriptions.filter((sub) => {
+      // Search query
+      const q = searchQuery.toLowerCase().trim();
+      const matchSearch = !q || sub.treatmentName.toLowerCase().includes(q);
+
+      // Skin goal
+      let matchGoal = true;
+      if (skinGoalFilter) {
+        const goal = skinGoalFilter.toLowerCase();
+        const tName = sub.treatmentName.toLowerCase();
+        if (goal.includes('glow') || goal.includes('pink') || goal.includes('pigment')) {
+          matchGoal = tName.includes('glow') || tName.includes('rejuve') || tName.includes('laser') || tName.includes('vitaran') || tName.includes('pink') || tName.includes('peel');
+        } else if (goal.includes('slimm')) {
+          matchGoal = tName.includes('slimming') || tName.includes('fat') || tName.includes('body') || tName.includes('contour') || tName.includes('hifu');
+        } else if (goal.includes('acne') || goal.includes('scar')) {
+          matchGoal = tName.includes('acne') || tName.includes('scar') || tName.includes('peel') || tName.includes('subcision');
+        } else if (goal.includes('aging')) {
+          matchGoal = tName.includes('anti-aging') || tName.includes('botox') || tName.includes('filler') || tName.includes('rejur') || tName.includes('profhilo') || tName.includes('hifu');
+        } else if (goal.includes('hair')) {
+          matchGoal = tName.includes('hair');
+        } else {
+          matchGoal = tName.includes(goal);
+        }
+      }
+
+      return matchSearch && matchGoal;
+    });
+  }, [subscriptions, searchQuery, skinGoalFilter]);
+
+  const isTierInCart = (tierId: string) => {
+    return cartItems.some((ci) => ci.treatment.id === tierId);
+  };
+
+  const handleOpenPhoto = (sub: SubscriptionItem) => {
+    if (!sub.photoUrl) return;
+    setActiveLightboxData({
+      url: sub.photoUrl,
+      name: sub.treatmentName,
+      categoryOrGroup: 'Paket Langganan',
+      originalPrice: sub.package3x?.original,
+      nonMemberPrice: sub.package3x?.nonMember,
+      memberPrice: sub.package3x?.member,
+      inclusions: [
+        `Tersedia paket 3x, 6x, hingga 12x sesi`,
+        `Harga satuan normal: ${sub.singlePrice} RB`,
+      ],
+    });
+  };
 
   return (
     <div className="space-y-6 text-stone-800">
@@ -23,13 +85,25 @@ export const SubscriptionsSection: React.FC<SubscriptionsSectionProps> = ({
       <div className="bg-white rounded-3xl p-6 border border-stone-200/90 shadow-sm flex flex-col md:flex-row items-start md:items-center justify-between gap-4 relative overflow-visible">
         <CardLightFlare topPosition="center" />
         <div>
-          <div className="flex items-center gap-2 mb-1">
+          <div className="flex items-center gap-2 mb-1 flex-wrap">
             <span className="text-[10px] uppercase font-bold tracking-widest px-2.5 py-0.5 rounded-full bg-gradient-to-r from-[#E6C994] to-[#C9A86A] text-stone-950 shadow-sm">
               Buku BAU Hal. 72 - 80
             </span>
             <span className="text-xs font-bold text-[#8C1D35] bg-rose-50 border border-rose-200 px-2.5 py-0.5 rounded-md">
               Maksimal Hemat
             </span>
+            {searchQuery && (
+              <span className="text-xs font-semibold text-[#8C1D35] bg-rose-50 border border-rose-200 px-2 py-0.5 rounded-md flex items-center gap-1">
+                <Search className="w-3 h-3" />
+                Pencarian: "{searchQuery}"
+              </span>
+            )}
+            {skinGoalFilter && (
+              <span className="text-xs font-semibold text-amber-900 bg-amber-50 border border-amber-200 px-2 py-0.5 rounded-md flex items-center gap-1">
+                <Sparkles className="w-3 h-3 text-amber-600" />
+                Goal: {skinGoalFilter}
+              </span>
+            )}
           </div>
           <h2 className="text-2xl font-serif font-bold text-stone-900">
             Paket Treatment Subscription (Langganan Sesi)
@@ -52,172 +126,344 @@ export const SubscriptionsSection: React.FC<SubscriptionsSectionProps> = ({
       </div>
 
       {/* Subscription Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-        {subscriptions.map((sub) => (
-          <div
-            key={sub.id}
-            className="bg-white rounded-3xl border border-stone-200/90 p-5 shadow-sm hover:shadow-xl hover:border-rose-300/80 transition-all duration-300 flex flex-col justify-between relative overflow-visible"
-          >
-            <CardLightFlare topPosition="center" />
-            <div>
-              <div className="flex items-center justify-between gap-2 mb-2">
-                <span className="text-[10px] uppercase font-bold tracking-widest text-[#8C1D35] bg-rose-50 px-2.5 py-0.5 rounded-md border border-rose-200/70">
-                  Subscription
-                </span>
-                <span className="text-xs text-stone-500 font-medium">
-                  Harga 1x Sesi: <strong className="text-stone-900">{sub.singlePrice} RB</strong>
-                </span>
-              </div>
+      {filteredSubscriptions.length === 0 ? (
+        <div className="py-16 text-center bg-white rounded-3xl border border-stone-200 p-8 shadow-xs">
+          <Sparkles className="w-10 h-10 text-stone-300 mx-auto mb-3" />
+          <h3 className="text-base font-bold text-stone-800">
+            Tidak ditemukan paket langganan yang cocok dengan filter
+          </h3>
+          <p className="text-xs text-stone-500 mt-1 max-w-sm mx-auto">
+            {searchQuery ? `Tidak ada hasil untuk pencarian "${searchQuery}".` : 'Coba ubah kata kunci atau reset filter.'}
+          </p>
+          {onClearFilter && (
+            <button
+              onClick={onClearFilter}
+              className="mt-4 px-4 py-2 rounded-xl bg-[#8C1D35] text-white text-xs font-bold hover:bg-[#73172B] transition cursor-pointer inline-flex items-center gap-1.5"
+            >
+              <RotateCcw className="w-3.5 h-3.5" />
+              <span>Reset Filter Pencarian</span>
+            </button>
+          )}
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+          {filteredSubscriptions.map((sub, index) => (
+            <div
+              key={sub.id}
+              className="bg-white rounded-3xl border border-stone-200/90 p-5 shadow-sm hover:shadow-xl hover:border-rose-300/80 transition-all duration-300 flex flex-col justify-between relative overflow-visible"
+            >
+              <CardLightFlare topPosition="center" />
+              <div>
+                <div className="flex items-center justify-between gap-2 mb-2">
+                  <span className="text-[10px] uppercase font-bold tracking-widest text-[#8C1D35] bg-rose-50 px-2.5 py-0.5 rounded-md border border-rose-200/70">
+                    Subscription
+                  </span>
+                  <span className="text-xs text-stone-500 font-medium">
+                    Harga 1x Sesi: <strong className="text-stone-900">{sub.singlePrice} RB</strong>
+                  </span>
+                </div>
 
-              {/* Title with hover popup */}
-              <div 
-                className="relative inline-block w-full"
-                onMouseEnter={() => { if (sub.photoUrl) setHoveredSubId(sub.id); }}
-                onMouseLeave={() => setHoveredSubId(null)}
-              >
-                <div className="flex items-start justify-between gap-2">
-                  <h3 className="font-serif font-bold text-base text-stone-900 leading-snug hover:text-[#8C1D35] cursor-pointer flex-1">
-                    {sub.treatmentName}
-                  </h3>
-                  {sub.photoUrl && (
-                    <span className="inline-flex items-center gap-1 text-[10px] font-semibold text-stone-600 bg-stone-100 px-2 py-0.5 rounded-full border border-stone-200">
-                      <ImageIcon className="w-3 h-3 text-[#8C1D35]" />
-                      <span>Foto</span>
-                    </span>
+                {/* Title with hover popup or click to open modal */}
+                <div 
+                  className="relative inline-block w-full cursor-pointer"
+                  onClick={() => handleOpenPhoto(sub)}
+                  onMouseEnter={() => { if (sub.photoUrl) setHoveredSubId(sub.id); }}
+                  onMouseLeave={() => setHoveredSubId(null)}
+                >
+                  <div className="flex items-start justify-between gap-2">
+                    <h3 className="font-serif font-bold text-base text-stone-900 leading-snug hover:text-[#8C1D35] transition flex-1">
+                      {sub.treatmentName}
+                    </h3>
+                    {sub.photoUrl && (
+                      <span className="inline-flex items-center gap-1 text-[10px] font-semibold text-stone-600 bg-stone-100 hover:bg-stone-200 px-2 py-0.5 rounded-full border border-stone-200 transition shrink-0">
+                        <ImageIcon className="w-3 h-3 text-[#8C1D35]" />
+                        <span>Foto</span>
+                      </span>
+                    )}
+                  </div>
+
+                  {hoveredSubId === sub.id && sub.photoUrl && (
+                    <div className={`absolute left-0 z-50 w-64 bg-white rounded-2xl shadow-2xl border border-stone-200 p-2.5 animate-in fade-in zoom-in-95 pointer-events-none ${
+                      index < 3 ? 'top-full mt-2' : '-top-2 transform -translate-y-full'
+                    }`}>
+                      <div className="aspect-4/3 rounded-xl overflow-hidden bg-stone-100 mb-1.5 border border-stone-200">
+                        <img 
+                          src={sub.photoUrl} 
+                          alt={sub.treatmentName}
+                          className="w-full h-full object-cover"
+                          referrerPolicy="no-referrer"
+                        />
+                      </div>
+                      <p className="text-xs font-bold text-stone-900 font-serif truncate">{sub.treatmentName}</p>
+                      <span className="text-[10px] text-stone-500">Klik untuk foto besar</span>
+                    </div>
                   )}
                 </div>
 
-                {hoveredSubId === sub.id && sub.photoUrl && (
-                  <div className="absolute left-0 -top-2 transform -translate-y-full z-50 w-64 bg-white rounded-2xl shadow-2xl border border-stone-200 p-2 animate-in fade-in zoom-in-95 pointer-events-auto">
-                    <div className="aspect-4/3 rounded-xl overflow-hidden bg-stone-100 mb-1.5 border border-stone-200">
-                      <img 
-                        src={sub.photoUrl} 
-                        alt={sub.treatmentName}
-                        className="w-full h-full object-cover"
-                        referrerPolicy="no-referrer"
-                      />
-                    </div>
-                    <p className="text-xs font-bold text-stone-900 font-serif truncate">{sub.treatmentName}</p>
-                    <span className="text-[10px] text-stone-500">Preview Paket Sesi</span>
-                  </div>
+                {/* Packages Option Rows with "+ Estimasi" for each tier */}
+                <div className="mt-4 space-y-2.5">
+                  
+                  {/* 3x Package */}
+                  {sub.package3x && (() => {
+                    const tierId = `sub-${sub.id}-3x`;
+                    const inCart = isTierInCart(tierId);
+                    const itemForCart: TreatmentItem = {
+                      id: tierId,
+                      categoryId: 'subscriptions',
+                      name: `${sub.treatmentName} (Paket 3x)`,
+                      subTitle: 'Langganan 3x Sesi (Masa berlaku 5 bulan)',
+                      inclusions: [`3x Sesi ${sub.treatmentName}`, 'Masa berlaku hingga 5 bulan'],
+                      originalPrice: sub.package3x.original,
+                      nonMemberPrice: sub.package3x.nonMember,
+                      memberPrice: sub.package3x.member,
+                      badge: 'Langganan 3x',
+                      photoUrl: sub.photoUrl,
+                      sessionsCount: 3,
+                      itemType: 'subscription',
+                    };
+
+                    return (
+                      <div className="p-2.5 rounded-2xl bg-stone-50 border border-stone-200/80 flex items-center justify-between gap-2">
+                        <div>
+                          <span className="text-xs font-bold text-stone-900 block">Paket 3x Sesi</span>
+                          <span className="text-[10px] text-stone-400 line-through">
+                            {sub.package3x.original} RB
+                          </span>
+                        </div>
+                        <div className="text-right flex items-center gap-2">
+                          <div>
+                            <span className="text-sm font-extrabold text-[#8C1D35] block">
+                              {isMemberPrice ? sub.package3x.member : sub.package3x.nonMember} RB
+                            </span>
+                            <span className="text-[10px] text-emerald-700 font-bold block">
+                              ({isMemberPrice ? sub.package3x.perSessionMember : sub.package3x.perSessionNonMember} RB/sesi)
+                            </span>
+                          </div>
+                          {onToggleCart && (
+                            <button
+                              type="button"
+                              onClick={() => onToggleCart(itemForCart)}
+                              className={`px-2 py-1 rounded-lg text-[11px] font-bold transition flex items-center gap-1 cursor-pointer shrink-0 shadow-2xs ${
+                                inCart 
+                                  ? 'bg-emerald-600 text-white' 
+                                  : 'bg-[#8C1D35] hover:bg-[#73172B] text-white'
+                              }`}
+                              title="Tambah ke Estimasi Biaya"
+                            >
+                              {inCart ? <Check className="w-3 h-3" /> : <Plus className="w-3 h-3" />}
+                              <span>{inCart ? '✓' : '+ Estimasi'}</span>
+                            </button>
+                          )}
+                        </div>
+                      </div>
+                    );
+                  })()}
+
+                  {/* 4x Package if present */}
+                  {sub.package4x && (() => {
+                    const tierId = `sub-${sub.id}-4x`;
+                    const inCart = isTierInCart(tierId);
+                    const itemForCart: TreatmentItem = {
+                      id: tierId,
+                      categoryId: 'subscriptions',
+                      name: `${sub.treatmentName} (Paket 4x)`,
+                      subTitle: 'Langganan 4x Sesi',
+                      inclusions: [`4x Sesi ${sub.treatmentName}`],
+                      originalPrice: sub.package4x.original,
+                      nonMemberPrice: sub.package4x.nonMember,
+                      memberPrice: sub.package4x.member,
+                      badge: 'Langganan 4x',
+                      photoUrl: sub.photoUrl,
+                      sessionsCount: 4,
+                      itemType: 'subscription',
+                    };
+
+                    return (
+                      <div className="p-2.5 rounded-2xl bg-stone-50 border border-stone-200/80 flex items-center justify-between gap-2">
+                        <div>
+                          <span className="text-xs font-bold text-stone-900 block">Paket 4x Sesi</span>
+                          <span className="text-[10px] text-stone-400 line-through">
+                            {sub.package4x.original} RB
+                          </span>
+                        </div>
+                        <div className="text-right flex items-center gap-2">
+                          <div>
+                            <span className="text-sm font-extrabold text-[#8C1D35] block">
+                              {isMemberPrice ? sub.package4x.member : sub.package4x.nonMember} RB
+                            </span>
+                            <span className="text-[10px] text-emerald-700 font-bold block">
+                              ({isMemberPrice ? sub.package4x.perSessionMember : sub.package4x.perSessionNonMember} RB/sesi)
+                            </span>
+                          </div>
+                          {onToggleCart && (
+                            <button
+                              type="button"
+                              onClick={() => onToggleCart(itemForCart)}
+                              className={`px-2 py-1 rounded-lg text-[11px] font-bold transition flex items-center gap-1 cursor-pointer shrink-0 shadow-2xs ${
+                                inCart 
+                                  ? 'bg-emerald-600 text-white' 
+                                  : 'bg-[#8C1D35] hover:bg-[#73172B] text-white'
+                              }`}
+                              title="Tambah ke Estimasi Biaya"
+                            >
+                              {inCart ? <Check className="w-3 h-3" /> : <Plus className="w-3 h-3" />}
+                              <span>{inCart ? '✓' : '+ Estimasi'}</span>
+                            </button>
+                          )}
+                        </div>
+                      </div>
+                    );
+                  })()}
+
+                  {/* 6x Package */}
+                  {sub.package6x && (() => {
+                    const tierId = `sub-${sub.id}-6x`;
+                    const inCart = isTierInCart(tierId);
+                    const itemForCart: TreatmentItem = {
+                      id: tierId,
+                      categoryId: 'subscriptions',
+                      name: `${sub.treatmentName} (Paket 6x)`,
+                      subTitle: 'Langganan 6x Sesi (Masa berlaku 8 bulan)',
+                      inclusions: [`6x Sesi ${sub.treatmentName}`, 'Masa berlaku hingga 8 bulan'],
+                      originalPrice: sub.package6x.original,
+                      nonMemberPrice: sub.package6x.nonMember,
+                      memberPrice: sub.package6x.member,
+                      badge: 'Langganan 6x',
+                      photoUrl: sub.photoUrl,
+                      sessionsCount: 6,
+                      itemType: 'subscription',
+                    };
+
+                    return (
+                      <div className="p-2.5 rounded-2xl bg-rose-50/70 border border-rose-200/80 flex items-center justify-between gap-2">
+                        <div>
+                          <div className="flex items-center gap-1">
+                            <span className="text-xs font-bold text-stone-900">Paket 6x Sesi</span>
+                            <span className="text-[9px] font-extrabold text-white bg-gradient-to-r from-rose-600 to-red-600 px-1.5 py-0.2 rounded">Hemat</span>
+                          </div>
+                          <span className="text-[10px] text-stone-400 line-through block">
+                            {sub.package6x.original} RB
+                          </span>
+                        </div>
+                        <div className="text-right flex items-center gap-2">
+                          <div>
+                            <span className="text-sm font-extrabold text-[#8C1D35] block">
+                              {isMemberPrice ? sub.package6x.member : sub.package6x.nonMember} RB
+                            </span>
+                            <span className="text-[10px] text-emerald-700 font-bold block">
+                              ({isMemberPrice ? sub.package6x.perSessionMember : sub.package6x.perSessionNonMember} RB/sesi)
+                            </span>
+                          </div>
+                          {onToggleCart && (
+                            <button
+                              type="button"
+                              onClick={() => onToggleCart(itemForCart)}
+                              className={`px-2 py-1 rounded-lg text-[11px] font-bold transition flex items-center gap-1 cursor-pointer shrink-0 shadow-2xs ${
+                                inCart 
+                                  ? 'bg-emerald-600 text-white' 
+                                  : 'bg-[#8C1D35] hover:bg-[#73172B] text-white'
+                              }`}
+                              title="Tambah ke Estimasi Biaya"
+                            >
+                              {inCart ? <Check className="w-3 h-3" /> : <Plus className="w-3 h-3" />}
+                              <span>{inCart ? '✓' : '+ Estimasi'}</span>
+                            </button>
+                          )}
+                        </div>
+                      </div>
+                    );
+                  })()}
+
+                  {/* 12x Package */}
+                  {sub.package12x && (() => {
+                    const tierId = `sub-${sub.id}-12x`;
+                    const inCart = isTierInCart(tierId);
+                    const itemForCart: TreatmentItem = {
+                      id: tierId,
+                      categoryId: 'subscriptions',
+                      name: `${sub.treatmentName} (Paket 12x)`,
+                      subTitle: 'Langganan 12x Sesi (Masa berlaku 14 bulan)',
+                      inclusions: [`12x Sesi ${sub.treatmentName}`, 'Masa berlaku hingga 14 bulan'],
+                      originalPrice: sub.package12x.original,
+                      nonMemberPrice: sub.package12x.nonMember,
+                      memberPrice: sub.package12x.member,
+                      badge: 'Langganan 12x',
+                      photoUrl: sub.photoUrl,
+                      sessionsCount: 12,
+                      itemType: 'subscription',
+                    };
+
+                    return (
+                      <div className="p-2.5 rounded-2xl bg-amber-50/80 border border-amber-200 flex items-center justify-between gap-2">
+                        <div>
+                          <div className="flex items-center gap-1">
+                            <span className="text-xs font-bold text-stone-900">Paket 12x Sesi</span>
+                            <span className="text-[9px] font-extrabold text-stone-950 bg-gradient-to-r from-[#E6C994] to-[#C9A86A] px-1.5 py-0.2 rounded">Super Hemat</span>
+                          </div>
+                          <span className="text-[10px] text-stone-400 line-through block">
+                            {sub.package12x.original} RB
+                          </span>
+                        </div>
+                        <div className="text-right flex items-center gap-2">
+                          <div>
+                            <span className="text-sm font-extrabold text-[#8C1D35] block">
+                              {isMemberPrice ? sub.package12x.member : sub.package12x.nonMember} RB
+                            </span>
+                            <span className="text-[10px] text-emerald-700 font-bold block">
+                              ({isMemberPrice ? sub.package12x.perSessionMember : sub.package12x.perSessionNonMember} RB/sesi)
+                            </span>
+                          </div>
+                          {onToggleCart && (
+                            <button
+                              type="button"
+                              onClick={() => onToggleCart(itemForCart)}
+                              className={`px-2 py-1 rounded-lg text-[11px] font-bold transition flex items-center gap-1 cursor-pointer shrink-0 shadow-2xs ${
+                                inCart 
+                                  ? 'bg-emerald-600 text-white' 
+                                  : 'bg-[#8C1D35] hover:bg-[#73172B] text-white'
+                              }`}
+                              title="Tambah ke Estimasi Biaya"
+                            >
+                              {inCart ? <Check className="w-3 h-3" /> : <Plus className="w-3 h-3" />}
+                              <span>{inCart ? '✓' : '+ Estimasi'}</span>
+                            </button>
+                          )}
+                        </div>
+                      </div>
+                    );
+                  })()}
+
+                </div>
+              </div>
+
+              {/* Card Footer */}
+              <div className="mt-5 pt-3 border-t border-stone-100 flex items-center justify-between">
+                <span className="text-[11px] text-stone-500 font-medium">
+                  Bisa cicilan 0% Paylater
+                </span>
+                {sub.photoUrl && (
+                  <button
+                    type="button"
+                    onClick={() => handleOpenPhoto(sub)}
+                    className="px-3 py-1.5 rounded-xl bg-stone-100 hover:bg-stone-200 text-stone-700 hover:text-[#8C1D35] text-xs font-bold flex items-center gap-1.5 transition border border-stone-200 cursor-pointer"
+                  >
+                    <ImageIcon className="w-3.5 h-3.5 text-[#8C1D35]" />
+                    <span>Lihat Foto</span>
+                  </button>
                 )}
               </div>
 
-              {/* Packages Option Rows */}
-              <div className="mt-4 space-y-2.5">
-                
-                {/* 3x Package */}
-                {sub.package3x && (
-                  <div className="p-2.5 rounded-2xl bg-stone-50 border border-stone-200/80 flex items-center justify-between">
-                    <div>
-                      <span className="text-xs font-bold text-stone-900">Paket 3x Sesi</span>
-                      <span className="text-[10px] text-stone-400 block line-through">
-                        {sub.package3x.original} RB
-                      </span>
-                    </div>
-                    <div className="text-right">
-                      <span className="text-sm font-extrabold text-[#8C1D35]">
-                        {isMemberPrice ? sub.package3x.member : sub.package3x.nonMember} RB
-                      </span>
-                      <span className="text-[10px] text-emerald-700 font-bold block">
-                        ({isMemberPrice ? sub.package3x.perSessionMember : sub.package3x.perSessionNonMember} RB/sesi)
-                      </span>
-                    </div>
-                  </div>
-                )}
-
-                {/* 4x Package if present */}
-                {sub.package4x && (
-                  <div className="p-2.5 rounded-2xl bg-stone-50 border border-stone-200/80 flex items-center justify-between">
-                    <div>
-                      <span className="text-xs font-bold text-stone-900">Paket 4x Sesi</span>
-                      <span className="text-[10px] text-stone-400 block line-through">
-                        {sub.package4x.original} RB
-                      </span>
-                    </div>
-                    <div className="text-right">
-                      <span className="text-sm font-extrabold text-[#8C1D35]">
-                        {isMemberPrice ? sub.package4x.member : sub.package4x.nonMember} RB
-                      </span>
-                      <span className="text-[10px] text-emerald-700 font-bold block">
-                        ({isMemberPrice ? sub.package4x.perSessionMember : sub.package4x.perSessionNonMember} RB/sesi)
-                      </span>
-                    </div>
-                  </div>
-                )}
-
-                {/* 6x Package */}
-                {sub.package6x && (
-                  <div className="p-2.5 rounded-2xl bg-rose-50/70 border border-rose-200/80 flex items-center justify-between">
-                    <div>
-                      <div className="flex items-center gap-1">
-                        <span className="text-xs font-bold text-stone-900">Paket 6x Sesi</span>
-                        <span className="text-[9px] font-extrabold text-white bg-gradient-to-r from-rose-600 to-red-600 px-1.5 py-0.2 rounded">Hemat</span>
-                      </div>
-                      <span className="text-[10px] text-stone-400 block line-through">
-                        {sub.package6x.original} RB
-                      </span>
-                    </div>
-                    <div className="text-right">
-                      <span className="text-sm font-extrabold text-[#8C1D35]">
-                        {isMemberPrice ? sub.package6x.member : sub.package6x.nonMember} RB
-                      </span>
-                      <span className="text-[10px] text-emerald-700 font-bold block">
-                        ({isMemberPrice ? sub.package6x.perSessionMember : sub.package6x.perSessionNonMember} RB/sesi)
-                      </span>
-                    </div>
-                  </div>
-                )}
-
-                {/* 12x Package */}
-                {sub.package12x && (
-                  <div className="p-2.5 rounded-2xl bg-amber-50/80 border border-amber-200 flex items-center justify-between">
-                    <div>
-                      <div className="flex items-center gap-1">
-                        <span className="text-xs font-bold text-stone-900">Paket 12x Sesi</span>
-                        <span className="text-[9px] font-extrabold text-stone-950 bg-gradient-to-r from-[#E6C994] to-[#C9A86A] px-1.5 py-0.2 rounded">Super Hemat</span>
-                      </div>
-                      <span className="text-[10px] text-stone-400 block line-through">
-                        {sub.package12x.original} RB
-                      </span>
-                    </div>
-                    <div className="text-right">
-                      <span className="text-sm font-extrabold text-[#8C1D35]">
-                        {isMemberPrice ? sub.package12x.member : sub.package12x.nonMember} RB
-                      </span>
-                      <span className="text-[10px] text-emerald-700 font-bold block">
-                        ({isMemberPrice ? sub.package12x.perSessionMember : sub.package12x.perSessionNonMember} RB/sesi)
-                      </span>
-                    </div>
-                  </div>
-                )}
-
-              </div>
             </div>
+          ))}
+        </div>
+      )}
 
-            {/* Action */}
-            <div className="mt-5 pt-3 border-t border-stone-100 flex items-center justify-between">
-              <span className="text-[11px] text-stone-500 font-medium">
-                Bisa cicilan 0% Paylater
-              </span>
-              {sub.photoUrl ? (
-                <a
-                  href={sub.photoUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="px-3 py-1.5 rounded-xl bg-stone-100 hover:bg-[#8C1D35] hover:text-white text-stone-700 text-xs font-bold flex items-center gap-1.5 transition border border-stone-200"
-                >
-                  <ImageIcon className="w-3.5 h-3.5 text-[#8C1D35]" />
-                  <span>Lihat Foto</span>
-                </a>
-              ) : (
-                <span className="text-[11px] text-stone-400">Semua Cabang</span>
-              )}
-            </div>
-
-          </div>
-        ))}
-      </div>
+      {/* Full-screen Photo Lightbox Modal */}
+      <PhotoLightboxModal
+        data={activeLightboxData}
+        onClose={() => setActiveLightboxData(null)}
+        isMemberPrice={isMemberPrice}
+      />
 
     </div>
   );

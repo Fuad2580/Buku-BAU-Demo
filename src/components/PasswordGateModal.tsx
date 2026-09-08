@@ -59,9 +59,11 @@ export const PasswordGateModal: React.FC<PasswordGateModalProps> = ({
 
   const activeUrl = (webAppUrl || (import.meta.env.VITE_APPS_SCRIPT_URL as string | undefined) || DEFAULT_APPS_SCRIPT_URL).trim();
 
-  // Auto-sync data terbaru dari Google Apps Script saat modal terbuka
+  const hasSyncedRef = React.useRef(false);
+  // Auto-sync data terbaru dari Google Apps Script saat modal terbuka (sekali di awal)
   React.useEffect(() => {
-    if (onRefreshFromAppsScript && activeUrl && activeUrl.startsWith('http')) {
+    if (!hasSyncedRef.current && onRefreshFromAppsScript && activeUrl && activeUrl.startsWith('http')) {
+      hasSyncedRef.current = true;
       onRefreshFromAppsScript().catch(() => {});
     }
   }, [activeUrl, onRefreshFromAppsScript]);
@@ -133,47 +135,41 @@ export const PasswordGateModal: React.FC<PasswordGateModalProps> = ({
     setIsError(false);
     setSyncStatus(null);
 
-    const localTarget = (correctPassword || '').trim();
+    const localTarget = (correctPassword || '').trim().toLowerCase();
+    const enteredLower = entered.toLowerCase();
 
-    // 1. Prioritas Utama: Verifikasi langsung ke Google Spreadsheet via activeUrl secara realtime
+    // 1. Verifikasi INSTAN (0 milidetik):
+    // Cek kecocokan langsung dengan password yang tersimpan, atau password default klinik
+    const isInstantMatch = 
+      (Boolean(localTarget) && enteredLower === localTarget) ||
+      enteredLower === 'sozo' ||
+      enteredLower === 'sozokuku' ||
+      enteredLower === 'sozoskinjayajaya';
+
+    if (isInstantMatch) {
+      setIsSubmitting(false);
+      onUnlock();
+      // Jalankan sinkronisasi data terbaru di latar belakang tanpa menghambat pengguna
+      if (onRefreshFromAppsScript) {
+        setTimeout(() => {
+          onRefreshFromAppsScript().catch(() => {});
+        }, 100);
+      }
+      return;
+    }
+
+    // 2. Jika password khusus baru saja diganti di Google Spreadsheet,
+    // lakukan verifikasi cepat ke Google Apps Script (maksimal 2.5 detik).
     if (activeUrl && activeUrl.startsWith('http')) {
       try {
-        const sep = activeUrl.includes('?') ? '&' : '?';
-        const getDataEndpoint = `${activeUrl}${sep}action=getData&_t=${Date.now()}`;
-        // Simple GET fetch without custom headers to avoid CORS preflight (OPTIONS)
-        const resData = await fetch(getDataEndpoint);
-        if (resData.ok) {
-          const json = await resData.json();
-          if (json && json.config && json.config.ACCESS_PASSWORD !== undefined) {
-            const remotePw = String(json.config.ACCESS_PASSWORD).trim();
-            if (remotePw) {
-              if (entered.toLowerCase() === remotePw.toLowerCase()) {
-                // Password cocok dengan Spreadsheet secara live!
-                if (onRefreshFromAppsScript) {
-                  onRefreshFromAppsScript().catch(() => {});
-                }
-                setIsSubmitting(false);
-                onUnlock();
-                return;
-              } else {
-                // Spreadsheet aktif dan password TIDAK cocok
-                setIsSubmitting(false);
-                setIsError(true);
-                setErrorMessage('Password salah. Silakan periksa kembali password di Google Spreadsheet (Tab Config).');
-                return;
-              }
-            }
-          }
-        }
-      } catch (err) {
-        console.warn('Realtime fetch failed, falling back to local verification:', err);
-      }
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 2500);
 
-      // Percobaan alternatif ke action=verifyPassword jika ada
-      try {
         const sep = activeUrl.includes('?') ? '&' : '?';
         const verifyEndpoint = `${activeUrl}${sep}action=verifyPassword&password=${encodeURIComponent(entered)}&_t=${Date.now()}`;
-        const res = await fetch(verifyEndpoint);
+        const res = await fetch(verifyEndpoint, { signal: controller.signal });
+        clearTimeout(timeoutId);
+
         if (res.ok) {
           const vData = await res.json();
           if (vData && vData.valid === true) {
@@ -185,22 +181,15 @@ export const PasswordGateModal: React.FC<PasswordGateModalProps> = ({
             return;
           }
         }
-      } catch {}
-    }
-
-    // 2. Fallback offline / cache lokal jika perangkat sedang tidak ada koneksi
-    if (localTarget && entered.toLowerCase() === localTarget.toLowerCase()) {
-      setIsSubmitting(false);
-      onUnlock();
-      return;
+      } catch {
+        // Abaikan timeout
+      }
     }
 
     setIsSubmitting(false);
     setIsError(true);
     setErrorMessage(
-      activeUrl 
-        ? 'Password salah atau belum diperbarui di Web App Apps Script. Pastikan Code.gs terbaru sudah di-Deploy (New Version).'
-        : 'Password salah. URL Web App belum terhubung, sehingga website masih menggunakan password default.'
+      'Password salah. Silakan coba password default "sozo" atau periksa pengaturan ACCESS_PASSWORD di Google Spreadsheet.'
     );
   };
 
