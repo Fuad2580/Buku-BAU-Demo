@@ -46,6 +46,13 @@ export const PasswordGateModal: React.FC<PasswordGateModalProps> = ({
 
   const activeUrl = (webAppUrl || (import.meta.env.VITE_APPS_SCRIPT_URL as string | undefined) || '').trim();
 
+  // Auto-sync data terbaru dari Google Apps Script saat modal terbuka
+  React.useEffect(() => {
+    if (onRefreshFromAppsScript && activeUrl && activeUrl.startsWith('http')) {
+      onRefreshFromAppsScript().catch(() => {});
+    }
+  }, [activeUrl, onRefreshFromAppsScript]);
+
   const handleManualSync = async () => {
     if (!onRefreshFromAppsScript) return;
     setIsSyncing(true);
@@ -115,19 +122,25 @@ export const PasswordGateModal: React.FC<PasswordGateModalProps> = ({
 
     const localTarget = (correctPassword || '').trim();
 
-    // 1. Cek kecocokan lokal langsung
-    if (!localTarget || entered === localTarget) {
+    // 1. Cek kecocokan lokal langsung atau password baru bawaan
+    if (entered === 'sozoskinjayajaya' || (localTarget && entered === localTarget && localTarget !== 'sozo')) {
       setIsSubmitting(false);
       onUnlock();
       return;
     }
 
-    // 2. Jika tidak cocok secara lokal, tapi ada koneksi ke remote Apps Script,
-    // langsung verifikasi ke Google Apps Script secara realtime
+    // 2. Jika ada koneksi ke remote Apps Script, langsung verifikasi ke Google Apps Script secara realtime
     if (activeUrl && activeUrl.startsWith('http')) {
       try {
-        const verifyEndpoint = `${activeUrl}${activeUrl.includes('?') ? '&' : '?'}action=verifyPassword&password=${encodeURIComponent(entered)}`;
-        const res = await fetch(verifyEndpoint);
+        const sep = activeUrl.includes('?') ? '&' : '?';
+        const verifyEndpoint = `${activeUrl}${sep}action=verifyPassword&password=${encodeURIComponent(entered)}&_t=${Date.now()}`;
+        const res = await fetch(verifyEndpoint, {
+          cache: 'no-store',
+          headers: {
+            'Cache-Control': 'no-cache, no-store, must-revalidate',
+            'Pragma': 'no-cache',
+          },
+        });
         if (res.ok) {
           const vData = await res.json();
           if (vData && vData.valid === true) {
@@ -149,7 +162,9 @@ export const PasswordGateModal: React.FC<PasswordGateModalProps> = ({
         try {
           const refreshed = await onRefreshFromAppsScript();
           if (refreshed) {
-            const savedSettings = localStorage.getItem('sozo_bau_web_app_data_v5_settings');
+            const savedSettings = 
+              localStorage.getItem('sozo_bau_web_app_data_v6_settings') ||
+              localStorage.getItem('sozo_bau_web_app_data_v5_settings');
             if (savedSettings) {
               try {
                 const parsed = JSON.parse(savedSettings);
@@ -166,6 +181,13 @@ export const PasswordGateModal: React.FC<PasswordGateModalProps> = ({
       }
     }
 
+    // 3. Fallback toleransi jika localTarget memang sengaja diatur ke 'sozo'
+    if (localTarget && entered === localTarget) {
+      setIsSubmitting(false);
+      onUnlock();
+      return;
+    }
+
     setIsSubmitting(false);
     setIsError(true);
     setErrorMessage(
@@ -176,10 +198,17 @@ export const PasswordGateModal: React.FC<PasswordGateModalProps> = ({
   };
 
   const handleResetCache = () => {
-    localStorage.removeItem('sozo_bau_web_app_data_v5_settings');
-    localStorage.removeItem('sozo_app_unlocked');
-    setSyncStatus('Cache browser di-reset. Silakan sinkronkan kembali.');
-    setTimeout(() => setSyncStatus(null), 3500);
+    try {
+      localStorage.removeItem('sozo_bau_web_app_data_v6_settings');
+      localStorage.removeItem('sozo_bau_web_app_data_v5_settings');
+      localStorage.removeItem('sozo_bau_web_app_data_v4_settings');
+      localStorage.removeItem('sozo_app_unlocked');
+      sessionStorage.removeItem('sozo_app_unlocked');
+    } catch {}
+    setSyncStatus('Cache browser di-reset. Memuat ulang...');
+    setTimeout(() => {
+      window.location.reload();
+    }, 800);
   };
 
   const handleContactAdmin = () => {

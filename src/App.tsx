@@ -39,7 +39,25 @@ import { AppsScriptDeployModal } from './components/AppsScriptDeployModal';
 import { PasswordGateModal } from './components/PasswordGateModal';
 import { Sparkles, FileSpreadsheet, Code2, AlertCircle, CheckCircle } from 'lucide-react';
 
-const STORAGE_KEY = 'sozo_bau_web_app_data_v5';
+const STORAGE_KEY = 'sozo_bau_web_app_data_v6';
+
+function loadInitialSettings(): ClinicSettings {
+  let saved = localStorage.getItem(`${STORAGE_KEY}_settings`);
+  if (!saved) {
+    saved = localStorage.getItem('sozo_bau_web_app_data_v5_settings');
+  }
+  if (!saved) return initialClinicSettings;
+  try {
+    const parsed: ClinicSettings = JSON.parse(saved);
+    // Migrasi: jika password tersimpan masih bernilai 'sozo' lama, ganti otomatis ke nilai terkini
+    if (parsed.accessPassword === 'sozo') {
+      parsed.accessPassword = initialClinicSettings.accessPassword;
+    }
+    return { ...initialClinicSettings, ...parsed };
+  } catch {
+    return initialClinicSettings;
+  }
+}
 
 // Helper to ensure Treatment Recommendation and newly added items are always loaded
 function loadInitialCategories(): Category[] {
@@ -112,10 +130,7 @@ export default function App() {
     return saved ? JSON.parse(saved) : initialBranches;
   });
 
-  const [settings, setSettings] = useState<ClinicSettings>(() => {
-    const saved = localStorage.getItem(`${STORAGE_KEY}_settings`);
-    return saved ? JSON.parse(saved) : initialClinicSettings;
-  });
+  const [settings, setSettings] = useState<ClinicSettings>(loadInitialSettings);
 
   // UI States
   const [selectedCategoryId, setSelectedCategoryId] = useState<string>('all');
@@ -296,8 +311,15 @@ export default function App() {
   // Fetch from remote Apps Script Web App URL if user deployed it
   const handleFetchFromRemoteAppsScript = async (url: string): Promise<boolean> => {
     try {
-      const endpoint = url.includes('?') ? `${url}&action=getData` : `${url}?action=getData`;
-      const res = await fetch(endpoint);
+      const sep = url.includes('?') ? '&' : '?';
+      const endpoint = `${url}${sep}action=getData&_t=${Date.now()}`;
+      const res = await fetch(endpoint, {
+        cache: 'no-store',
+        headers: {
+          'Cache-Control': 'no-cache, no-store, must-revalidate',
+          'Pragma': 'no-cache',
+        },
+      });
       if (!res.ok) return false;
       const data = await res.json();
       if (data && data.treatments && data.categories) {
