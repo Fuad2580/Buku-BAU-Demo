@@ -365,6 +365,51 @@ export default function App() {
     }
   }, []);
 
+  // Check if app is locked by password
+  const isAppLocked = Boolean(settings.accessPassword && settings.accessPassword.trim() !== '') && !isUnlocked;
+
+  // If locked, render ONLY the lock screen so the menu/catalog behind it is NEVER exposed
+  if (isAppLocked) {
+    return (
+      <div className="min-h-screen bg-[#140207] text-white flex flex-col justify-center items-center relative overflow-hidden selection:bg-[#E44176] selection:text-white">
+        {/* Toast Notification */}
+        {toastMessage && (
+          <div className="fixed bottom-6 right-6 z-50 bg-[#25050F]/95 text-white px-4 py-3 rounded-2xl shadow-xl flex items-center gap-2.5 text-xs font-medium border border-rose-300/30 backdrop-blur-xl animate-fade-in">
+            <CheckCircle className="w-4 h-4 text-emerald-400 shrink-0" />
+            <span>{toastMessage}</span>
+          </div>
+        )}
+
+        <PasswordGateModal
+          correctPassword={settings.accessPassword}
+          clinicName={settings.clinicName}
+          csWhatsappNumber={settings.csWhatsappNumber}
+          webAppUrl={settings.webAppUrl || (import.meta.env.VITE_APPS_SCRIPT_URL as string | undefined) || DEFAULT_APPS_SCRIPT_URL}
+          onRefreshFromAppsScript={async () => {
+            const url = (import.meta.env.VITE_APPS_SCRIPT_URL as string | undefined)?.trim() || settings.webAppUrl?.trim() || DEFAULT_APPS_SCRIPT_URL;
+            if (url && url.startsWith('http')) {
+              return await handleFetchFromRemoteAppsScript(url);
+            }
+            return false;
+          }}
+          onConnectAppsScriptUrl={async (newUrl: string) => {
+            setSettings((prev) => ({ ...prev, webAppUrl: newUrl }));
+            const success = await handleFetchFromRemoteAppsScript(newUrl);
+            if (success) {
+              setSettings((prev) => ({ ...prev, webAppUrl: newUrl }));
+            }
+            return success;
+          }}
+          onUnlock={() => {
+            sessionStorage.setItem('sozo_app_unlocked', 'true');
+            setIsUnlocked(true);
+            showToast('Akses Buku Menu berhasil dibuka!');
+          }}
+        />
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-[#F8F6F6] text-stone-800 flex flex-col antialiased relative selection:bg-[#8C1D35] selection:text-white overflow-x-hidden">
       
@@ -585,36 +630,6 @@ export default function App() {
         onClose={() => setIsBranchesOpen(false)}
         branches={branches}
       />
-
-      {/* 5. Password Lock Gate (Full screen lock if password is set and not unlocked) */}
-      {Boolean(settings.accessPassword && settings.accessPassword.trim() !== '') && !isUnlocked && (
-        <PasswordGateModal
-          correctPassword={settings.accessPassword}
-          clinicName={settings.clinicName}
-          csWhatsappNumber={settings.csWhatsappNumber}
-          webAppUrl={settings.webAppUrl || (import.meta.env.VITE_APPS_SCRIPT_URL as string | undefined) || DEFAULT_APPS_SCRIPT_URL}
-          onRefreshFromAppsScript={async () => {
-            const url = (import.meta.env.VITE_APPS_SCRIPT_URL as string | undefined)?.trim() || settings.webAppUrl?.trim() || DEFAULT_APPS_SCRIPT_URL;
-            if (url && url.startsWith('http')) {
-              return await handleFetchFromRemoteAppsScript(url);
-            }
-            return false;
-          }}
-          onConnectAppsScriptUrl={async (newUrl: string) => {
-            setSettings((prev) => ({ ...prev, webAppUrl: newUrl }));
-            const success = await handleFetchFromRemoteAppsScript(newUrl);
-            if (success) {
-              setSettings((prev) => ({ ...prev, webAppUrl: newUrl }));
-            }
-            return success;
-          }}
-          onUnlock={() => {
-            sessionStorage.setItem('sozo_app_unlocked', 'true');
-            setIsUnlocked(true);
-            showToast('Akses Buku Menu berhasil dibuka!');
-          }}
-        />
-      )}
 
     </div>
   );

@@ -225,10 +225,10 @@ export const PasswordGateModal: React.FC<PasswordGateModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 overflow-y-auto animate-fade-in">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 overflow-y-auto bg-[#140207] animate-fade-in">
       
       {/* Full-Screen Interactive Deep Crimson Galaxy Nebula Background */}
-      <GalaxyBackground className="fixed inset-0 z-0" intensity="full" />
+      <GalaxyBackground className="fixed inset-0 z-0 bg-[#140207]" intensity="full" />
 
       {/* Luxury Cosmic Glass Card with Glowing Rim Lights */}
       <div className="relative z-10 w-full max-w-md bg-[#22040D]/90 backdrop-blur-2xl rounded-3xl shadow-[0_25px_80px_-10px_rgba(224,75,126,0.45),0_0_70px_rgba(15,1,6,0.95)] border border-rose-300/30 overflow-hidden my-auto before:content-[''] before:absolute before:top-0 before:left-8 before:right-8 before:h-[2px] before:bg-gradient-to-r before:from-transparent before:via-[#FFAEC2] before:to-transparent before:shadow-[0_0_15px_#FFAEC2] before:z-30 after:content-[''] after:absolute after:top-12 after:bottom-12 after:right-0 after:w-[1.5px] after:bg-gradient-to-b after:from-transparent after:via-[#FFB4C8]/40 after:to-transparent after:shadow-[0_0_10px_#FFAEC2] after:z-20">
