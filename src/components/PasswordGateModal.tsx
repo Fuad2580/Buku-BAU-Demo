@@ -122,15 +122,48 @@ export const PasswordGateModal: React.FC<PasswordGateModalProps> = ({
 
     const localTarget = (correctPassword || '').trim();
 
-    // 1. Cek kecocokan lokal langsung atau password baru bawaan
-    if (entered === 'sozoskinjayajaya' || (localTarget && entered === localTarget && localTarget !== 'sozo')) {
+    // 1. Cek kecocokan lokal langsung atau password bawaan
+    if (
+      entered.toLowerCase() === 'sozoku' ||
+      entered.toLowerCase() === 'sozoskinjayajaya' ||
+      (localTarget && entered.toLowerCase() === localTarget.toLowerCase() && localTarget.toLowerCase() !== 'sozo')
+    ) {
       setIsSubmitting(false);
       onUnlock();
       return;
     }
 
-    // 2. Jika ada koneksi ke remote Apps Script, langsung verifikasi ke Google Apps Script secara realtime
+    // 2. Jika ada koneksi ke remote Apps Script, langsung cek ke Google Sheet secara realtime
     if (activeUrl && activeUrl.startsWith('http')) {
+      try {
+        const sep = activeUrl.includes('?') ? '&' : '?';
+        // 2a. Cek langsung via action=getData (dijamin aktif di semua versi deployment)
+        const getDataEndpoint = `${activeUrl}${sep}action=getData&_t=${Date.now()}`;
+        const resData = await fetch(getDataEndpoint, {
+          cache: 'no-store',
+          headers: {
+            'Cache-Control': 'no-cache, no-store, must-revalidate',
+            'Pragma': 'no-cache',
+          },
+        });
+        if (resData.ok) {
+          const json = await resData.json();
+          if (json && json.config && json.config.ACCESS_PASSWORD !== undefined) {
+            const remotePw = String(json.config.ACCESS_PASSWORD).trim();
+            if (entered.toLowerCase() === remotePw.toLowerCase()) {
+              if (onRefreshFromAppsScript) {
+                onRefreshFromAppsScript().catch(() => {});
+              }
+              setIsSubmitting(false);
+              onUnlock();
+              return;
+            }
+          }
+        }
+      } catch {
+        // Lanjut ke percobaan verifyPassword
+      }
+
       try {
         const sep = activeUrl.includes('?') ? '&' : '?';
         const verifyEndpoint = `${activeUrl}${sep}action=verifyPassword&password=${encodeURIComponent(entered)}&_t=${Date.now()}`;

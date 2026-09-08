@@ -9,7 +9,7 @@ export default defineConfig(() => {
     process.env.APPS_SCRIPT_URL ||
     process.env.GOOGLE_APPS_SCRIPT_URL ||
     process.env.WEBAPP_URL ||
-    '';
+    'https://script.google.com/macros/s/AKfycbx6efnrNXpYvppv7VVhYVLhj2SlJNwnB3JNVzp9YzXSFJCn2P_4SX8CLniH65WvgLxXfQ/exec';
 
   return {
     define: {

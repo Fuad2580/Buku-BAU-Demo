@@ -13,7 +13,8 @@ export const initialClinicSettings: ClinicSettings = {
   serviceChargeMax: 150000,
   packageValidityMonths: 6,
   csWhatsappNumber: "6281234567890",
-  accessPassword: "sozoskinjayajaya",
+  accessPassword: "sozoku",
+  webAppUrl: "https://script.google.com/macros/s/AKfycbx6efnrNXpYvppv7VVhYVLhj2SlJNwnB3JNVzp9YzXSFJCn2P_4SX8CLniH65WvgLxXfQ/exec",
   lastSyncedAt: new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }),
 };
 
