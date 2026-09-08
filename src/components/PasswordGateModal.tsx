@@ -13,6 +13,7 @@ import {
   HelpCircle,
   ExternalLink
 } from 'lucide-react';
+import { DEFAULT_APPS_SCRIPT_URL } from '../data/initialBauData';
 
 interface PasswordGateModalProps {
   correctPassword?: string;
@@ -44,7 +45,7 @@ export const PasswordGateModal: React.FC<PasswordGateModalProps> = ({
   const [customUrlInput, setCustomUrlInput] = useState(webAppUrl);
   const [showTroubleshoot, setShowTroubleshoot] = useState(false);
 
-  const activeUrl = (webAppUrl || (import.meta.env.VITE_APPS_SCRIPT_URL as string | undefined) || '').trim();
+  const activeUrl = (webAppUrl || (import.meta.env.VITE_APPS_SCRIPT_URL as string | undefined) || DEFAULT_APPS_SCRIPT_URL).trim();
 
   // Auto-sync data terbaru dari Google Apps Script saat modal terbuka
   React.useEffect(() => {
@@ -122,22 +123,10 @@ export const PasswordGateModal: React.FC<PasswordGateModalProps> = ({
 
     const localTarget = (correctPassword || '').trim();
 
-    // 1. Cek kecocokan lokal langsung atau password bawaan
-    if (
-      entered.toLowerCase() === 'sozoku' ||
-      entered.toLowerCase() === 'sozoskinjayajaya' ||
-      (localTarget && entered.toLowerCase() === localTarget.toLowerCase() && localTarget.toLowerCase() !== 'sozo')
-    ) {
-      setIsSubmitting(false);
-      onUnlock();
-      return;
-    }
-
-    // 2. Jika ada koneksi ke remote Apps Script, langsung cek ke Google Sheet secara realtime
+    // 1. Prioritas Utama: Verifikasi langsung ke Google Spreadsheet via activeUrl secara realtime
     if (activeUrl && activeUrl.startsWith('http')) {
       try {
         const sep = activeUrl.includes('?') ? '&' : '?';
-        // 2a. Cek langsung via action=getData (dijamin aktif di semua versi deployment)
         const getDataEndpoint = `${activeUrl}${sep}action=getData&_t=${Date.now()}`;
         const resData = await fetch(getDataEndpoint, {
           cache: 'no-store',
@@ -150,20 +139,30 @@ export const PasswordGateModal: React.FC<PasswordGateModalProps> = ({
           const json = await resData.json();
           if (json && json.config && json.config.ACCESS_PASSWORD !== undefined) {
             const remotePw = String(json.config.ACCESS_PASSWORD).trim();
-            if (entered.toLowerCase() === remotePw.toLowerCase()) {
-              if (onRefreshFromAppsScript) {
-                onRefreshFromAppsScript().catch(() => {});
+            if (remotePw) {
+              if (entered.toLowerCase() === remotePw.toLowerCase()) {
+                // Password cocok dengan Spreadsheet secara live!
+                if (onRefreshFromAppsScript) {
+                  onRefreshFromAppsScript().catch(() => {});
+                }
+                setIsSubmitting(false);
+                onUnlock();
+                return;
+              } else {
+                // Spreadsheet aktif dan password TIDAK cocok
+                setIsSubmitting(false);
+                setIsError(true);
+                setErrorMessage('Password salah. Silakan periksa kembali password di Google Spreadsheet (Tab Config).');
+                return;
               }
-              setIsSubmitting(false);
-              onUnlock();
-              return;
             }
           }
         }
-      } catch {
-        // Lanjut ke percobaan verifyPassword
+      } catch (err) {
+        console.warn('Realtime fetch failed, falling back to local verification:', err);
       }
 
+      // Percobaan alternatif ke action=verifyPassword jika ada
       try {
         const sep = activeUrl.includes('?') ? '&' : '?';
         const verifyEndpoint = `${activeUrl}${sep}action=verifyPassword&password=${encodeURIComponent(entered)}&_t=${Date.now()}`;
@@ -177,7 +176,6 @@ export const PasswordGateModal: React.FC<PasswordGateModalProps> = ({
         if (res.ok) {
           const vData = await res.json();
           if (vData && vData.valid === true) {
-            // Password cocok dengan data realtime Google Sheet!
             if (onRefreshFromAppsScript) {
               onRefreshFromAppsScript().catch(() => {});
             }
@@ -186,36 +184,11 @@ export const PasswordGateModal: React.FC<PasswordGateModalProps> = ({
             return;
           }
         }
-      } catch {
-        // Abaikan error fetch, lanjut ke percobaan sync penuh
-      }
-
-      // Coba sinkronisasi penuh
-      if (onRefreshFromAppsScript) {
-        try {
-          const refreshed = await onRefreshFromAppsScript();
-          if (refreshed) {
-            const savedSettings = 
-              localStorage.getItem('sozo_bau_web_app_data_v6_settings') ||
-              localStorage.getItem('sozo_bau_web_app_data_v5_settings');
-            if (savedSettings) {
-              try {
-                const parsed = JSON.parse(savedSettings);
-                const latestPw = String(parsed.accessPassword || '').trim();
-                if (entered === latestPw) {
-                  setIsSubmitting(false);
-                  onUnlock();
-                  return;
-                }
-              } catch {}
-            }
-          }
-        } catch {}
-      }
+      } catch {}
     }
 
-    // 3. Fallback toleransi jika localTarget memang sengaja diatur ke 'sozo'
-    if (localTarget && entered === localTarget) {
+    // 2. Fallback offline / cache lokal jika perangkat sedang tidak ada koneksi
+    if (localTarget && entered.toLowerCase() === localTarget.toLowerCase()) {
       setIsSubmitting(false);
       onUnlock();
       return;

@@ -11,7 +11,8 @@ import {
   initialSubscriptions, 
   initialSkincareKits, 
   initialClinicSettings,
-  initialBranches 
+  initialBranches,
+  DEFAULT_APPS_SCRIPT_URL 
 } from './data/initialBauData';
 import { 
   Category, 
@@ -49,11 +50,15 @@ function loadInitialSettings(): ClinicSettings {
   if (!saved) return initialClinicSettings;
   try {
     const parsed: ClinicSettings = JSON.parse(saved);
-    // Migrasi: jika password tersimpan masih bernilai 'sozo' lama, ganti otomatis ke nilai terkini
-    if (parsed.accessPassword === 'sozo') {
+    // Migrasi: bersihkan password usang
+    if (parsed.accessPassword === 'sozo' || parsed.accessPassword === 'sozoskinjayajaya') {
       parsed.accessPassword = initialClinicSettings.accessPassword;
     }
-    return { ...initialClinicSettings, ...parsed };
+    // Pastikan webAppUrl selalu terisi default
+    if (!parsed.webAppUrl || !parsed.webAppUrl.startsWith('http')) {
+      parsed.webAppUrl = DEFAULT_APPS_SCRIPT_URL;
+    }
+    return { ...initialClinicSettings, ...parsed, webAppUrl: parsed.webAppUrl || DEFAULT_APPS_SCRIPT_URL };
   } catch {
     return initialClinicSettings;
   }
@@ -358,7 +363,7 @@ export default function App() {
 
   // Auto-fetch on mount if remote Apps Script URL is set (e.g. from Vercel env or saved settings)
   useEffect(() => {
-    const remoteUrl = (import.meta.env.VITE_APPS_SCRIPT_URL as string | undefined)?.trim() || settings.webAppUrl?.trim();
+    const remoteUrl = (import.meta.env.VITE_APPS_SCRIPT_URL as string | undefined)?.trim() || settings.webAppUrl?.trim() || DEFAULT_APPS_SCRIPT_URL;
     if (remoteUrl && remoteUrl.startsWith('http')) {
       handleFetchFromRemoteAppsScript(remoteUrl);
     }
@@ -580,9 +585,9 @@ export default function App() {
           correctPassword={settings.accessPassword}
           clinicName={settings.clinicName}
           csWhatsappNumber={settings.csWhatsappNumber}
-          webAppUrl={settings.webAppUrl || (import.meta.env.VITE_APPS_SCRIPT_URL as string | undefined) || ''}
+          webAppUrl={settings.webAppUrl || (import.meta.env.VITE_APPS_SCRIPT_URL as string | undefined) || DEFAULT_APPS_SCRIPT_URL}
           onRefreshFromAppsScript={async () => {
-            const url = (import.meta.env.VITE_APPS_SCRIPT_URL as string | undefined)?.trim() || settings.webAppUrl?.trim();
+            const url = (import.meta.env.VITE_APPS_SCRIPT_URL as string | undefined)?.trim() || settings.webAppUrl?.trim() || DEFAULT_APPS_SCRIPT_URL;
             if (url && url.startsWith('http')) {
               return await handleFetchFromRemoteAppsScript(url);
             }
