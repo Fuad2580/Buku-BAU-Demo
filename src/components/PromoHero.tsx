@@ -1,0 +1,134 @@
+import React from 'react';
+import { Sparkles, ShieldCheck, Tag, CreditCard, Percent, ArrowRight } from 'lucide-react';
+import { ClinicSettings } from '../types';
+
+interface PromoHeroProps {
+  settings: ClinicSettings;
+  isMemberPrice: boolean;
+  onTogglePriceMode: () => void;
+  onSetPriceMode?: (isMember: boolean) => void;
+  totalTreatments: number;
+  totalPromos: number;
+}
+
+export const PromoHero: React.FC<PromoHeroProps> = ({
+  settings,
+  isMemberPrice,
+  onTogglePriceMode,
+  onSetPriceMode,
+  totalTreatments,
+  totalPromos,
+}) => {
+  const handleSelectMember = () => {
+    if (onSetPriceMode) {
+      onSetPriceMode(true);
+    } else if (!isMemberPrice) {
+      onTogglePriceMode();
+    }
+  };
+
+  const handleSelectNonMember = () => {
+    if (onSetPriceMode) {
+      onSetPriceMode(false);
+    } else if (isMemberPrice) {
+      onTogglePriceMode();
+    }
+  };
+  return (
+    <section className="relative overflow-hidden bg-gradient-to-r from-[#6B1D2F] via-[#7F2036] to-[#551424] text-white py-7 px-4 sm:px-6 shadow-inner">
+      {/* Decorative Glow Elements */}
+      <div className="absolute top-0 right-0 -mt-8 -mr-8 w-64 h-64 bg-[#C9A86A]/15 rounded-full blur-3xl pointer-events-none"></div>
+      <div className="absolute bottom-0 left-1/3 -mb-10 w-80 h-40 bg-[#8C2941]/30 rounded-full blur-2xl pointer-events-none"></div>
+
+      <div className="max-w-7xl mx-auto relative z-10">
+        <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6">
+          
+          {/* Main Campaign Info */}
+          <div className="max-w-3xl space-y-2">
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full bg-[#C9A86A] text-stone-900 font-extrabold text-[11px] tracking-wide uppercase shadow-sm">
+                <Sparkles className="w-3.5 h-3.5" />
+                {settings.promoBadge || 'Promo Spesial Buku BAU 2026'}
+              </span>
+              <span className="px-2.5 py-0.5 rounded-full bg-white/10 text-rose-100 text-xs border border-white/10">
+                {settings.periodText}
+              </span>
+            </div>
+
+            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-serif font-bold text-[#FBF2E3] tracking-tight">
+              {settings.promoTitle || 'Merdeka Berani Glowing'}
+            </h2>
+
+            <p className="text-sm sm:text-base text-rose-100 font-light leading-relaxed">
+              {settings.promoSubtitle || 'Dapatkan kulit sehat, cerah, dan bebas masalah dengan penawaran treatment terbaik. Tersedia Cicilan 0% Paylater & Cashback hingga 500 RB!'}
+            </p>
+
+            {/* Badges and Terms summary */}
+            <div className="pt-2 flex flex-wrap items-center gap-2 sm:gap-4 text-xs text-rose-200">
+              <div className="flex items-center gap-1.5 bg-black/20 px-2.5 py-1 rounded-lg border border-white/10">
+                <CreditCard className="w-3.5 h-3.5 text-[#E8BF87]" />
+                <span>{settings.paymentPartners || 'Indodana • Kredivo • Atome • SPayLater • BCA • BRI • Mandiri'}</span>
+              </div>
+              <div className="flex items-center gap-1.5 bg-black/20 px-2.5 py-1 rounded-lg border border-white/10">
+                <ShieldCheck className="w-3.5 h-3.5 text-[#E8BF87]" />
+                <span>DP Booking Rp {Number(settings.bookingDp || 50000).toLocaleString('id-ID')} (Masa Berlaku {settings.packageValidityMonths || 6} Bulan)</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Member Price Toggle & Quick Metrics */}
+          <div className="w-full lg:w-auto flex flex-col sm:flex-row lg:flex-col items-stretch lg:items-end gap-3">
+            {/* Price Switcher Card */}
+            <div className="bg-white/10 backdrop-blur-md p-3 rounded-2xl border border-white/15 shadow-md flex flex-col gap-2 min-w-[260px]">
+              <div className="text-[11px] font-semibold text-rose-200 flex items-center justify-between">
+                <span>Tampilan Harga:</span>
+                <span className="text-[#E8BF87] font-bold">
+                  {isMemberPrice ? '⭐ Mode Member' : 'Regular Non-Member'}
+                </span>
+              </div>
+              <div className="grid grid-cols-2 gap-1.5 bg-black/25 p-1 rounded-xl">
+                <button
+                  type="button"
+                  onClick={handleSelectNonMember}
+                  className={`px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center justify-center gap-1 cursor-pointer ${
+                    !isMemberPrice 
+                      ? 'bg-white text-[#6B1D2F] shadow' 
+                      : 'text-rose-200 hover:text-white'
+                  }`}
+                >
+                  Non-Member
+                </button>
+                <button
+                  type="button"
+                  onClick={handleSelectMember}
+                  className={`px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center justify-center gap-1 cursor-pointer ${
+                    isMemberPrice 
+                      ? 'bg-[#C9A86A] text-stone-900 shadow' 
+                      : 'text-rose-200 hover:text-white'
+                  }`}
+                >
+                  ⭐ Member
+                </button>
+              </div>
+              <p className="text-[10px] text-rose-200/80 text-center italic">
+                {isMemberPrice ? 'Harga Member lebih hemat hingga ratusan ribu!' : 'Klik Member untuk melihat harga diskon eksklusif'}
+              </p>
+            </div>
+
+            {/* Micro Stats */}
+            <div className="flex items-center justify-end gap-4 text-xs text-rose-200/90 px-1">
+              <div>
+                <span className="font-bold text-white">{totalTreatments}</span> Treatment Aktif
+              </div>
+              <div>•</div>
+              <div>
+                <span className="font-bold text-[#E8BF87]">{totalPromos}</span> Promo Spesial
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+  );
+};

@@ -1,0 +1,6 @@
+{
+  "name": "Buku BAU Interaktif SOZO Skin Clinic",
+  "description": "Aplikasi Web App Buku BAU dan Promo SOZO Skin Clinic terintegrasi Google Apps Script & Spreadsheet dengan update data real-time, navigasi per kategori, kalkulator treatment, dan generator script otomatis.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
