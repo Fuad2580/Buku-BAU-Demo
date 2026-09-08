@@ -5,12 +5,22 @@ import {
   Code2, 
   ShoppingCart, 
   MapPin, 
-  RefreshCw,
-  Search,
-  ExternalLink,
-  Lock
+  RefreshCw, 
+  Search, 
+  ExternalLink, 
+  Lock 
 } from 'lucide-react';
 import { ClinicSettings, CartItem } from '../types';
+
+// Subtle 4-point luxury sparkle star
+const SparkleStar: React.FC<{ className?: string }> = ({ className = 'w-3 h-3 text-[#FDE047]' }) => (
+  <svg viewBox="0 0 24 24" fill="none" className={className}>
+    <path
+      d="M12 0C12.4 6.2 17.8 11.6 24 12C17.8 12.4 12.4 17.8 12 24C11.6 17.8 6.2 12.4 0 12C6.2 11.6 11.6 6.2 12 0Z"
+      fill="currentColor"
+    />
+  </svg>
+);
 
 interface HeaderProps {
   settings: ClinicSettings;
@@ -42,9 +52,17 @@ export const Header: React.FC<HeaderProps> = ({
   const totalCartCount = cartItems.reduce((sum, item) => sum + item.quantity, 0);
 
   return (
-    <header className="sticky top-0 z-40 bg-[#6B1D2F] text-white shadow-md border-b border-[#541523]">
+    <header className="sticky top-0 z-40 bg-gradient-to-r from-[#420C17] via-[#6B1D2F] to-[#330812] text-white shadow-lg border-b border-[#521321] relative overflow-hidden">
+      {/* Background Micro Sparkle Accent */}
+      <div className="absolute top-2 right-1/3 pointer-events-none animate-twinkle opacity-40 hidden md:block">
+        <SparkleStar className="w-3.5 h-3.5 text-[#FCE3B4]" />
+      </div>
+      <div className="absolute bottom-2 left-1/4 pointer-events-none animate-twinkle-delay-2 opacity-30 hidden md:block">
+        <SparkleStar className="w-3 h-3 text-[#FDE047]" />
+      </div>
+
       {/* Top Utility Bar */}
-      <div className="bg-[#4D1320] py-1.5 px-4 text-[11px] text-rose-200 border-b border-white/5">
+      <div className="bg-[#2E0810]/90 py-1.5 px-4 text-[11px] text-rose-200 border-b border-white/5 backdrop-blur-xs">
         <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-2">
           <div className="flex items-center gap-2">
             <span className="inline-block w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
@@ -73,18 +91,22 @@ export const Header: React.FC<HeaderProps> = ({
       </div>
 
       {/* Main Brand Bar */}
-      <div className="max-w-7xl mx-auto px-4 py-3 sm:px-6 flex flex-wrap items-center justify-between gap-4">
+      <div className="max-w-7xl mx-auto px-4 py-3 sm:px-6 flex flex-wrap items-center justify-between gap-4 relative z-10">
         {/* Logo & Title */}
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#8C2941] to-[#501321] border border-[#C9A86A]/40 flex items-center justify-center shadow-inner">
-            <span className="font-serif font-bold text-xl text-[#F9E2BE] tracking-wider">S</span>
+          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#8C2941] via-[#5C1626] to-[#380A15] border border-[#E6C994]/50 flex items-center justify-center shadow-[0_0_12px_rgba(201,168,106,0.3)] relative">
+            <span className="font-serif font-bold text-xl text-transparent bg-clip-text bg-gradient-to-b from-[#FFF3D6] to-[#E6C994] tracking-wider">S</span>
+            <div className="absolute -top-1 -right-1 animate-twinkle-fast pointer-events-none">
+              <SparkleStar className="w-2.5 h-2.5 text-[#FDE047]" />
+            </div>
           </div>
           <div>
             <div className="flex items-center gap-2">
               <h1 className="font-serif text-xl sm:text-2xl font-bold tracking-tight text-white leading-none">
                 SOZO SKIN CLINIC
               </h1>
-              <span className="text-[10px] uppercase font-bold tracking-widest px-2 py-0.5 rounded bg-[#C9A86A] text-stone-900">
+              <span className="text-[10px] uppercase font-bold tracking-widest px-2 py-0.5 rounded-full bg-gradient-to-r from-[#F6D29A] to-[#C9A86A] text-stone-900 shadow-xs flex items-center gap-1">
+                <Sparkles className="w-2.5 h-2.5" />
                 BAU BOOK
               </span>
             </div>
@@ -94,24 +116,30 @@ export const Header: React.FC<HeaderProps> = ({
           </div>
         </div>
 
-        {/* Search Input */}
-        <div className="relative flex-1 max-w-md min-w-[240px]">
-          <Search className="w-4 h-4 text-rose-300 absolute left-3.5 top-1/2 -translate-y-1/2" />
+        {/* Cosmic Glass Search Input matching reference */}
+        <div className="relative flex-1 max-w-md min-w-[240px] group">
+          {/* Top luminous rim light flare */}
+          <div className="absolute top-0 left-6 right-6 h-[1.5px] bg-gradient-to-r from-transparent via-[#FFAEC2] to-transparent shadow-[0_0_12px_#FFAEC2] pointer-events-none z-10 opacity-80 group-focus-within:opacity-100 group-focus-within:via-white transition-opacity" />
+          
           <input
             type="text"
             value={searchQuery}
             onChange={(e) => onSearchChange(e.target.value)}
-            placeholder="Cari treatment, laser, peeling, promo..."
-            className="w-full pl-9 pr-4 py-2 rounded-xl bg-white/10 hover:bg-white/15 focus:bg-white text-white focus:text-stone-900 placeholder-rose-200/60 focus:placeholder-stone-400 text-xs sm:text-sm border border-white/15 focus:border-[#C9A86A] focus:outline-none transition"
+            placeholder="Search treatment, laser, peeling, promo..."
+            className="w-full pl-4 pr-10 py-2.5 rounded-2xl bg-[#19030A]/75 hover:bg-[#20040D]/85 focus:bg-[#22040E]/95 text-white placeholder-rose-200/50 text-xs sm:text-sm border border-rose-300/30 focus:border-[#FFAEC2] focus:ring-2 focus:ring-[#FFAEC2]/20 focus:outline-none transition backdrop-blur-xl shadow-inner"
           />
-          {searchQuery && (
-            <button
-              onClick={() => onSearchChange('')}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-rose-200 hover:text-white"
-            >
-              ✕
-            </button>
-          )}
+          <div className="absolute right-3.5 top-1/2 -translate-y-1/2 flex items-center gap-1.5 pointer-events-none">
+            {searchQuery && (
+              <button
+                type="button"
+                onClick={() => onSearchChange('')}
+                className="text-xs text-rose-300 hover:text-white pointer-events-auto p-0.5"
+              >
+                ✕
+              </button>
+            )}
+            <Search className="w-4 h-4 text-[#FCE3B4]/80 group-focus-within:text-[#FCE3B4]" />
+          </div>
         </div>
 
         {/* Action Buttons */}

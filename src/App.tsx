@@ -38,6 +38,7 @@ import { BranchesModal } from './components/BranchesModal';
 import { SpreadsheetEditorModal } from './components/SpreadsheetEditorModal';
 import { AppsScriptDeployModal } from './components/AppsScriptDeployModal';
 import { PasswordGateModal } from './components/PasswordGateModal';
+import { GalaxyBackground } from './components/GalaxyBackground';
 import { Sparkles, FileSpreadsheet, Code2, AlertCircle, CheckCircle } from 'lucide-react';
 
 const STORAGE_KEY = 'sozo_bau_web_app_data_v6';
@@ -365,18 +366,21 @@ export default function App() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-[#FAF7F5] text-stone-800 flex flex-col antialiased">
+    <div className="min-h-screen bg-[#F8F6F6] text-stone-800 flex flex-col antialiased relative selection:bg-[#8C1D35] selection:text-white overflow-x-hidden">
       
-      {/* Toast Notification */}
-      {toastMessage && (
-        <div className="fixed bottom-6 right-6 z-50 bg-stone-900/95 text-white px-4 py-3 rounded-2xl shadow-xl flex items-center gap-2.5 text-xs font-medium border border-white/10 animate-fade-in">
-          <CheckCircle className="w-4 h-4 text-emerald-400 shrink-0" />
-          <span>{toastMessage}</span>
-        </div>
-      )}
+      {/* Main Content Layout */}
+      <div className="relative z-10 flex flex-col flex-1 w-full">
+        
+        {/* Toast Notification */}
+        {toastMessage && (
+          <div className="fixed bottom-6 right-6 z-50 bg-[#25050F]/95 text-white px-4 py-3 rounded-2xl shadow-xl flex items-center gap-2.5 text-xs font-medium border border-rose-300/30 backdrop-blur-xl animate-fade-in">
+            <CheckCircle className="w-4 h-4 text-emerald-400 shrink-0" />
+            <span>{toastMessage}</span>
+          </div>
+        )}
 
-      {/* Main Brand Header */}
-      <Header
+        {/* Main Brand Header */}
+        <Header
         settings={settings}
         cartItems={cartItems}
         searchQuery={searchQuery}
@@ -404,8 +408,13 @@ export default function App() {
         totalPromos={treatments.filter((t) => t.isNewPromo).length}
       />
 
-      {/* Main Interactive Content */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 py-8 flex-1 w-full space-y-6">
+      {/* Bright Luxury Catalog Canvas Area */}
+      <div className="bg-[#FAF8F8] text-stone-800 flex-1 relative min-h-[60vh]">
+        {/* Soft subtle warm ambient light glow in the background */}
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-96 bg-gradient-to-b from-rose-100/40 via-amber-50/20 to-transparent pointer-events-none blur-3xl" />
+
+        {/* Main Interactive Content */}
+        <main className="max-w-7xl mx-auto px-4 sm:px-6 py-8 flex-1 w-full space-y-6 relative z-10">
         
         {/* Category & Section Navigation */}
         <CategoryNav
@@ -500,19 +509,20 @@ export default function App() {
           />
         )}
 
-      </main>
+        </main>
+      </div>
 
       {/* Footer */}
-      <footer className="bg-[#48121E] text-rose-100 border-t border-rose-950 py-10 px-4 sm:px-6">
+      <footer className="bg-white text-stone-700 border-t border-stone-200 py-10 px-4 sm:px-6 shadow-xs">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6 text-xs">
           <div>
             <div className="flex items-center gap-2 mb-1">
-              <span className="font-serif font-bold text-base text-white">SOZO SKIN CLINIC</span>
-              <span className="text-[10px] bg-[#C9A86A] text-stone-900 px-1.5 py-0.2 rounded font-bold">
+              <span className="font-serif font-bold text-base text-stone-900">SOZO SKIN CLINIC</span>
+              <span className="text-[10px] bg-gradient-to-r from-[#E6C994] to-[#C9A86A] text-stone-950 px-2 py-0.5 rounded-full font-extrabold shadow-xs">
                 BUKU BAU 2026
               </span>
             </div>
-            <p className="text-rose-200/80 max-w-lg leading-relaxed">
+            <p className="text-stone-500 max-w-lg leading-relaxed font-normal">
               Platform interaktif Buku BAU berbasis Google Spreadsheet & Google Apps Script. 
               Semua harga, treatment, promo baru, dan link foto/PDF tersinkronisasi otomatis.
             </p>
@@ -521,14 +531,14 @@ export default function App() {
           <div className="flex flex-wrap items-center gap-3">
             <button
               onClick={() => setIsSpreadsheetEditorOpen(true)}
-              className="px-3.5 py-2 rounded-xl bg-white/10 hover:bg-white/20 text-white font-semibold transition flex items-center gap-1.5 cursor-pointer"
+              className="px-3.5 py-2 rounded-xl bg-stone-100 hover:bg-stone-200 text-stone-800 font-semibold transition flex items-center gap-1.5 cursor-pointer border border-stone-200"
             >
-              <FileSpreadsheet className="w-3.5 h-3.5 text-[#E8BF87]" />
+              <FileSpreadsheet className="w-3.5 h-3.5 text-[#8C1D35]" />
               <span>Kelola Data Spreadsheet</span>
             </button>
             <button
               onClick={() => setIsAppsScriptGuideOpen(true)}
-              className="px-3.5 py-2 rounded-xl bg-[#C9A86A] hover:bg-[#b59254] text-stone-900 font-bold transition flex items-center gap-1.5 cursor-pointer"
+              className="px-3.5 py-2 rounded-xl bg-gradient-to-r from-[#8C1D35] to-[#B02848] hover:brightness-110 text-white font-bold transition flex items-center gap-1.5 cursor-pointer shadow-xs"
             >
               <Code2 className="w-3.5 h-3.5" />
               <span>Deploy Google Apps Script</span>
@@ -536,6 +546,8 @@ export default function App() {
           </div>
         </div>
       </footer>
+
+      </div>
 
       {/* MODALS */}
       {/* 1. Treatment Estimator & Booking Modal */}

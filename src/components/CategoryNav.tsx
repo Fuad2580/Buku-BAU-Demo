@@ -4,10 +4,10 @@ import {
   Tag, 
   Repeat, 
   Package, 
-  Layers,
-  ChevronRight
+  Layers
 } from 'lucide-react';
 import { Category } from '../types';
+import { CardLightFlare } from './CardLightFlare';
 
 interface CategoryNavProps {
   categories: Category[];
@@ -44,16 +44,20 @@ export const CategoryNav: React.FC<CategoryNavProps> = ({
   treatmentCountsByCategory,
 }) => {
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 bg-white border border-stone-200/90 p-4 rounded-3xl shadow-sm relative overflow-visible">
+      
+      {/* Luminous lens flare light effect matching user reference photo */}
+      <CardLightFlare topPosition="left-center" />
+
       {/* View Switcher Tabs (Paket, Single Promo, Subscription, Skincare) */}
-      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-stone-200 pb-3">
-        <div className="flex items-center gap-1.5 p-1 bg-stone-200/70 rounded-2xl">
+      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-stone-100 pb-3">
+        <div className="flex items-center gap-1.5 p-1 bg-stone-100/90 border border-stone-200/70 rounded-2xl">
           <button
             onClick={() => onChangeView('packages')}
-            className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-1.5 cursor-pointer ${
+            className={`px-3.5 py-2 rounded-xl text-xs font-bold transition flex items-center gap-1.5 cursor-pointer ${
               activeView === 'packages'
-                ? 'bg-white text-[#6B1D2F] shadow-sm'
-                : 'text-stone-600 hover:text-stone-900'
+                ? 'bg-gradient-to-r from-[#8C1D35] to-[#B02848] text-white shadow-md border-t border-[#FFAEC2]/40'
+                : 'text-stone-600 hover:text-stone-900 hover:bg-white'
             }`}
           >
             <Layers className="w-3.5 h-3.5" />
@@ -62,10 +66,10 @@ export const CategoryNav: React.FC<CategoryNavProps> = ({
 
           <button
             onClick={() => onChangeView('single-promos')}
-            className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-1.5 cursor-pointer ${
+            className={`px-3.5 py-2 rounded-xl text-xs font-bold transition flex items-center gap-1.5 cursor-pointer ${
               activeView === 'single-promos'
-                ? 'bg-white text-[#6B1D2F] shadow-sm'
-                : 'text-stone-600 hover:text-stone-900'
+                ? 'bg-gradient-to-r from-[#8C1D35] to-[#B02848] text-white shadow-md border-t border-[#FFAEC2]/40'
+                : 'text-stone-600 hover:text-stone-900 hover:bg-white'
             }`}
           >
             <Tag className="w-3.5 h-3.5" />
@@ -74,10 +78,10 @@ export const CategoryNav: React.FC<CategoryNavProps> = ({
 
           <button
             onClick={() => onChangeView('subscriptions')}
-            className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-1.5 cursor-pointer ${
+            className={`px-3.5 py-2 rounded-xl text-xs font-bold transition flex items-center gap-1.5 cursor-pointer ${
               activeView === 'subscriptions'
-                ? 'bg-white text-[#6B1D2F] shadow-sm'
-                : 'text-stone-600 hover:text-stone-900'
+                ? 'bg-gradient-to-r from-[#8C1D35] to-[#B02848] text-white shadow-md border-t border-[#FFAEC2]/40'
+                : 'text-stone-600 hover:text-stone-900 hover:bg-white'
             }`}
           >
             <Repeat className="w-3.5 h-3.5" />
@@ -86,10 +90,10 @@ export const CategoryNav: React.FC<CategoryNavProps> = ({
 
           <button
             onClick={() => onChangeView('skincare')}
-            className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-1.5 cursor-pointer ${
+            className={`px-3.5 py-2 rounded-xl text-xs font-bold transition flex items-center gap-1.5 cursor-pointer ${
               activeView === 'skincare'
-                ? 'bg-white text-[#6B1D2F] shadow-sm'
-                : 'text-stone-600 hover:text-stone-900'
+                ? 'bg-gradient-to-r from-[#8C1D35] to-[#B02848] text-white shadow-md border-t border-[#FFAEC2]/40'
+                : 'text-stone-600 hover:text-stone-900 hover:bg-white'
             }`}
           >
             <Package className="w-3.5 h-3.5" />
@@ -107,10 +111,10 @@ export const CategoryNav: React.FC<CategoryNavProps> = ({
                 <button
                   key={goal}
                   onClick={() => onSelectSkinGoal(goal === "Semua Goals" ? "" : goal)}
-                  className={`px-2.5 py-1 rounded-lg text-xs font-medium whitespace-nowrap transition cursor-pointer ${
+                  className={`px-3 py-1 rounded-lg text-xs font-medium whitespace-nowrap transition cursor-pointer ${
                     active
-                      ? 'bg-[#6B1D2F] text-white shadow-sm font-semibold'
-                      : 'bg-white text-stone-600 hover:bg-stone-100 border border-stone-200'
+                      ? 'bg-gradient-to-r from-[#8C1D35] to-[#B02848] text-white shadow-sm font-bold border-t border-[#FFAEC2]/50'
+                      : 'bg-stone-100 text-stone-700 hover:text-stone-900 hover:bg-stone-200/80 border border-stone-200/80'
                   }`}
                 >
                   {goal}
@@ -128,11 +132,11 @@ export const CategoryNav: React.FC<CategoryNavProps> = ({
             onClick={() => onSelectCategory('all')}
             className={`px-4 py-2.5 rounded-xl text-xs font-bold transition whitespace-nowrap flex items-center gap-2 cursor-pointer ${
               selectedCategoryId === 'all'
-                ? 'bg-[#6B1D2F] text-white shadow-md'
-                : 'bg-white text-stone-700 hover:bg-stone-100 border border-stone-200'
+                ? 'bg-gradient-to-r from-[#8C1D35] via-[#A82544] to-[#6E1225] text-white shadow-md border-t border-[#FFAEC2]/60'
+                : 'bg-stone-50 text-stone-700 hover:bg-stone-100 border border-stone-200'
             }`}
           >
-            <Sparkles className="w-3.5 h-3.5" />
+            <Sparkles className="w-3.5 h-3.5 text-[#C9A86A]" />
             <span>Semua Kategori</span>
           </button>
 
@@ -148,31 +152,31 @@ export const CategoryNav: React.FC<CategoryNavProps> = ({
                 className={`px-3.5 py-2 rounded-xl text-xs font-semibold transition whitespace-nowrap flex items-center gap-2 cursor-pointer ${
                   active
                     ? isRecommendation
-                      ? 'bg-gradient-to-r from-[#6B1D2F] to-[#8C2941] text-white shadow-md font-bold ring-2 ring-[#E8BF87]'
-                      : 'bg-[#6B1D2F] text-white shadow-md font-bold'
+                      ? 'bg-gradient-to-r from-[#8C1D35] to-[#A82544] text-white shadow-md font-bold ring-2 ring-[#C9A86A] border-t border-[#FFAEC2]'
+                      : 'bg-gradient-to-r from-[#8C1D35] via-[#A82544] to-[#6E1225] text-white shadow-md font-bold border-t border-[#FFAEC2]/60'
                     : isRecommendation
-                    ? 'bg-amber-50 text-stone-900 border-2 border-amber-400/80 hover:bg-amber-100/90 font-bold shadow-xs'
-                    : 'bg-white text-stone-700 hover:bg-stone-100 border border-stone-200'
+                    ? 'bg-amber-50 text-amber-900 border border-amber-300/80 hover:bg-amber-100/80 font-bold shadow-2xs'
+                    : 'bg-stone-50 text-stone-700 hover:text-stone-900 hover:bg-stone-100 border border-stone-200'
                 }`}
               >
                 {isRecommendation && (
-                  <Sparkles className="w-3.5 h-3.5 text-amber-500 fill-amber-400" />
+                  <Sparkles className="w-3.5 h-3.5 text-amber-600 fill-amber-500" />
                 )}
                 <span>{cat.name}</span>
                 {cat.badge && (
                   <span className={`text-[10px] px-1.5 py-0.5 rounded font-bold ${
                     active 
-                      ? 'bg-[#C9A86A] text-stone-900' 
+                      ? 'bg-gradient-to-r from-[#FCE3B4] to-[#C9A86A] text-stone-950' 
                       : isRecommendation
-                      ? 'bg-amber-200 text-amber-900 font-extrabold'
-                      : 'bg-rose-100 text-[#6B1D2F]'
+                      ? 'bg-[#C9A86A] text-stone-950 font-extrabold'
+                      : 'bg-rose-100 text-[#8C1D35] border border-rose-200'
                   }`}>
                     {cat.badge}
                   </span>
                 )}
                 {count > 0 && (
                   <span className={`text-[10px] px-1.5 py-0.2 rounded-full font-mono ${
-                    active ? 'bg-white/20 text-white' : isRecommendation ? 'bg-amber-200/60 text-amber-900 font-bold' : 'bg-stone-100 text-stone-500'
+                    active ? 'bg-white/20 text-white' : isRecommendation ? 'bg-amber-200 text-amber-900 font-bold' : 'bg-stone-200 text-stone-600'
                   }`}>
                     {count}
                   </span>

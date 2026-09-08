@@ -1,1 +1,59 @@
 @import "tailwindcss";
+
+@keyframes twinkle {
+  0%, 100% {
+    opacity: 0.25;
+    transform: scale(0.75) rotate(0deg);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.25) rotate(18deg);
+  }
+}
+
+@keyframes floatSlow {
+  0%, 100% {
+    transform: translateY(0px) scale(1);
+  }
+  50% {
+    transform: translateY(-10px) scale(1.04);
+  }
+}
+
+@keyframes shimmerGleam {
+  0% {
+    transform: translateX(-100%) rotate(25deg);
+  }
+  100% {
+    transform: translateX(250%) rotate(25deg);
+  }
+}
+
+.animate-twinkle {
+  animation: twinkle 3s ease-in-out infinite;
+}
+
+.animate-twinkle-fast {
+  animation: twinkle 1.8s ease-in-out infinite;
+}
+
+.animate-twinkle-delay-1 {
+  animation: twinkle 2.5s ease-in-out 0.6s infinite;
+}
+
+.animate-twinkle-delay-2 {
+  animation: twinkle 3.2s ease-in-out 1.2s infinite;
+}
+
+.animate-twinkle-delay-3 {
+  animation: twinkle 2.8s ease-in-out 1.8s infinite;
+}
+
+.animate-float-slow {
+  animation: floatSlow 6s ease-in-out infinite;
+}
+
+.animate-shimmer-gleam {
+  animation: shimmerGleam 4s ease-in-out infinite;
+}
+

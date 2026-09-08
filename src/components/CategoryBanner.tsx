@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { FileText, ExternalLink, Image as ImageIcon, Edit3, Check, X } from 'lucide-react';
 import { Category } from '../types';
+import { CardLightFlare } from './CardLightFlare';
 
 interface CategoryBannerProps {
   category: Category;
@@ -38,18 +39,22 @@ export const CategoryBanner: React.FC<CategoryBannerProps> = ({
   };
 
   return (
-    <div className="bg-white rounded-2xl border border-stone-200/90 shadow-sm overflow-hidden mb-6">
+    <div className="bg-white rounded-3xl border border-stone-200/90 shadow-sm overflow-hidden mb-6 relative overflow-visible">
+      
+      {/* Luminous lens flare light effect */}
+      <CardLightFlare topPosition="center" />
+
       <div className="grid grid-cols-1 md:grid-cols-12 items-stretch">
         
         {/* Left Info Column */}
-        <div className="p-6 md:col-span-7 flex flex-col justify-between space-y-4">
+        <div className="p-6 md:col-span-7 flex flex-col justify-between space-y-4 text-stone-800">
           <div>
             <div className="flex flex-wrap items-center gap-2 mb-2">
-              <span className="text-[10px] uppercase font-bold tracking-widest px-2 py-0.5 rounded bg-[#F7EADB] text-[#6B1D2F]">
+              <span className="text-[10px] uppercase font-bold tracking-widest px-2.5 py-0.5 rounded-full bg-gradient-to-r from-[#E6C994] to-[#C9A86A] text-stone-950 shadow-sm">
                 Level Kategori
               </span>
               {category.badge && (
-                <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-[#C9A86A]/20 text-stone-800">
+                <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-rose-50 text-[#8C1D35] border border-rose-200">
                   {category.badge}
                 </span>
               )}
@@ -68,9 +73,9 @@ export const CategoryBanner: React.FC<CategoryBannerProps> = ({
             {isPdf ? (
               <button
                 onClick={() => setShowPdfModal(true)}
-                className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-[#6B1D2F] hover:bg-[#521523] text-white text-xs font-bold transition shadow cursor-pointer"
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-[#8C1D35] to-[#B02848] hover:brightness-110 text-white text-xs font-bold transition shadow-md border-t border-[#FFAEC2]/40 cursor-pointer"
               >
-                <FileText className="w-4 h-4 text-[#E8BF87]" />
+                <FileText className="w-4 h-4 text-[#FCE3B4]" />
                 <span>Buka Link PDF Kategori</span>
               </button>
             ) : category.pdfOrPhotoUrl ? (
@@ -78,11 +83,11 @@ export const CategoryBanner: React.FC<CategoryBannerProps> = ({
                 href={category.pdfOrPhotoUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-stone-100 hover:bg-stone-200 text-stone-800 text-xs font-bold transition"
+                className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-stone-100 hover:bg-stone-200 text-stone-800 text-xs font-bold transition border border-stone-200"
               >
-                <ImageIcon className="w-4 h-4 text-stone-600" />
+                <ImageIcon className="w-4 h-4 text-[#8C1D35]" />
                 <span>Buka Foto Kategori</span>
-                <ExternalLink className="w-3 h-3 text-stone-400" />
+                <ExternalLink className="w-3 h-3 text-stone-500" />
               </a>
             ) : null}
 
@@ -93,7 +98,7 @@ export const CategoryBanner: React.FC<CategoryBannerProps> = ({
                   setTempUrl(category.pdfOrPhotoUrl || '');
                   setIsEditing(true);
                 }}
-                className="inline-flex items-center gap-1 text-xs text-stone-500 hover:text-stone-800 font-medium transition cursor-pointer"
+                className="inline-flex items-center gap-1 text-xs text-stone-500 hover:text-[#8C1D35] font-medium transition cursor-pointer"
                 title="Ganti Link Foto atau Dokumen PDF dari Spreadsheet"
               >
                 <Edit3 className="w-3 h-3" />
@@ -106,7 +111,7 @@ export const CategoryBanner: React.FC<CategoryBannerProps> = ({
                   value={tempUrl}
                   onChange={(e) => setTempUrl(e.target.value)}
                   placeholder="Tempel link URL Foto atau Link PDF Google Drive..."
-                  className="flex-1 text-xs bg-white px-2.5 py-1.5 rounded-lg border border-stone-300 focus:outline-none focus:ring-1 focus:ring-[#6B1D2F]"
+                  className="flex-1 text-xs bg-white text-stone-900 px-2.5 py-1.5 rounded-lg border border-stone-300 focus:outline-none focus:ring-1 focus:ring-[#8C1D35]"
                 />
                 <button
                   onClick={handleSave}
@@ -128,7 +133,7 @@ export const CategoryBanner: React.FC<CategoryBannerProps> = ({
         </div>
 
         {/* Right Photo/Media Column */}
-        <div className="md:col-span-5 relative min-h-[160px] md:min-h-[220px] bg-stone-100 overflow-hidden">
+        <div className="md:col-span-5 relative min-h-[160px] md:min-h-[220px] bg-stone-50 overflow-hidden border-t md:border-t-0 md:border-l border-stone-200">
           {category.pdfOrPhotoUrl && !isPdf ? (
             <img
               src={category.pdfOrPhotoUrl}
@@ -137,17 +142,17 @@ export const CategoryBanner: React.FC<CategoryBannerProps> = ({
               referrerPolicy="no-referrer"
             />
           ) : isPdf ? (
-            <div className="w-full h-full flex flex-col items-center justify-center p-6 bg-gradient-to-br from-rose-50 to-[#FDF4EA] text-center border-t md:border-t-0 md:border-l border-stone-200">
+            <div className="w-full h-full flex flex-col items-center justify-center p-6 bg-stone-50 text-center">
               <div className="w-14 h-14 rounded-2xl bg-white shadow-sm flex items-center justify-center mb-3 border border-stone-200">
-                <FileText className="w-7 h-7 text-[#6B1D2F]" />
+                <FileText className="w-7 h-7 text-[#8C1D35]" />
               </div>
-              <p className="text-xs font-bold text-stone-800">Dokumen PDF Terlampir</p>
+              <p className="text-xs font-bold text-stone-900">Dokumen PDF Terlampir</p>
               <p className="text-[11px] text-stone-500 max-w-[200px] truncate mt-0.5">
                 {category.pdfOrPhotoUrl}
               </p>
               <button
                 onClick={() => setShowPdfModal(true)}
-                className="mt-3 px-3 py-1.5 rounded-lg bg-white border border-stone-300 hover:border-stone-400 text-stone-700 text-xs font-semibold shadow-xs cursor-pointer"
+                className="mt-3 px-3 py-1.5 rounded-lg bg-[#8C1D35] hover:bg-[#B02848] text-white text-xs font-semibold shadow-xs cursor-pointer border-t border-[#FFAEC2]/40"
               >
                 Pratinjau PDF
               </button>

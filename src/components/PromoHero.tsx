@@ -1,6 +1,17 @@
 import React from 'react';
 import { Sparkles, ShieldCheck, Tag, CreditCard, Percent, ArrowRight } from 'lucide-react';
 import { ClinicSettings } from '../types';
+import { GalaxyBackground } from './GalaxyBackground';
+
+// Subtle 4-point luxury sparkle star
+const SparkleStar: React.FC<{ className?: string }> = ({ className = 'w-3 h-3 text-[#FDE047]' }) => (
+  <svg viewBox="0 0 24 24" fill="none" className={className}>
+    <path
+      d="M12 0C12.4 6.2 17.8 11.6 24 12C17.8 12.4 12.4 17.8 12 24C11.6 17.8 6.2 12.4 0 12C6.2 11.6 11.6 6.2 12 0Z"
+      fill="currentColor"
+    />
+  </svg>
+);
 
 interface PromoHeroProps {
   settings: ClinicSettings;
@@ -35,29 +46,49 @@ export const PromoHero: React.FC<PromoHeroProps> = ({
     }
   };
   return (
-    <section className="relative overflow-hidden bg-gradient-to-r from-[#6B1D2F] via-[#7F2036] to-[#551424] text-white py-7 px-4 sm:px-6 shadow-inner">
-      {/* Decorative Glow Elements */}
-      <div className="absolute top-0 right-0 -mt-8 -mr-8 w-64 h-64 bg-[#C9A86A]/15 rounded-full blur-3xl pointer-events-none"></div>
-      <div className="absolute bottom-0 left-1/3 -mb-10 w-80 h-40 bg-[#8C2941]/30 rounded-full blur-2xl pointer-events-none"></div>
+    <section className="relative overflow-hidden bg-gradient-to-r from-[#380712] via-[#5C1425] to-[#2B050E] text-white py-7 px-4 sm:px-6 shadow-inner border-b border-[#521321]">
+      {/* Interactive Galaxy Nebula Background with Cosmic Stardust */}
+      <GalaxyBackground className="absolute inset-0 z-0 opacity-85" intensity="subtle" />
+
+      {/* Decorative Glow Elements & Sparkles */}
+      <div className="absolute top-0 right-0 -mt-8 -mr-8 w-72 h-72 bg-[#E44176]/20 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute bottom-0 left-1/4 -mb-10 w-80 h-40 bg-[#FFD382]/15 rounded-full blur-2xl pointer-events-none" />
+      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent pointer-events-none animate-shimmer-gleam" />
+
+      {/* Floating Sparkles in Promo Banner */}
+      <div className="absolute top-4 right-1/4 pointer-events-none animate-twinkle hidden sm:block">
+        <SparkleStar className="w-4 h-4 text-[#FCE3B4]/70 drop-shadow-[0_0_6px_#FCE3B4]" />
+      </div>
+      <div className="absolute top-8 left-12 pointer-events-none animate-twinkle-delay-1 hidden sm:block">
+        <SparkleStar className="w-3 h-3 text-[#FFAEC2]/70 drop-shadow-[0_0_4px_#FFAEC2]" />
+      </div>
+      <div className="absolute bottom-6 right-12 pointer-events-none animate-twinkle-delay-2 hidden sm:block">
+        <SparkleStar className="w-4 h-4 text-[#FDE047]/60 drop-shadow-[0_0_5px_#FDE047]" />
+      </div>
 
       <div className="max-w-7xl mx-auto relative z-10">
         <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6">
           
           {/* Main Campaign Info */}
-          <div className="max-w-3xl space-y-2">
+          <div className="max-w-3xl space-y-2.5">
             <div className="flex flex-wrap items-center gap-2">
-              <span className="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full bg-[#C9A86A] text-stone-900 font-extrabold text-[11px] tracking-wide uppercase shadow-sm">
-                <Sparkles className="w-3.5 h-3.5" />
+              <span className="inline-flex items-center gap-1.5 px-3.5 py-0.5 rounded-full bg-gradient-to-r from-[#E6C994] to-[#C9A86A] text-stone-950 font-black text-[11px] tracking-wide uppercase shadow-sm">
+                <Sparkles className="w-3.5 h-3.5 text-stone-900 animate-twinkle" />
                 {settings.promoBadge || 'Promo Spesial Buku BAU 2026'}
               </span>
-              <span className="px-2.5 py-0.5 rounded-full bg-white/10 text-rose-100 text-xs border border-white/10">
+              <span className="px-2.5 py-0.5 rounded-full bg-white/10 text-rose-100 text-xs border border-white/15 backdrop-blur-xs">
                 {settings.periodText}
               </span>
             </div>
 
-            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-serif font-bold text-[#FBF2E3] tracking-tight">
-              {settings.promoTitle || 'Merdeka Berani Glowing'}
-            </h2>
+            <div className="relative">
+              <h2 className="text-2xl sm:text-3xl lg:text-4xl font-serif font-bold text-transparent bg-clip-text bg-gradient-to-r from-[#FFF7EC] via-[#FDE8C5] to-[#FFF0D4] tracking-tight flex items-center gap-2">
+                <span>{settings.promoTitle || 'Merdeka Berani Glowing'}</span>
+                <span className="inline-block animate-twinkle-fast">
+                  <SparkleStar className="w-5 h-5 text-[#FDE047] drop-shadow-[0_0_8px_#FDE047]" />
+                </span>
+              </h2>
+            </div>
 
             <p className="text-sm sm:text-base text-rose-100 font-light leading-relaxed">
               {settings.promoSubtitle || 'Dapatkan kulit sehat, cerah, dan bebas masalah dengan penawaran treatment terbaik. Tersedia Cicilan 0% Paylater & Cashback hingga 500 RB!'}
