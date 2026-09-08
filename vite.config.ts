@@ -4,7 +4,17 @@ import path from 'path';
 import {defineConfig} from 'vite';
 
 export default defineConfig(() => {
+  const resolvedAppsScriptUrl = 
+    process.env.VITE_APPS_SCRIPT_URL ||
+    process.env.APPS_SCRIPT_URL ||
+    process.env.GOOGLE_APPS_SCRIPT_URL ||
+    process.env.WEBAPP_URL ||
+    '';
+
   return {
+    define: {
+      'import.meta.env.VITE_APPS_SCRIPT_URL': JSON.stringify(resolvedAppsScriptUrl),
+    },
     plugins: [react(), tailwindcss()],
     resolve: {
       alias: {

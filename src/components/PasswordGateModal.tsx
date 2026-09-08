@@ -123,35 +123,63 @@ export const PasswordGateModal: React.FC<PasswordGateModalProps> = ({
     }
 
     // 2. Jika tidak cocok secara lokal, tapi ada koneksi ke remote Apps Script,
-    // coba lakukan sinkronisasi realtime untuk mengecek apakah password di spreadsheet baru saja diubah
-    if (onRefreshFromAppsScript && activeUrl) {
+    // langsung verifikasi ke Google Apps Script secara realtime
+    if (activeUrl && activeUrl.startsWith('http')) {
       try {
-        const refreshed = await onRefreshFromAppsScript();
-        if (refreshed) {
-          // Cek kembali dari localStorage yang baru diperbarui
-          const savedSettings = localStorage.getItem('sozo_bau_web_app_data_v5_settings');
-          if (savedSettings) {
-            try {
-              const parsed = JSON.parse(savedSettings);
-              const latestPw = String(parsed.accessPassword || '').trim();
-              if (entered === latestPw) {
-                setIsSubmitting(false);
-                onUnlock();
-                return;
-              }
-            } catch {
-              // ignore parse error
+        const verifyEndpoint = `${activeUrl}${activeUrl.includes('?') ? '&' : '?'}action=verifyPassword&password=${encodeURIComponent(entered)}`;
+        const res = await fetch(verifyEndpoint);
+        if (res.ok) {
+          const vData = await res.json();
+          if (vData && vData.valid === true) {
+            // Password cocok dengan data realtime Google Sheet!
+            if (onRefreshFromAppsScript) {
+              onRefreshFromAppsScript().catch(() => {});
             }
+            setIsSubmitting(false);
+            onUnlock();
+            return;
           }
         }
       } catch {
-        // network error handled below
+        // Abaikan error fetch, lanjut ke percobaan sync penuh
+      }
+
+      // Coba sinkronisasi penuh
+      if (onRefreshFromAppsScript) {
+        try {
+          const refreshed = await onRefreshFromAppsScript();
+          if (refreshed) {
+            const savedSettings = localStorage.getItem('sozo_bau_web_app_data_v5_settings');
+            if (savedSettings) {
+              try {
+                const parsed = JSON.parse(savedSettings);
+                const latestPw = String(parsed.accessPassword || '').trim();
+                if (entered === latestPw) {
+                  setIsSubmitting(false);
+                  onUnlock();
+                  return;
+                }
+              } catch {}
+            }
+          }
+        } catch {}
       }
     }
 
     setIsSubmitting(false);
     setIsError(true);
-    setErrorMessage('Password salah. Jika baru saja diubah di spreadsheet, klik tombol "Sinkronkan Password" di bawah.');
+    setErrorMessage(
+      activeUrl 
+        ? 'Password salah atau belum diperbarui di Web App Apps Script. Pastikan Code.gs terbaru sudah di-Deploy (New Version).'
+        : 'Password salah. URL Web App belum terhubung, sehingga website masih menggunakan password default.'
+    );
+  };
+
+  const handleResetCache = () => {
+    localStorage.removeItem('sozo_bau_web_app_data_v5_settings');
+    localStorage.removeItem('sozo_app_unlocked');
+    setSyncStatus('Cache browser di-reset. Silakan sinkronkan kembali.');
+    setTimeout(() => setSyncStatus(null), 3500);
   };
 
   const handleContactAdmin = () => {
@@ -192,6 +220,25 @@ export const PasswordGateModal: React.FC<PasswordGateModalProps> = ({
             <p className="text-xs text-stone-500 pt-0.5 leading-relaxed">
               Masukkan password otorisasi untuk membuka rincian harga dan treatment.
             </p>
+
+            {/* Connection Status Badge */}
+            <div className="pt-1 flex items-center justify-center gap-1.5">
+              {activeUrl ? (
+                <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-700 text-[10px] font-medium">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                  <span>Terhubung ke Google Sheet</span>
+                </span>
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => setShowUrlConfig(true)}
+                  className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-amber-50 border border-amber-200 text-amber-800 text-[10px] font-medium hover:bg-amber-100 transition cursor-pointer"
+                >
+                  <span className="w-1.5 h-1.5 rounded-full bg-amber-500" />
+                  <span>URL Web App Belum Terhubung (Klik Disini)</span>
+                </button>
+              )}
+            </div>
           </div>
 
           {/* Sync Success Message */}
@@ -334,15 +381,26 @@ export const PasswordGateModal: React.FC<PasswordGateModalProps> = ({
             )}
           </div>
 
-          {/* Help link */}
+          {/* Help link & Cache Reset */}
           <div className="pt-2 border-t border-stone-100 flex flex-col items-center gap-1.5 text-center">
-            <button
-              type="button"
-              onClick={handleContactAdmin}
-              className="text-xs font-semibold text-[#6B1D2F] hover:text-[#521523] hover:underline flex items-center gap-1 transition"
-            >
-              Belum tahu password? Hubungi Admin WhatsApp
-            </button>
+            <div className="flex items-center gap-3 text-xs">
+              <button
+                type="button"
+                onClick={handleContactAdmin}
+                className="font-semibold text-[#6B1D2F] hover:text-[#521523] hover:underline transition"
+              >
+                Belum tahu password? CS WhatsApp
+              </button>
+              <span className="text-stone-300">•</span>
+              <button
+                type="button"
+                onClick={handleResetCache}
+                className="text-stone-500 hover:text-stone-800 hover:underline transition"
+                title="Hapus cache memori browser"
+              >
+                Reset Cache
+              </button>
+            </div>
             <p className="text-[10px] text-stone-400">
               Pengaturan password dapat diatur di sheet <strong>Pengaturan_Klinik</strong> Google Spreadsheet.
             </p>

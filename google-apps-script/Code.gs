@@ -28,31 +28,19 @@
  * =========================================================================
  */
 
-// OPTIONAL: Masukkan link/URL atau ID spreadsheet jika script dijalankan di script.google.com terpisah.
-// Biarkan KOSONG ("") jika dibuka lewat menu [Ekstensi] > [Apps Script] di Spreadsheet Anda!
-var TARGET_SPREADSHEET_ID_OR_URL = "";
+// ID atau Link Spreadsheet Google Anda (BAU Aug Trial):
+var TARGET_SPREADSHEET_ID_OR_URL = "1KpM86RYJwtlnfXo2_jYWQW8wnJTGbM84TAvMz5cURcM";
 
 var SCRIPT_PROP_KEY = 'SOZO_SPREADSHEET_ID';
 
 /**
  * Mencari spreadsheet tujuan yang sudah dibuat oleh user.
- * TIDAK AKAN PERNAH membuat spreadsheet baru.
+ * Prioritas: Container-bound -> TARGET_SPREADSHEET_ID_OR_URL -> Script Properties.
  */
 function getTargetSpreadsheet() {
   var ss = null;
 
-  // 1. Prioritas Utama: Buka dari Spreadsheet aktif (Container-bound script)
-  try {
-    var activeSs = SpreadsheetApp.getActiveSpreadsheet();
-    if (activeSs && activeSs.getId()) {
-      PropertiesService.getScriptProperties().setProperty(SCRIPT_PROP_KEY, activeSs.getId());
-      return activeSs;
-    }
-  } catch (eActive) {
-    // Diabaikan jika bukan container-bound
-  }
-
-  // 2. Cek variabel TARGET_SPREADSHEET_ID_OR_URL jika diisi
+  // 1. Cek variabel TARGET_SPREADSHEET_ID_OR_URL jika diisi (Sangat andal untuk Web App stateless request)
   if (typeof TARGET_SPREADSHEET_ID_OR_URL !== 'undefined' && TARGET_SPREADSHEET_ID_OR_URL && TARGET_SPREADSHEET_ID_OR_URL.trim() !== '') {
     var rawInput = TARGET_SPREADSHEET_ID_OR_URL.trim();
     var idMatch = rawInput.match(/\/d\/([a-zA-Z0-9-_]+)/);
@@ -60,12 +48,23 @@ function getTargetSpreadsheet() {
     try {
       ss = SpreadsheetApp.openById(targetId);
       if (ss) {
-        PropertiesService.getScriptProperties().setProperty(SCRIPT_PROP_KEY, ss.getId());
+        try { PropertiesService.getScriptProperties().setProperty(SCRIPT_PROP_KEY, ss.getId()); } catch (e) {}
         return ss;
       }
     } catch (eId) {
       Logger.log("Peringatan: Gagal membuka spreadsheet dari TARGET_SPREADSHEET_ID_OR_URL: " + eId.toString());
     }
+  }
+
+  // 2. Buka dari Spreadsheet aktif (Container-bound script)
+  try {
+    var activeSs = SpreadsheetApp.getActiveSpreadsheet();
+    if (activeSs && activeSs.getId()) {
+      try { PropertiesService.getScriptProperties().setProperty(SCRIPT_PROP_KEY, activeSs.getId()); } catch (e) {}
+      return activeSs;
+    }
+  } catch (eActive) {
+    // Diabaikan jika bukan container-bound
   }
 
   // 3. Cek Script Properties dari run sebelumnya
@@ -446,7 +445,11 @@ function getAllBauData() {
     if (configSheet && configSheet.getLastRow() > 1) {
       var cVals = configSheet.getRange(2, 1, configSheet.getLastRow() - 1, 2).getValues();
       for (var i = 0; i < cVals.length; i++) {
-        if (cVals[i][0]) config[cVals[i][0]] = cVals[i][1];
+        if (cVals[i][0]) {
+          var k = String(cVals[i][0]).trim();
+          var v = cVals[i][1];
+          config[k] = (typeof v === 'string') ? v.trim() : v;
+        }
       }
     }
 
