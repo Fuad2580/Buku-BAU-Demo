@@ -558,6 +558,22 @@ export default function App() {
           correctPassword={settings.accessPassword}
           clinicName={settings.clinicName}
           csWhatsappNumber={settings.csWhatsappNumber}
+          webAppUrl={settings.webAppUrl || (import.meta.env.VITE_APPS_SCRIPT_URL as string | undefined) || ''}
+          onRefreshFromAppsScript={async () => {
+            const url = (import.meta.env.VITE_APPS_SCRIPT_URL as string | undefined)?.trim() || settings.webAppUrl?.trim();
+            if (url && url.startsWith('http')) {
+              return await handleFetchFromRemoteAppsScript(url);
+            }
+            return false;
+          }}
+          onConnectAppsScriptUrl={async (newUrl: string) => {
+            setSettings((prev) => ({ ...prev, webAppUrl: newUrl }));
+            const success = await handleFetchFromRemoteAppsScript(newUrl);
+            if (success) {
+              setSettings((prev) => ({ ...prev, webAppUrl: newUrl }));
+            }
+            return success;
+          }}
           onUnlock={() => {
             sessionStorage.setItem('sozo_app_unlocked', 'true');
             setIsUnlocked(true);

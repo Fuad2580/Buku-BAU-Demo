@@ -392,6 +392,19 @@ function doGet(e) {
     return ContentService.createTextOutput(JSON.stringify(data))
       .setMimeType(ContentService.MimeType.JSON);
   }
+
+  if (e && e.parameter && e.parameter.action === 'verifyPassword') {
+    var checkPw = String(e.parameter.password || '').trim();
+    var allData = getAllBauData();
+    var currentPw = (allData && allData.config && allData.config.ACCESS_PASSWORD !== undefined)
+      ? String(allData.config.ACCESS_PASSWORD).trim()
+      : "sozo";
+    var isMatch = (!currentPw || checkPw === currentPw);
+    return ContentService.createTextOutput(JSON.stringify({
+      valid: isMatch,
+      hasPassword: Boolean(currentPw)
+    })).setMimeType(ContentService.MimeType.JSON);
+  }
   
   var template = HtmlService.createTemplateFromFile('Index');
   try {
@@ -584,7 +597,8 @@ function getFallbackBauData(warningMsg) {
       SERVICE_CHARGE_PCT: "5",
       SERVICE_CHARGE_MAX: "150000",
       VALIDITY_MONTHS: "6",
-      WHATSAPP_CS: "6281234567890"
+      WHATSAPP_CS: "6281234567890",
+      ACCESS_PASSWORD: "sozo"
     },
     categories: [
       { id: "treatment-recommendation", name: "Treatment Recommendation", description: "Kumpulan rekomendasi treatment terfavorit, paling dicari, dan terbukti efektif pilihan dokter dermatologis SOZO.", pdfOrPhotoUrl: "https://images.unsplash.com/photo-1512290900672-1f4f9f257a41?auto=format&fit=crop&w=1200&q=80", badge: "Paling Diminati", order: 1 },
