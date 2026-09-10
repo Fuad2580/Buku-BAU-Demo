@@ -119,6 +119,23 @@ function loadInitialTreatments(): TreatmentItem[] {
   }
 }
 
+function loadInitialSubscriptions(): SubscriptionItem[] {
+  let saved = localStorage.getItem(`${STORAGE_KEY}_subscriptions`);
+  if (!saved) return initialSubscriptions;
+
+  try {
+    const parsed: SubscriptionItem[] = JSON.parse(saved);
+    // If the saved data is the old 9-item default, upgrade to the 16 full treatments from spreadsheet
+    if (parsed.length < initialSubscriptions.length) {
+      localStorage.setItem(`${STORAGE_KEY}_subscriptions`, JSON.stringify(initialSubscriptions));
+      return initialSubscriptions;
+    }
+    return parsed;
+  } catch {
+    return initialSubscriptions;
+  }
+}
+
 export default function App() {
   // Fullscreen support for tablets and mobile devices
   const { isFullscreen, toggleFullscreen, isSupported: isFullscreenSupported } = useFullscreen();
@@ -151,10 +168,7 @@ export default function App() {
     return saved ? JSON.parse(saved) : initialSinglePromos;
   });
 
-  const [subscriptions, setSubscriptions] = useState<SubscriptionItem[]>(() => {
-    const saved = localStorage.getItem(`${STORAGE_KEY}_subscriptions`);
-    return saved ? JSON.parse(saved) : initialSubscriptions;
-  });
+  const [subscriptions, setSubscriptions] = useState<SubscriptionItem[]>(loadInitialSubscriptions);
   const [skincareKits, setSkincareKits] = useState<SkincareKit[]>(() => {
     const saved = localStorage.getItem(`${STORAGE_KEY}_skincareKits`);
     return saved ? JSON.parse(saved) : initialSkincareKits;
@@ -527,18 +541,31 @@ export default function App() {
     categories: Category[];
     treatments: TreatmentItem[];
     singlePromos: SinglePromoItem[];
+    subscriptions?: SubscriptionItem[];
+    branches?: BranchLocation[];
+    skincareKits?: SkincareKit[];
     settings: ClinicSettings;
   }) => {
     setCategories(data.categories);
     setTreatments(data.treatments);
     setSinglePromos(data.singlePromos);
+    if (data.subscriptions) setSubscriptions(data.subscriptions);
+    if (data.branches) setBranches(data.branches);
+    if (data.skincareKits) setSkincareKits(data.skincareKits);
     setSettings(data.settings);
     showToast('Semua data spreadsheet berhasil disimpan dan disinkronkan!');
   };
 
   // Sync refresh simulation
-  const handleRefreshData = () => {
+  const handleRefreshData = async () => {
     setIsSyncing(true);
+    const remoteUrl = (import.meta.env.VITE_APPS_SCRIPT_URL as string | undefined)?.trim() || settings.webAppUrl?.trim() || DEFAULT_APPS_SCRIPT_URL;
+    if (remoteUrl && remoteUrl.startsWith('http')) {
+      const ok = await handleFetchFromRemoteAppsScript(remoteUrl);
+      setIsSyncing(false);
+      if (ok) return;
+    }
+
     setTimeout(() => {
       setIsSyncing(false);
       setCategories((prev) => {

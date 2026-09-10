@@ -14,7 +14,8 @@ import {
   AlertCircle,
   Link as LinkIcon,
   RotateCcw,
-  Download
+  Download,
+  Repeat
 } from 'lucide-react';
 import { Category, TreatmentItem, SinglePromoItem, ClinicSettings, SubscriptionItem, SkincareKit, BranchLocation } from '../types';
 import { 
@@ -60,12 +61,13 @@ export const SpreadsheetEditorModal: React.FC<SpreadsheetEditorModalProps> = ({
   onSaveData,
   onFetchFromRemoteAppsScript,
 }) => {
-  const [activeTab, setActiveTab] = useState<'treatments' | 'categories' | 'single' | 'settings' | 'connect' | 'excel'>('treatments');
+  const [activeTab, setActiveTab] = useState<'treatments' | 'categories' | 'single' | 'subscriptions' | 'settings' | 'connect' | 'excel'>('treatments');
   
   // Local state for editing
   const [categories, setCategories] = useState<Category[]>(initialCategories);
   const [treatments, setTreatments] = useState<TreatmentItem[]>(initialTreatments);
   const [singlePromos, setSinglePromos] = useState<SinglePromoItem[]>(initialSinglePromos);
+  const [subscriptionsList, setSubscriptionsList] = useState<SubscriptionItem[]>(subscriptions || initialSubscriptions);
   const [settings, setSettings] = useState<ClinicSettings>(initialSettings);
 
   const handleDownloadExcel = () => {
@@ -109,6 +111,9 @@ export const SpreadsheetEditorModal: React.FC<SpreadsheetEditorModalProps> = ({
       categories,
       treatments,
       singlePromos,
+      subscriptions: subscriptionsList,
+      branches,
+      skincareKits,
       settings: {
         ...settings,
         webAppUrl: remoteUrl,
@@ -283,6 +288,16 @@ export const SpreadsheetEditorModal: React.FC<SpreadsheetEditorModalProps> = ({
           >
             <Tag className="w-3.5 h-3.5" />
             <span>Sheet: Promo Single ({singlePromos.length})</span>
+          </button>
+
+          <button
+            onClick={() => setActiveTab('subscriptions')}
+            className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-1.5 whitespace-nowrap cursor-pointer ${
+              activeTab === 'subscriptions' ? 'bg-[#6B1D2F] text-white shadow-xs' : 'text-stone-600 hover:text-stone-900'
+            }`}
+          >
+            <Repeat className="w-3.5 h-3.5" />
+            <span>Sheet: Subscription Paket ({subscriptionsList.length})</span>
           </button>
 
           <button
@@ -704,6 +719,83 @@ export const SpreadsheetEditorModal: React.FC<SpreadsheetEditorModalProps> = ({
                           </td>
                           <td className="p-2 text-stone-500 text-[11px] italic">
                             {sp.outletRestricted || 'Semua Outlet'}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* TAB: SUBSCRIPTION PAKET */}
+          {activeTab === 'subscriptions' && (
+            <div className="space-y-4">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+                <div>
+                  <h4 className="font-bold text-stone-800 text-sm">Tabel: Subscription_Paket ({subscriptionsList.length} Treatment)</h4>
+                  <p className="text-xs text-stone-500">
+                    Daftar paket sesi 3x, 6x, dan 12x sesuai dengan tab Subscription_Paket di Google Sheets.
+                  </p>
+                </div>
+                <button
+                  onClick={() => setSubscriptionsList(initialSubscriptions)}
+                  className="px-3 py-1.5 rounded-xl border border-stone-300 text-stone-700 hover:bg-stone-100 text-xs font-semibold flex items-center gap-1.5 transition cursor-pointer"
+                >
+                  <RotateCcw className="w-3.5 h-3.5" />
+                  <span>Reset ke 16 Treatment Bawaan</span>
+                </button>
+              </div>
+
+              <div className="border border-stone-200 rounded-2xl overflow-hidden shadow-xs bg-white">
+                <div className="overflow-x-auto max-h-[480px]">
+                  <table className="w-full text-left text-xs border-collapse">
+                    <thead className="bg-stone-100/90 sticky top-0 z-10 text-stone-700 font-bold border-b border-stone-200">
+                      <tr>
+                        <th className="p-2.5">ID</th>
+                        <th className="p-2.5">Nama Treatment</th>
+                        <th className="p-2.5">Single (RB)</th>
+                        <th className="p-2.5">Paket 3x (Non-Mem / Mem / Sesi)</th>
+                        <th className="p-2.5">Paket 6x (Non-Mem / Mem / Sesi)</th>
+                        <th className="p-2.5">Paket 12x (Non-Mem / Mem / Sesi)</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-stone-200/70">
+                      {subscriptionsList.map((sub) => (
+                        <tr key={sub.id} className="hover:bg-rose-50/40 transition">
+                          <td className="p-2.5 font-mono text-[11px] text-stone-500">{sub.id}</td>
+                          <td className="p-2.5 font-semibold text-stone-900">{sub.treatmentName}</td>
+                          <td className="p-2.5 text-stone-600 font-medium">{sub.singlePrice} RB</td>
+                          <td className="p-2.5">
+                            {sub.package3x ? (
+                              <div className="space-y-0.5 text-[11px]">
+                                <div className="text-stone-600">Non: <span className="font-semibold">{sub.package3x.nonMember} RB</span></div>
+                                <div className="text-[#6B1D2F] font-bold">Mem: {sub.package3x.member} RB <span className="font-normal text-stone-500">(@{sub.package3x.perSessionMember} RB)</span></div>
+                              </div>
+                            ) : (
+                              <span className="text-stone-300">-</span>
+                            )}
+                          </td>
+                          <td className="p-2.5">
+                            {sub.package6x ? (
+                              <div className="space-y-0.5 text-[11px]">
+                                <div className="text-stone-600">Non: <span className="font-semibold">{sub.package6x.nonMember} RB</span></div>
+                                <div className="text-[#6B1D2F] font-bold">Mem: {sub.package6x.member} RB <span className="font-normal text-stone-500">(@{sub.package6x.perSessionMember} RB)</span></div>
+                              </div>
+                            ) : (
+                              <span className="text-stone-300">-</span>
+                            )}
+                          </td>
+                          <td className="p-2.5">
+                            {sub.package12x ? (
+                              <div className="space-y-0.5 text-[11px]">
+                                <div className="text-stone-600">Non: <span className="font-semibold">{sub.package12x.nonMember} RB</span></div>
+                                <div className="text-[#6B1D2F] font-bold">Mem: {sub.package12x.member} RB <span className="font-normal text-stone-500">(@{sub.package12x.perSessionMember} RB)</span></div>
+                              </div>
+                            ) : (
+                              <span className="text-stone-300">-</span>
+                            )}
                           </td>
                         </tr>
                       ))}

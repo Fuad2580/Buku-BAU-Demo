@@ -319,8 +319,20 @@ function setupSpreadsheet() {
   var subData = [
     ["sub-01", "Laser (Nanolux / Picolux)", 1199, 3597, 1978, 1878, 626, 7194, 3237, 3137, 522, 14388, 5755, 5655, 471, ""],
     ["sub-02", "Diamond Laser Facial", 1499, 4497, 2248, 2148, 716, 8994, 4317, 4217, 702, "", "", "", "", ""],
-    ["sub-04", "IPL Glow", 399, 1197, 897, 797, 265, 2394, 1556, 1456, 242, "", "", "", "", ""],
-    ["sub-06", "HIFU Full Face", 1149, 4497, 2847, 2649, 883, 8994, 5394, 5099, 849, "", "", "", "", ""]
+    ["sub-03", "Skinbright Facial (Non Medical)", 299, 897, 807, 707, 236, "", "", "", "", "", "", "", "", ""],
+    ["sub-04", "Sozo Signature Facial", 699, 2097, 1363, 1263, 421, "", "", "", "", "", "", "", "", ""],
+    ["sub-05", "IPL Glow Face", 399, 1197, 898, 798, 266, 2394, 1556, 1456, 243, "", "", "", "", ""],
+    ["sub-06", "Pink Lips Laser", 499, 1497, 1048, 948, 316, 2994, 1796, 1696, 283, "", "", "", "", ""],
+    ["sub-07", "Meso Pigment", 599, 1797, 1492, 1392, 464, "", "", "", "", "", "", "", "", ""],
+    ["sub-08", "DPL Glow Face", 499, 1497, 1123, 1023, 341, 2994, 2096, 1996, 333, "", "", "", "", ""],
+    ["sub-09", "Body Rejuve laser", 1899, 5697, 2697, 2597, 866, 11394, 4794, 4694, 783, "", "", "", "", ""],
+    ["sub-10", "Sylfirm X", 7999, 23997, 10799, 10699, 3566, "", "", "", "", "", "", "", "", ""],
+    ["sub-11", "IPL Acne", 399, 1197, 898, 798, 266, 2394, 1556, 1456, 243, "", "", "", "", ""],
+    ["sub-12", "DPL Acne Face", 499, 1497, 1123, 1023, 341, 2994, 2096, 1996, 333, "", "", "", "", ""],
+    ["sub-13", "Acne Laser Facial", 1499, 4497, 2249, 2149, 716, 8994, 4317, 4217, 703, "", "", "", "", ""],
+    ["sub-14", "Laser CO2 Scar", 1499, 4497, 1664, 1564, 521, 8994, 2878, 2778, 463, "", "", "", "", ""],
+    ["sub-15", "PRP Strechmark", 1499, 4497, 2549, 2449, 816, "", "", "", "", "", "", "", "", ""],
+    ["sub-16", "PRP Strechmark Double Dose", 2998, 8994, 4499, 4399, 1466, "", "", "", "", "", "", "", "", ""]
   ];
   sheetSub.getRange(2, 1, subData.length, 16).setValues(subData);
   sheetSub.autoResizeColumns(1, 16);
@@ -595,6 +607,75 @@ function getAllBauData() {
       }
     }
 
+    // 7. Tab Subscription_Paket
+    var subSheet = ss.getSheetByName("Subscription_Paket");
+    var subscriptions = [];
+    if (subSheet && subSheet.getLastRow() > 1) {
+      var subVals = subSheet.getRange(2, 1, subSheet.getLastRow() - 1, Math.max(subSheet.getLastColumn(), 16)).getValues();
+      for (var sIdx = 0; sIdx < subVals.length; sIdx++) {
+        var sRow = subVals[sIdx];
+        if (sRow[0] && String(sRow[0]).trim() !== "") {
+          var singlePrice = Number(sRow[2]) || 0;
+          var subItem = {
+            id: String(sRow[0]),
+            treatmentName: String(sRow[1] || ""),
+            singlePrice: singlePrice,
+            photoUrl: sRow[15] ? String(sRow[15]) : ""
+          };
+
+          // 3x Package
+          var p3Non = Number(sRow[4]) || 0;
+          var p3Mem = Number(sRow[5]) || 0;
+          if (p3Non > 0 || p3Mem > 0) {
+            var p3Orig = Number(sRow[3]) || (singlePrice * 3);
+            var p3PerMem = Number(sRow[6]) || (p3Mem > 0 ? Math.round(p3Mem / 3) : 0);
+            var p3PerNon = Math.round(p3Non / 3);
+            subItem.package3x = {
+              original: p3Orig,
+              nonMember: p3Non,
+              member: p3Mem,
+              perSessionNonMember: p3PerNon,
+              perSessionMember: p3PerMem
+            };
+          }
+
+          // 6x Package
+          var p6Non = Number(sRow[8]) || 0;
+          var p6Mem = Number(sRow[9]) || 0;
+          if (p6Non > 0 || p6Mem > 0) {
+            var p6Orig = Number(sRow[7]) || (singlePrice * 6);
+            var p6PerMem = Number(sRow[10]) || (p6Mem > 0 ? Math.round(p6Mem / 6) : 0);
+            var p6PerNon = Math.round(p6Non / 6);
+            subItem.package6x = {
+              original: p6Orig,
+              nonMember: p6Non,
+              member: p6Mem,
+              perSessionNonMember: p6PerNon,
+              perSessionMember: p6PerMem
+            };
+          }
+
+          // 12x Package
+          var p12Non = Number(sRow[12]) || 0;
+          var p12Mem = Number(sRow[13]) || 0;
+          if (p12Non > 0 || p12Mem > 0) {
+            var p12Orig = Number(sRow[11]) || (singlePrice * 12);
+            var p12PerMem = Number(sRow[14]) || (p12Mem > 0 ? Math.round(p12Mem / 12) : 0);
+            var p12PerNon = Math.round(p12Non / 12);
+            subItem.package12x = {
+              original: p12Orig,
+              nonMember: p12Non,
+              member: p12Mem,
+              perSessionNonMember: p12PerNon,
+              perSessionMember: p12PerMem
+            };
+          }
+
+          subscriptions.push(subItem);
+        }
+      }
+    }
+
     // Jika spreadsheet kosong atau data belum ada, kembalikan data bawaan
     if (categories.length === 0 || treatments.length === 0) {
       return getFallbackBauData("Spreadsheet ditemukan namun data sheet masih kosong. Menggunakan data bawaan Buku BAU.");
@@ -608,6 +689,7 @@ function getAllBauData() {
       singlePromos: singlePromos,
       branches: branches,
       skincareKits: skincareKits,
+      subscriptions: subscriptions,
       spreadsheetUrl: ss.getUrl(),
       lastUpdated: new Date().toISOString()
     };
@@ -699,6 +781,24 @@ function getFallbackBauData(warningMsg) {
     ],
     skincareKits: [
       { id: "sk-01", name: "Acne Ultimate Complete Kit", originalPrice: 899000, promoPrice: 599000, items: ["1 Facial Wash", "1 Toner BHA", "1 Serum Niacinamide", "1 Acne Day Cream", "1 Acne Night Gel", "1 Spot Treatment"], freeGift: "Free Exclusive Pouch & Spatula" }
+    ],
+    subscriptions: [
+      { id: "sub-01", treatmentName: "Laser (Nanolux / Picolux)", singlePrice: 1199, package3x: { original: 3597, nonMember: 1978, member: 1878, perSessionNonMember: 659, perSessionMember: 626 }, package6x: { original: 7194, nonMember: 3237, member: 3137, perSessionNonMember: 540, perSessionMember: 522 }, package12x: { original: 14388, nonMember: 5755, member: 5655, perSessionNonMember: 480, perSessionMember: 471 } },
+      { id: "sub-02", treatmentName: "Diamond Laser Facial", singlePrice: 1499, package3x: { original: 4497, nonMember: 2248, member: 2148, perSessionNonMember: 749, perSessionMember: 716 }, package6x: { original: 8994, nonMember: 4317, member: 4217, perSessionNonMember: 720, perSessionMember: 702 } },
+      { id: "sub-03", treatmentName: "Skinbright Facial (Non Medical)", singlePrice: 299, package3x: { original: 897, nonMember: 807, member: 707, perSessionNonMember: 269, perSessionMember: 236 } },
+      { id: "sub-04", treatmentName: "Sozo Signature Facial", singlePrice: 699, package3x: { original: 2097, nonMember: 1363, member: 1263, perSessionNonMember: 454, perSessionMember: 421 } },
+      { id: "sub-05", treatmentName: "IPL Glow Face", singlePrice: 399, package3x: { original: 1197, nonMember: 898, member: 798, perSessionNonMember: 299, perSessionMember: 266 }, package6x: { original: 2394, nonMember: 1556, member: 1456, perSessionNonMember: 259, perSessionMember: 243 } },
+      { id: "sub-06", treatmentName: "Pink Lips Laser", singlePrice: 499, package3x: { original: 1497, nonMember: 1048, member: 948, perSessionNonMember: 349, perSessionMember: 316 }, package6x: { original: 2994, nonMember: 1796, member: 1696, perSessionNonMember: 299, perSessionMember: 283 } },
+      { id: "sub-07", treatmentName: "Meso Pigment", singlePrice: 599, package3x: { original: 1797, nonMember: 1492, member: 1392, perSessionNonMember: 497, perSessionMember: 464 } },
+      { id: "sub-08", treatmentName: "DPL Glow Face", singlePrice: 499, package3x: { original: 1497, nonMember: 1123, member: 1023, perSessionNonMember: 374, perSessionMember: 341 }, package6x: { original: 2994, nonMember: 2096, member: 1996, perSessionNonMember: 349, perSessionMember: 333 } },
+      { id: "sub-09", treatmentName: "Body Rejuve laser", singlePrice: 1899, package3x: { original: 5697, nonMember: 2697, member: 2597, perSessionNonMember: 899, perSessionMember: 866 }, package6x: { original: 11394, nonMember: 4794, member: 4694, perSessionNonMember: 799, perSessionMember: 783 } },
+      { id: "sub-10", treatmentName: "Sylfirm X", singlePrice: 7999, package3x: { original: 23997, nonMember: 10799, member: 10699, perSessionNonMember: 3600, perSessionMember: 3566 } },
+      { id: "sub-11", treatmentName: "IPL Acne", singlePrice: 399, package3x: { original: 1197, nonMember: 898, member: 798, perSessionNonMember: 299, perSessionMember: 266 }, package6x: { original: 2394, nonMember: 1556, member: 1456, perSessionNonMember: 259, perSessionMember: 243 } },
+      { id: "sub-12", treatmentName: "DPL Acne Face", singlePrice: 499, package3x: { original: 1497, nonMember: 1123, member: 1023, perSessionNonMember: 374, perSessionMember: 341 }, package6x: { original: 2994, nonMember: 2096, member: 1996, perSessionNonMember: 349, perSessionMember: 333 } },
+      { id: "sub-13", treatmentName: "Acne Laser Facial", singlePrice: 1499, package3x: { original: 4497, nonMember: 2249, member: 2149, perSessionNonMember: 750, perSessionMember: 716 }, package6x: { original: 8994, nonMember: 4317, member: 4217, perSessionNonMember: 720, perSessionMember: 703 } },
+      { id: "sub-14", treatmentName: "Laser CO2 Scar", singlePrice: 1499, package3x: { original: 4497, nonMember: 1664, member: 1564, perSessionNonMember: 555, perSessionMember: 521 }, package6x: { original: 8994, nonMember: 2878, member: 2778, perSessionNonMember: 480, perSessionMember: 463 } },
+      { id: "sub-15", treatmentName: "PRP Strechmark", singlePrice: 1499, package3x: { original: 4497, nonMember: 2549, member: 2449, perSessionNonMember: 850, perSessionMember: 816 } },
+      { id: "sub-16", treatmentName: "PRP Strechmark Double Dose", singlePrice: 2998, package3x: { original: 8994, nonMember: 4499, member: 4399, perSessionNonMember: 1500, perSessionMember: 1466 } }
     ],
     spreadsheetUrl: "",
     lastUpdated: new Date().toISOString()
