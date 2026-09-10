@@ -144,7 +144,17 @@ function setupSpreadsheet() {
     ["SKINCARE_PAGE_BADGE", "Buku BAU Hal. 82 - 85", "Badge Halaman Skincare Kit (misal: Buku BAU Hal. 82 - 85)"],
     ["SKINCARE_TAG_BADGE", "FREE Exclusive SOZO Pouch", "Badge Tag Skincare Kit (misal: FREE Exclusive SOZO Pouch)"],
     ["SKINCARE_TITLE", "Paket Skincare Kit Bundling", "Judul Banner Skincare Kit"],
-    ["SKINCARE_SUBTITLE", "Formula dermatologis teruji klinis untuk perawatan harian di rumah. Sudah termasuk PPN 11%.", "Deskripsi Skincare Kit"]
+    ["SKINCARE_SUBTITLE", "Formula dermatologis teruji klinis untuk perawatan harian di rumah. Sudah termasuk PPN 11%.", "Deskripsi Skincare Kit"],
+
+    // Kustomisasi Nama & Deskripsi Menu Sidebar / Navigasi
+    ["NAV_PACKAGES_TITLE", "DASHBOARD", "Nama Tombol Menu 1 di Sidebar"],
+    ["NAV_PACKAGES_SUBTITLE", "Paket Treatment", "Deskripsi di Bawah Nama Menu 1"],
+    ["NAV_SINGLE_TITLE", "PROMO SINGLE", "Nama Tombol Menu 2 di Sidebar"],
+    ["NAV_SINGLE_SUBTITLE", "Ala Carte & Laser", "Deskripsi di Bawah Nama Menu 2"],
+    ["NAV_SUBSCRIPTION_TITLE", "SUBSCRIPTION", "Nama Tombol Menu 3 di Sidebar"],
+    ["NAV_SUBSCRIPTION_SUBTITLE", "Langganan 3x / 6x / 12x", "Deskripsi di Bawah Nama Menu 3"],
+    ["NAV_SKINCARE_TITLE", "SKINCARE", "Nama Tombol Menu 4 di Sidebar"],
+    ["NAV_SKINCARE_SUBTITLE", "Homecare Kit Bundling", "Deskripsi di Bawah Nama Menu 4"]
   ];
   sheetConfig.getRange(2, 1, configData.length, 3).setValues(configData);
   sheetConfig.autoResizeColumns(1, 3);
@@ -730,7 +740,15 @@ function getFallbackBauData(warningMsg) {
       SKINCARE_PAGE_BADGE: "Buku BAU Hal. 82 - 85",
       SKINCARE_TAG_BADGE: "FREE Exclusive SOZO Pouch",
       SKINCARE_TITLE: "Paket Skincare Kit Bundling",
-      SKINCARE_SUBTITLE: "Formula dermatologis teruji klinis untuk perawatan harian di rumah. Sudah termasuk PPN 11%."
+      SKINCARE_SUBTITLE: "Formula dermatologis teruji klinis untuk perawatan harian di rumah. Sudah termasuk PPN 11%.",
+      NAV_PACKAGES_TITLE: "DASHBOARD",
+      NAV_PACKAGES_SUBTITLE: "Paket Treatment",
+      NAV_SINGLE_TITLE: "PROMO SINGLE",
+      NAV_SINGLE_SUBTITLE: "Ala Carte & Laser",
+      NAV_SUBSCRIPTION_TITLE: "SUBSCRIPTION",
+      NAV_SUBSCRIPTION_SUBTITLE: "Langganan 3x / 6x / 12x",
+      NAV_SKINCARE_TITLE: "SKINCARE",
+      NAV_SKINCARE_SUBTITLE: "Homecare Kit Bundling"
     },
     categories: [
       { id: "treatment-recommendation", name: "Treatment Recommendation", description: "Kumpulan rekomendasi treatment terfavorit, paling dicari, dan terbukti efektif pilihan dokter dermatologis SOZO.", pdfOrPhotoUrl: "https://images.unsplash.com/photo-1512290900672-1f4f9f257a41?auto=format&fit=crop&w=1200&q=80", badge: "Paling Diminati", order: 1 },

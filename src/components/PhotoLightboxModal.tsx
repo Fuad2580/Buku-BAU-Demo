@@ -1,6 +1,7 @@
 import React from 'react';
 import { X, Plus, Check, Calculator, Sparkles, Tag, MapPin } from 'lucide-react';
 import { TreatmentItem } from '../types';
+import { formatNumber } from '../utils/formatters';
 
 export interface PhotoLightboxData {
   url: string;
@@ -104,11 +105,11 @@ export const PhotoLightboxModal: React.FC<PhotoLightboxModalProps> = ({
                 <span className="text-[10px] uppercase font-bold text-stone-500 block">Harga Treatment</span>
                 <div className="flex items-baseline gap-2">
                   <span className="text-base font-extrabold text-[#8C1D35]">
-                    {isMemberPrice && data.memberPrice !== undefined ? data.memberPrice : data.nonMemberPrice} RB
+                    {formatNumber(isMemberPrice && data.memberPrice !== undefined ? data.memberPrice : data.nonMemberPrice)} RB
                   </span>
                   {data.originalPrice && (
                     <span className="text-xs text-stone-400 line-through">
-                      {data.originalPrice} RB
+                      {formatNumber(data.originalPrice)} RB
                     </span>
                   )}
                 </div>

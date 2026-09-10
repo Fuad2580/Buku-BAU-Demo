@@ -641,6 +641,16 @@ export default function App() {
             skincareTitle: data.config.SKINCARE_TITLE || prev.skincareTitle,
             skincareSubtitle: data.config.SKINCARE_SUBTITLE || prev.skincareSubtitle,
 
+            // Navigation menu & sidebar customization fields
+            navPackagesTitle: data.config.NAV_PACKAGES_TITLE || prev.navPackagesTitle,
+            navPackagesSubtitle: data.config.NAV_PACKAGES_SUBTITLE || prev.navPackagesSubtitle,
+            navSingleTitle: data.config.NAV_SINGLE_TITLE || prev.navSingleTitle,
+            navSingleSubtitle: data.config.NAV_SINGLE_SUBTITLE || prev.navSingleSubtitle,
+            navSubscriptionTitle: data.config.NAV_SUBSCRIPTION_TITLE || prev.navSubscriptionTitle,
+            navSubscriptionSubtitle: data.config.NAV_SUBSCRIPTION_SUBTITLE || prev.navSubscriptionSubtitle,
+            navSkincareTitle: data.config.NAV_SKINCARE_TITLE || prev.navSkincareTitle,
+            navSkincareSubtitle: data.config.NAV_SKINCARE_SUBTITLE || prev.navSkincareSubtitle,
+
             lastSyncedAt: new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }),
           }));
         }

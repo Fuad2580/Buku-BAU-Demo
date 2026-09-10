@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Sparkles, Plus, Check, MapPin, Image as ImageIcon, ExternalLink } from 'lucide-react';
 import { TreatmentItem, ClinicSettings } from '../types';
 import { CardLightFlare } from './CardLightFlare';
+import { formatNumber } from '../utils/formatters';
 
 interface TreatmentCardProps {
   treatment: TreatmentItem;
@@ -108,12 +109,8 @@ export const TreatmentCard: React.FC<TreatmentCardProps> = ({
           )}
         </div>
 
-        {/* Inclusions / Content of Treatment - Brightened & High Contrast */}
+        {/* Inclusions / Content of Treatment - Clean bullet list without redundant header */}
         <div className="mt-3.5 bg-gradient-to-b from-[#400c22]/90 to-[#2c0717]/90 rounded-2xl p-3.5 border border-rose-400/35 shadow-inner">
-          <p className="text-[11px] uppercase font-black text-[#FFE29A] tracking-wider mb-2.5 flex items-center gap-1.5">
-            <Sparkles className="w-3.5 h-3.5 text-[#FFD285]" />
-            <span>Isi Rangkaian Treatment:</span>
-          </p>
           <ul className="space-y-2">
             {treatment.inclusions.map((item, idx) => (
               <li key={idx} className="text-[13px] text-white font-medium flex items-start gap-2.5 leading-snug">
@@ -136,48 +133,56 @@ export const TreatmentCard: React.FC<TreatmentCardProps> = ({
       {/* Pricing & Footer Actions - Brightened & High Contrast */}
       <div className="p-5 pt-4 mt-4 border-t border-rose-400/35 bg-gradient-to-b from-[#38091d]/85 to-[#240412]/95 rounded-b-3xl">
         
-        {/* Price display */}
-        <div className="flex items-end justify-between gap-2 mb-3.5">
-          <div>
-            <div className="flex items-center gap-1.5">
-              <span className="text-xs text-rose-200 font-semibold line-through opacity-80">
-                {originalPrice} RB
-              </span>
-              {discountPercent > 0 && (
-                <span className="text-xs font-black text-emerald-200 bg-emerald-900/90 px-2 py-0.5 rounded-md border border-emerald-400/60 shadow-xs">
-                  Hemat {discountPercent}%
+        {/* Price display - Clean & Responsive Layout (No overlapping) */}
+        {(() => {
+          const hasPriceDiff = treatment.memberPrice !== treatment.nonMemberPrice;
+
+          return (
+            <div className="mb-3.5 space-y-2">
+              {/* Top row: Original Strike Price + Discount Badge */}
+              <div className="flex items-center gap-1.5">
+                <span className="text-xs text-rose-200/90 font-semibold line-through">
+                  {formatNumber(originalPrice)} RB
                 </span>
-              )}
-            </div>
-
-            <div className="flex items-baseline gap-1 mt-1">
-              <span className="text-3xl font-black text-[#FFD285] tracking-tight drop-shadow-[0_2px_10px_rgba(255,210,133,0.35)]">
-                {activePrice}
-              </span>
-              <span className="text-sm font-black text-[#FFD285]">RB</span>
-              <span className="text-xs font-bold text-rose-100 ml-1.5 px-2 py-0.5 rounded-md bg-white/10 border border-white/15">
-                ({isMemberPrice ? 'Member' : 'Non-Member'})
-              </span>
-            </div>
-          </div>
-
-          {/* Member Badge / Non-Member comparison */}
-          <div className="text-right">
-            <span className="text-[11px] font-bold text-rose-200 block mb-1">
-              {isMemberPrice ? 'Non-Member' : 'Harga Spesial'}
-            </span>
-            {isMemberPrice ? (
-              <span className="text-sm font-black text-white bg-black/40 px-2.5 py-1 rounded-lg border border-rose-400/30 inline-block">
-                {treatment.nonMemberPrice} RB
-              </span>
-            ) : (
-              <div className="relative inline-flex items-center px-3 py-1 rounded-full bg-gradient-to-r from-[#FFD285] to-[#E5A84D] text-stone-950 font-black shadow-[0_0_15px_rgba(255,210,133,0.45)]">
-                <span className="text-[10px] font-black tracking-wide uppercase">MEMBER</span>
-                <span className="text-xs font-black ml-1.5">{treatment.memberPrice} RB</span>
+                {discountPercent > 0 && (
+                  <span className="text-xs font-black text-emerald-200 bg-emerald-900/90 px-2 py-0.5 rounded-md border border-emerald-400/60 shadow-xs">
+                    Hemat {discountPercent}%
+                  </span>
+                )}
               </div>
-            )}
-          </div>
-        </div>
+
+              {/* Main row: Active price + Mode badge & Optional comparison */}
+              <div className="flex items-center justify-between gap-2 flex-wrap sm:flex-nowrap">
+                <div className="flex items-baseline gap-1.5 min-w-0">
+                  <span className="text-3xl font-black text-[#FFD285] tracking-tight drop-shadow-[0_2px_10px_rgba(255,210,133,0.35)]">
+                    {formatNumber(activePrice)}
+                  </span>
+                  <span className="text-sm font-black text-[#FFD285]">RB</span>
+                  <span className="text-[11px] font-bold text-rose-100 px-2 py-0.5 rounded-md bg-white/10 border border-white/15 whitespace-nowrap">
+                    ({isMemberPrice ? 'Member' : 'Non-Member'})
+                  </span>
+                </div>
+
+                {/* Only display comparison pill if memberPrice differs from nonMemberPrice */}
+                {hasPriceDiff && (
+                  <div className="shrink-0 text-right">
+                    {isMemberPrice ? (
+                      <div className="bg-black/40 px-2.5 py-1 rounded-xl border border-rose-400/30 text-right inline-block">
+                        <span className="text-[10px] text-rose-300 font-medium block whitespace-nowrap leading-none mb-0.5">Non-Mem:</span>
+                        <span className="text-xs font-black text-white whitespace-nowrap">{formatNumber(treatment.nonMemberPrice)} RB</span>
+                      </div>
+                    ) : (
+                      <div className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-gradient-to-r from-[#FFD285] to-[#E5A84D] text-stone-950 font-black shadow-xs whitespace-nowrap">
+                        <span className="text-[10px] uppercase font-black tracking-wide">Member:</span>
+                        <span className="text-xs font-black">{formatNumber(treatment.memberPrice)} RB</span>
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+            </div>
+          );
+        })()}
 
         {/* Card Action Button */}
         <div>

@@ -45,7 +45,16 @@ export function exportBauToExcel(
     ["SKINCARE_PAGE_BADGE", settings.skincarePageBadge || "Buku BAU Hal. 82 - 85", "Badge Halaman Skincare Kit"],
     ["SKINCARE_TAG_BADGE", settings.skincareTagBadge || "FREE Exclusive SOZO Pouch", "Badge Tag Skincare Kit"],
     ["SKINCARE_TITLE", settings.skincareTitle || "Paket Skincare Kit Bundling", "Judul Banner Skincare Kit"],
-    ["SKINCARE_SUBTITLE", settings.skincareSubtitle || "Formula dermatologis teruji klinis...", "Deskripsi Skincare Kit"]
+    ["SKINCARE_SUBTITLE", settings.skincareSubtitle || "Formula dermatologis teruji klinis...", "Deskripsi Skincare Kit"],
+
+    ["NAV_PACKAGES_TITLE", settings.navPackagesTitle || "DASHBOARD", "Nama Tombol Menu 1 di Sidebar"],
+    ["NAV_PACKAGES_SUBTITLE", settings.navPackagesSubtitle || "Paket Treatment", "Deskripsi di Bawah Nama Menu 1"],
+    ["NAV_SINGLE_TITLE", settings.navSingleTitle || "PROMO SINGLE", "Nama Tombol Menu 2 di Sidebar"],
+    ["NAV_SINGLE_SUBTITLE", settings.navSingleSubtitle || "Ala Carte & Laser", "Deskripsi di Bawah Nama Menu 2"],
+    ["NAV_SUBSCRIPTION_TITLE", settings.navSubscriptionTitle || "SUBSCRIPTION", "Nama Tombol Menu 3 di Sidebar"],
+    ["NAV_SUBSCRIPTION_SUBTITLE", settings.navSubscriptionSubtitle || "Langganan 3x / 6x / 12x", "Deskripsi di Bawah Nama Menu 3"],
+    ["NAV_SKINCARE_TITLE", settings.navSkincareTitle || "SKINCARE", "Nama Tombol Menu 4 di Sidebar"],
+    ["NAV_SKINCARE_SUBTITLE", settings.navSkincareSubtitle || "Homecare Kit Bundling", "Deskripsi di Bawah Nama Menu 4"]
   ];
   const wsConfig = XLSX.utils.aoa_to_sheet(configData);
   XLSX.utils.book_append_sheet(wb, wsConfig, "Pengaturan_Klinik");

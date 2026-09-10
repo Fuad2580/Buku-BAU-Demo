@@ -35,6 +35,15 @@ export const initialClinicSettings: ClinicSettings = {
   skincareTagBadge: "FREE Exclusive SOZO Pouch",
   skincareTitle: "Paket Skincare Kit Bundling",
   skincareSubtitle: "Formula dermatologis teruji klinis untuk perawatan harian di rumah. Sudah termasuk PPN 11%.",
+
+  navPackagesTitle: "DASHBOARD",
+  navPackagesSubtitle: "Paket Treatment",
+  navSingleTitle: "PROMO SINGLE",
+  navSingleSubtitle: "Ala Carte & Laser",
+  navSubscriptionTitle: "SUBSCRIPTION",
+  navSubscriptionSubtitle: "Langganan 3x / 6x / 12x",
+  navSkincareTitle: "SKINCARE",
+  navSkincareSubtitle: "Homecare Kit Bundling",
 };
 
 export const initialCategories: Category[] = [

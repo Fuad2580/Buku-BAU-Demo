@@ -18,6 +18,7 @@ import {
   Repeat
 } from 'lucide-react';
 import { Category, TreatmentItem, SinglePromoItem, ClinicSettings, SubscriptionItem, SkincareKit, BranchLocation } from '../types';
+import { formatNumber } from '../utils/formatters';
 import { 
   initialCategories, 
   initialTreatments, 
@@ -709,13 +710,13 @@ export const SpreadsheetEditorModal: React.FC<SpreadsheetEditorModalProps> = ({
                             {sp.group}
                           </td>
                           <td className="p-2 text-stone-400">
-                            {sp.originalPrice} RB
+                            {formatNumber(sp.originalPrice)} RB
                           </td>
                           <td className="p-2 font-semibold text-stone-700">
-                            {sp.nonMemberPrice} RB
+                            {formatNumber(sp.nonMemberPrice)} RB
                           </td>
                           <td className="p-2 font-bold text-[#6B1D2F]">
-                            {sp.memberPrice} RB
+                            {formatNumber(sp.memberPrice)} RB
                           </td>
                           <td className="p-2 text-stone-500 text-[11px] italic">
                             {sp.outletRestricted || 'Semua Outlet'}
@@ -766,12 +767,12 @@ export const SpreadsheetEditorModal: React.FC<SpreadsheetEditorModalProps> = ({
                         <tr key={sub.id} className="hover:bg-rose-50/40 transition">
                           <td className="p-2.5 font-mono text-[11px] text-stone-500">{sub.id}</td>
                           <td className="p-2.5 font-semibold text-stone-900">{sub.treatmentName}</td>
-                          <td className="p-2.5 text-stone-600 font-medium">{sub.singlePrice} RB</td>
+                          <td className="p-2.5 text-stone-600 font-medium">{formatNumber(sub.singlePrice)} RB</td>
                           <td className="p-2.5">
                             {sub.package3x ? (
                               <div className="space-y-0.5 text-[11px]">
-                                <div className="text-stone-600">Non: <span className="font-semibold">{sub.package3x.nonMember} RB</span></div>
-                                <div className="text-[#6B1D2F] font-bold">Mem: {sub.package3x.member} RB <span className="font-normal text-stone-500">(@{sub.package3x.perSessionMember} RB)</span></div>
+                                <div className="text-stone-600">Non: <span className="font-semibold">{formatNumber(sub.package3x.nonMember)} RB</span></div>
+                                <div className="text-[#6B1D2F] font-bold">Mem: {formatNumber(sub.package3x.member)} RB <span className="font-normal text-stone-500">(@{formatNumber(sub.package3x.perSessionMember)} RB)</span></div>
                               </div>
                             ) : (
                               <span className="text-stone-300">-</span>
@@ -780,8 +781,8 @@ export const SpreadsheetEditorModal: React.FC<SpreadsheetEditorModalProps> = ({
                           <td className="p-2.5">
                             {sub.package6x ? (
                               <div className="space-y-0.5 text-[11px]">
-                                <div className="text-stone-600">Non: <span className="font-semibold">{sub.package6x.nonMember} RB</span></div>
-                                <div className="text-[#6B1D2F] font-bold">Mem: {sub.package6x.member} RB <span className="font-normal text-stone-500">(@{sub.package6x.perSessionMember} RB)</span></div>
+                                <div className="text-stone-600">Non: <span className="font-semibold">{formatNumber(sub.package6x.nonMember)} RB</span></div>
+                                <div className="text-[#6B1D2F] font-bold">Mem: {formatNumber(sub.package6x.member)} RB <span className="font-normal text-stone-500">(@{formatNumber(sub.package6x.perSessionMember)} RB)</span></div>
                               </div>
                             ) : (
                               <span className="text-stone-300">-</span>
@@ -790,8 +791,8 @@ export const SpreadsheetEditorModal: React.FC<SpreadsheetEditorModalProps> = ({
                           <td className="p-2.5">
                             {sub.package12x ? (
                               <div className="space-y-0.5 text-[11px]">
-                                <div className="text-stone-600">Non: <span className="font-semibold">{sub.package12x.nonMember} RB</span></div>
-                                <div className="text-[#6B1D2F] font-bold">Mem: {sub.package12x.member} RB <span className="font-normal text-stone-500">(@{sub.package12x.perSessionMember} RB)</span></div>
+                                <div className="text-stone-600">Non: <span className="font-semibold">{formatNumber(sub.package12x.nonMember)} RB</span></div>
+                                <div className="text-[#6B1D2F] font-bold">Mem: {formatNumber(sub.package12x.member)} RB <span className="font-normal text-stone-500">(@{formatNumber(sub.package12x.perSessionMember)} RB)</span></div>
                               </div>
                             ) : (
                               <span className="text-stone-300">-</span>
@@ -1056,6 +1057,126 @@ export const SpreadsheetEditorModal: React.FC<SpreadsheetEditorModalProps> = ({
                       rows={2}
                       className="w-full p-2 bg-white rounded-xl border border-stone-300"
                     />
+                  </div>
+                </div>
+
+                {/* Section: Menu Sidebar / Navigasi */}
+                <div className="p-3 bg-rose-50/70 border border-rose-200 rounded-xl space-y-3">
+                  <div className="flex items-center justify-between">
+                    <span className="font-bold text-[#6B1D2F] block text-xs">
+                      Menu Sidebar / Navigasi Utama (Nama & Deskripsi)
+                    </span>
+                    <span className="text-[10px] text-rose-800 bg-rose-100 px-2 py-0.5 rounded-full font-semibold">
+                      Tab: Pengaturan_Klinik
+                    </span>
+                  </div>
+
+                  {/* Menu 1: Dashboard / Paket Perawatan */}
+                  <div className="bg-white p-2.5 rounded-lg border border-stone-200 space-y-2">
+                    <span className="text-[11px] font-bold text-stone-700 block">Menu 1: Paket Treatment (Dashboard)</span>
+                    <div className="grid grid-cols-2 gap-2">
+                      <div>
+                        <label className="text-[10px] text-stone-500 block mb-0.5 font-medium">Nama Menu (Key: NAV_PACKAGES_TITLE)</label>
+                        <input
+                          type="text"
+                          value={settings.navPackagesTitle || ''}
+                          onChange={(e) => setSettings({ ...settings, navPackagesTitle: e.target.value })}
+                          placeholder="DASHBOARD"
+                          className="w-full p-1.5 bg-stone-50 rounded-lg border border-stone-300 text-xs font-bold"
+                        />
+                      </div>
+                      <div>
+                        <label className="text-[10px] text-stone-500 block mb-0.5 font-medium">Deskripsi Menu (Key: NAV_PACKAGES_SUBTITLE)</label>
+                        <input
+                          type="text"
+                          value={settings.navPackagesSubtitle || ''}
+                          onChange={(e) => setSettings({ ...settings, navPackagesSubtitle: e.target.value })}
+                          placeholder="Paket Treatment"
+                          className="w-full p-1.5 bg-stone-50 rounded-lg border border-stone-300 text-xs"
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Menu 2: Promo Single */}
+                  <div className="bg-white p-2.5 rounded-lg border border-stone-200 space-y-2">
+                    <span className="text-[11px] font-bold text-stone-700 block">Menu 2: Promo Single Treatment</span>
+                    <div className="grid grid-cols-2 gap-2">
+                      <div>
+                        <label className="text-[10px] text-stone-500 block mb-0.5 font-medium">Nama Menu (Key: NAV_SINGLE_TITLE)</label>
+                        <input
+                          type="text"
+                          value={settings.navSingleTitle || ''}
+                          onChange={(e) => setSettings({ ...settings, navSingleTitle: e.target.value })}
+                          placeholder="PROMO SINGLE"
+                          className="w-full p-1.5 bg-stone-50 rounded-lg border border-stone-300 text-xs font-bold"
+                        />
+                      </div>
+                      <div>
+                        <label className="text-[10px] text-stone-500 block mb-0.5 font-medium">Deskripsi Menu (Key: NAV_SINGLE_SUBTITLE)</label>
+                        <input
+                          type="text"
+                          value={settings.navSingleSubtitle || ''}
+                          onChange={(e) => setSettings({ ...settings, navSingleSubtitle: e.target.value })}
+                          placeholder="Ala Carte & Laser"
+                          className="w-full p-1.5 bg-stone-50 rounded-lg border border-stone-300 text-xs"
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Menu 3: Subscription */}
+                  <div className="bg-white p-2.5 rounded-lg border border-stone-200 space-y-2">
+                    <span className="text-[11px] font-bold text-stone-700 block">Menu 3: Subscription Paket</span>
+                    <div className="grid grid-cols-2 gap-2">
+                      <div>
+                        <label className="text-[10px] text-stone-500 block mb-0.5 font-medium">Nama Menu (Key: NAV_SUBSCRIPTION_TITLE)</label>
+                        <input
+                          type="text"
+                          value={settings.navSubscriptionTitle || ''}
+                          onChange={(e) => setSettings({ ...settings, navSubscriptionTitle: e.target.value })}
+                          placeholder="SUBSCRIPTION"
+                          className="w-full p-1.5 bg-stone-50 rounded-lg border border-stone-300 text-xs font-bold"
+                        />
+                      </div>
+                      <div>
+                        <label className="text-[10px] text-stone-500 block mb-0.5 font-medium">Deskripsi Menu (Key: NAV_SUBSCRIPTION_SUBTITLE)</label>
+                        <input
+                          type="text"
+                          value={settings.navSubscriptionSubtitle || ''}
+                          onChange={(e) => setSettings({ ...settings, navSubscriptionSubtitle: e.target.value })}
+                          placeholder="Langganan 3x / 6x / 12x"
+                          className="w-full p-1.5 bg-stone-50 rounded-lg border border-stone-300 text-xs"
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Menu 4: Skincare */}
+                  <div className="bg-white p-2.5 rounded-lg border border-stone-200 space-y-2">
+                    <span className="text-[11px] font-bold text-stone-700 block">Menu 4: Skincare Kit</span>
+                    <div className="grid grid-cols-2 gap-2">
+                      <div>
+                        <label className="text-[10px] text-stone-500 block mb-0.5 font-medium">Nama Menu (Key: NAV_SKINCARE_TITLE)</label>
+                        <input
+                          type="text"
+                          value={settings.navSkincareTitle || ''}
+                          onChange={(e) => setSettings({ ...settings, navSkincareTitle: e.target.value })}
+                          placeholder="SKINCARE"
+                          className="w-full p-1.5 bg-stone-50 rounded-lg border border-stone-300 text-xs font-bold"
+                        />
+                      </div>
+                      <div>
+                        <label className="text-[10px] text-stone-500 block mb-0.5 font-medium">Deskripsi Menu (Key: NAV_SKINCARE_SUBTITLE)</label>
+                        <input
+                          type="text"
+                          value={settings.navSkincareSubtitle || ''}
+                          onChange={(e) => setSettings({ ...settings, navSkincareSubtitle: e.target.value })}
+                          placeholder="Homecare Kit Bundling"
+                          className="w-full p-1.5 bg-stone-50 rounded-lg border border-stone-300 text-xs"
+                        />
+                      </div>
+                    </div>
                   </div>
                 </div>
 

@@ -137,6 +137,16 @@ export interface ClinicSettings {
   skincareTagBadge?: string;
   skincareTitle?: string;
   skincareSubtitle?: string;
+
+  // Navigation / Sidebar Customization (from Spreadsheet Tab Pengaturan_Klinik)
+  navPackagesTitle?: string;
+  navPackagesSubtitle?: string;
+  navSingleTitle?: string;
+  navSingleSubtitle?: string;
+  navSubscriptionTitle?: string;
+  navSubscriptionSubtitle?: string;
+  navSkincareTitle?: string;
+  navSkincareSubtitle?: string;
 }
 
 export interface CartItem {

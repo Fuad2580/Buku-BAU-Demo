@@ -3,6 +3,7 @@ import { Repeat, Calendar, ShieldCheck, Sparkles, Image as ImageIcon, Plus, Chec
 import { SubscriptionItem, ClinicSettings, CartItem, TreatmentItem } from '../types';
 import { CardLightFlare } from './CardLightFlare';
 import { PhotoLightboxModal, PhotoLightboxData } from './PhotoLightboxModal';
+import { formatNumber } from '../utils/formatters';
 
 interface SubscriptionsSectionProps {
   subscriptions: SubscriptionItem[];
@@ -76,7 +77,7 @@ export const SubscriptionsSection: React.FC<SubscriptionsSectionProps> = ({
       memberPrice: sub.package3x?.member,
       inclusions: [
         `Tersedia paket 3x, 6x, hingga 12x sesi`,
-        `Harga satuan normal: ${sub.singlePrice} RB`,
+        `Harga satuan normal: ${formatNumber(sub.singlePrice)} RB`,
       ],
     });
   };
@@ -164,7 +165,7 @@ export const SubscriptionsSection: React.FC<SubscriptionsSectionProps> = ({
                     Subscription
                   </span>
                   <span className="text-xs text-rose-100 font-medium">
-                    Harga 1x Sesi: <strong className="text-white font-bold">{sub.singlePrice} RB</strong>
+                    Harga 1x Sesi: <strong className="text-white font-bold">{formatNumber(sub.singlePrice)} RB</strong>
                   </span>
                 </div>
 
@@ -232,16 +233,16 @@ export const SubscriptionsSection: React.FC<SubscriptionsSectionProps> = ({
                         <div>
                           <span className="text-xs font-bold text-white block">Paket 3x Sesi</span>
                           <span className="text-[11px] text-rose-200/80 font-semibold line-through">
-                            {sub.package3x.original} RB
+                            {formatNumber(sub.package3x.original)} RB
                           </span>
                         </div>
                         <div className="text-right flex items-center gap-2">
                           <div>
                             <span className="text-sm font-black text-[#FFD285] block drop-shadow-xs">
-                              {isMemberPrice ? sub.package3x.member : sub.package3x.nonMember} RB
+                              {formatNumber(isMemberPrice ? sub.package3x.member : sub.package3x.nonMember)} RB
                             </span>
                             <span className="text-[11px] text-emerald-300 font-extrabold block">
-                              ({isMemberPrice ? sub.package3x.perSessionMember : sub.package3x.perSessionNonMember} RB/sesi)
+                              ({formatNumber(isMemberPrice ? sub.package3x.perSessionMember : sub.package3x.perSessionNonMember)} RB/sesi)
                             </span>
                           </div>
                           {onToggleCart && (
@@ -288,16 +289,16 @@ export const SubscriptionsSection: React.FC<SubscriptionsSectionProps> = ({
                         <div>
                           <span className="text-xs font-bold text-white block">Paket 4x Sesi</span>
                           <span className="text-[11px] text-rose-200/80 font-semibold line-through">
-                            {sub.package4x.original} RB
+                            {formatNumber(sub.package4x.original)} RB
                           </span>
                         </div>
                         <div className="text-right flex items-center gap-2">
                           <div>
                             <span className="text-sm font-black text-[#FFD285] block drop-shadow-xs">
-                              {isMemberPrice ? sub.package4x.member : sub.package4x.nonMember} RB
+                              {formatNumber(isMemberPrice ? sub.package4x.member : sub.package4x.nonMember)} RB
                             </span>
                             <span className="text-[11px] text-emerald-300 font-extrabold block">
-                              ({isMemberPrice ? sub.package4x.perSessionMember : sub.package4x.perSessionNonMember} RB/sesi)
+                              ({formatNumber(isMemberPrice ? sub.package4x.perSessionMember : sub.package4x.perSessionNonMember)} RB/sesi)
                             </span>
                           </div>
                           {onToggleCart && (
@@ -347,16 +348,16 @@ export const SubscriptionsSection: React.FC<SubscriptionsSectionProps> = ({
                             <span className="text-[9px] font-extrabold text-white bg-gradient-to-r from-rose-600 to-red-600 px-1.5 py-0.2 rounded shadow-xs">Hemat</span>
                           </div>
                           <span className="text-[11px] text-rose-200/80 font-semibold line-through block">
-                            {sub.package6x.original} RB
+                            {formatNumber(sub.package6x.original)} RB
                           </span>
                         </div>
                         <div className="text-right flex items-center gap-2">
                           <div>
                             <span className="text-sm font-black text-[#FFD285] block drop-shadow-xs">
-                              {isMemberPrice ? sub.package6x.member : sub.package6x.nonMember} RB
+                              {formatNumber(isMemberPrice ? sub.package6x.member : sub.package6x.nonMember)} RB
                             </span>
                             <span className="text-[11px] text-emerald-300 font-extrabold block">
-                              ({isMemberPrice ? sub.package6x.perSessionMember : sub.package6x.perSessionNonMember} RB/sesi)
+                              ({formatNumber(isMemberPrice ? sub.package6x.perSessionMember : sub.package6x.perSessionNonMember)} RB/sesi)
                             </span>
                           </div>
                           {onToggleCart && (
@@ -406,16 +407,16 @@ export const SubscriptionsSection: React.FC<SubscriptionsSectionProps> = ({
                             <span className="text-[9px] font-extrabold text-stone-950 bg-gradient-to-r from-[#FFD285] to-[#E5A84D] px-1.5 py-0.2 rounded shadow-xs">Super Hemat</span>
                           </div>
                           <span className="text-[11px] text-amber-200/80 font-semibold line-through block">
-                            {sub.package12x.original} RB
+                            {formatNumber(sub.package12x.original)} RB
                           </span>
                         </div>
                         <div className="text-right flex items-center gap-2">
                           <div>
                             <span className="text-sm font-black text-[#FFD285] block drop-shadow-xs">
-                              {isMemberPrice ? sub.package12x.member : sub.package12x.nonMember} RB
+                              {formatNumber(isMemberPrice ? sub.package12x.member : sub.package12x.nonMember)} RB
                             </span>
                             <span className="text-[11px] text-emerald-300 font-extrabold block">
-                              ({isMemberPrice ? sub.package12x.perSessionMember : sub.package12x.perSessionNonMember} RB/sesi)
+                              ({formatNumber(isMemberPrice ? sub.package12x.perSessionMember : sub.package12x.perSessionNonMember)} RB/sesi)
                             </span>
                           </div>
                           {onToggleCart && (

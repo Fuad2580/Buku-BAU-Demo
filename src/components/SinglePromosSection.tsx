@@ -3,6 +3,7 @@ import { Tag, MapPin, Sparkles, Image as ImageIcon, Plus, Check, Calculator, Sea
 import { SinglePromoItem, ClinicSettings, CartItem, TreatmentItem } from '../types';
 import { CardLightFlare } from './CardLightFlare';
 import { PhotoLightboxModal, PhotoLightboxData } from './PhotoLightboxModal';
+import { formatNumber } from '../utils/formatters';
 
 interface SinglePromosSectionProps {
   singlePromos: SinglePromoItem[];
@@ -280,17 +281,17 @@ export const SinglePromosSection: React.FC<SinglePromosSectionProps> = ({
                       </td>
 
                       <td className="p-3.5 text-rose-300/40 line-through">
-                        {item.originalPrice} RB
+                        {formatNumber(item.originalPrice)} RB
                       </td>
 
                       <td className={`p-3.5 font-semibold ${!isMemberPrice ? 'text-[#FFD285] font-bold text-sm' : 'text-rose-200/80'}`}>
-                        {item.nonMemberPrice} RB
+                        {formatNumber(item.nonMemberPrice)} RB
                       </td>
 
                       <td className="p-3.5">
                         <div className="flex items-center gap-1.5">
                           <span className={`font-bold ${isMemberPrice ? 'text-sm text-[#FFD285]' : 'text-rose-200/90'}`}>
-                            {item.memberPrice} RB
+                            {formatNumber(item.memberPrice)} RB
                           </span>
                           {discount > 0 && (
                             <span className="text-[10px] font-bold text-emerald-300 bg-emerald-950/60 border border-emerald-500/40 px-1.5 py-0.2 rounded">
