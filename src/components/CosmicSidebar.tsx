@@ -7,7 +7,9 @@ import {
   MapPin, 
   Sparkles,
   Lock,
-  X
+  X,
+  Maximize,
+  Minimize
 } from 'lucide-react';
 import { ClinicSettings, ActiveView } from '../types';
 
@@ -25,6 +27,8 @@ interface CosmicSidebarProps {
   settings: ClinicSettings;
   isOpenMobile?: boolean;
   onCloseMobile?: () => void;
+  isFullscreen?: boolean;
+  onToggleFullscreen?: () => void;
 }
 
 export const CosmicSidebar: React.FC<CosmicSidebarProps> = ({
@@ -36,6 +40,8 @@ export const CosmicSidebar: React.FC<CosmicSidebarProps> = ({
   settings,
   isOpenMobile = false,
   onCloseMobile,
+  isFullscreen,
+  onToggleFullscreen,
 }) => {
   const navItems = [
     {
@@ -173,6 +179,32 @@ export const CosmicSidebar: React.FC<CosmicSidebarProps> = ({
               <span>50+ Cabang SOZO</span>
             </button>
           </div>
+
+          {/* Full Screen Mode Toggle */}
+          {onToggleFullscreen && (
+            <div className="pt-2 mt-1 border-t border-rose-500/20">
+              <button
+                onClick={() => {
+                  onToggleFullscreen();
+                  if (onCloseMobile) onCloseMobile();
+                }}
+                title="Sembunyikan toolbar browser agar nyaman di-scroll"
+                className={`w-full py-2.5 px-3 rounded-xl text-xs font-medium flex items-center justify-between transition cursor-pointer border shadow-xs ${
+                  isFullscreen
+                    ? 'bg-rose-500/30 text-white border-rose-400/50 shadow-[0_0_12px_rgba(229,57,101,0.3)]'
+                    : 'bg-white/[0.05] hover:bg-white/[0.1] text-rose-200 hover:text-white border-rose-500/30'
+                }`}
+              >
+                <div className="flex items-center gap-2">
+                  {isFullscreen ? <Minimize className="w-3.5 h-3.5 text-[#FFD285]" /> : <Maximize className="w-3.5 h-3.5 text-[#FFD285]" />}
+                  <span>{isFullscreen ? 'Keluar Fullscreen' : 'Layar Penuh (Kiosk)'}</span>
+                </div>
+                <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-white/10 text-rose-200">
+                  {isFullscreen ? 'ON' : 'OFF'}
+                </span>
+              </button>
+            </div>
+          )}
 
           {/* Bottom Controls / Lock Session - Dinaikin immediately below 50+ Cabang */}
           {settings.accessPassword && onLockApp && (

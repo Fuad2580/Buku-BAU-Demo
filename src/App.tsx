@@ -42,8 +42,9 @@ import { SpreadsheetEditorModal } from './components/SpreadsheetEditorModal';
 import { AppsScriptDeployModal } from './components/AppsScriptDeployModal';
 import { PasswordGateModal } from './components/PasswordGateModal';
 import { GalaxyBackground } from './components/GalaxyBackground';
-import { Sparkles, AlertCircle, CheckCircle } from 'lucide-react';
+import { Sparkles, AlertCircle, CheckCircle, Maximize, Minimize } from 'lucide-react';
 import { exportBauToExcel } from './utils/excelExporter';
+import { useFullscreen } from './utils/useFullscreen';
 
 const STORAGE_KEY = 'sozo_bau_web_app_data_v7';
 
@@ -119,6 +120,9 @@ function loadInitialTreatments(): TreatmentItem[] {
 }
 
 export default function App() {
+  // Fullscreen support for tablets and mobile devices
+  const { isFullscreen, toggleFullscreen, isSupported: isFullscreenSupported } = useFullscreen();
+
   // State from local storage or initial data
   const [categories, setCategories] = useState<Category[]>(loadInitialCategories);
   const [treatments, setTreatments] = useState<TreatmentItem[]>(loadInitialTreatments);
@@ -654,6 +658,25 @@ export default function App() {
             showToast('Akses Buku Menu berhasil dibuka!');
           }}
         />
+
+        {/* Floating Fullscreen Button on Gate Screen */}
+        {isFullscreenSupported && (
+          <button
+            onClick={() => {
+              toggleFullscreen();
+              showToast(isFullscreen ? 'Keluar dari layar penuh' : 'Mode layar penuh aktif');
+            }}
+            title={isFullscreen ? "Keluar Layar Penuh" : "Buka Layar Penuh (Hilangkan Toolbar Chrome)"}
+            className={`fixed bottom-6 left-6 z-50 px-3 py-2 sm:px-3.5 sm:py-2.5 rounded-2xl shadow-xl flex items-center gap-2 text-xs font-semibold transition-all border cursor-pointer ${
+              isFullscreen
+                ? 'bg-[#25050F]/90 hover:bg-[#340715] text-rose-200 border-rose-400/40'
+                : 'bg-gradient-to-r from-[#8C2941] to-[#5C1626] text-[#FFF3D6] border-[#E6C994]/50 hover:border-[#E6C994] shadow-[0_4px_20px_rgba(0,0,0,0.6)]'
+            }`}
+          >
+            {isFullscreen ? <Minimize className="w-3.5 h-3.5 text-[#FFD285]" /> : <Maximize className="w-3.5 h-3.5 text-[#FFD285]" />}
+            <span>{isFullscreen ? 'Keluar Fullscreen' : 'Full Screen'}</span>
+          </button>
+        )}
       </div>
     );
   }
@@ -667,6 +690,34 @@ export default function App() {
           <CheckCircle className="w-4 h-4 text-emerald-400 shrink-0" />
           <span>{toastMessage}</span>
         </div>
+      )}
+
+      {/* Floating Quick Full Screen Toggle Button (Optimized for Android / Tablet kiosk usage) */}
+      {isFullscreenSupported && (
+        <button
+          onClick={() => {
+            toggleFullscreen();
+            showToast(isFullscreen ? 'Keluar dari mode layar penuh' : 'Mode layar penuh aktif (Toolbar Chrome disembunyikan)');
+          }}
+          title={isFullscreen ? 'Keluar dari Layar Penuh (ESC)' : 'Mode Layar Penuh (Hilangkan Toolbar Chrome)'}
+          className={`fixed bottom-6 left-6 z-40 px-3 py-2 sm:px-3.5 sm:py-2.5 rounded-2xl shadow-2xl flex items-center gap-2 text-xs font-semibold transition-all border cursor-pointer group select-none ${
+            isFullscreen
+              ? 'bg-[#1C030B]/90 hover:bg-[#280510] text-rose-200 hover:text-white border-rose-400/40 shadow-[0_8px_25px_rgba(0,0,0,0.7)]'
+              : 'bg-gradient-to-r from-[#8C2941] via-[#6B1D2F] to-[#450916] text-[#FFF3D6] border-[#E6C994]/50 hover:border-[#E6C994] shadow-[0_8px_30px_rgba(140,41,65,0.45)] hover:scale-105 active:scale-95'
+          }`}
+        >
+          {isFullscreen ? (
+            <>
+              <Minimize className="w-4 h-4 text-[#FFD285] transition-transform group-hover:scale-110" />
+              <span>Keluar Fullscreen</span>
+            </>
+          ) : (
+            <>
+              <Maximize className="w-4 h-4 text-[#FFD285] transition-transform group-hover:scale-110" />
+              <span>Full Screen</span>
+            </>
+          )}
+        </button>
       )}
 
       {/* Main Brand Header with mobile menu button support */}
@@ -688,6 +739,8 @@ export default function App() {
           showToast('Buku Menu telah dikunci.');
         }}
         onOpenMobileMenu={() => setIsMobileSidebarOpen(true)}
+        isFullscreen={isFullscreen}
+        onToggleFullscreen={toggleFullscreen}
       />
 
       {/* Promotional Hero Banner */}
@@ -721,6 +774,8 @@ export default function App() {
             settings={settings}
             isOpenMobile={isMobileSidebarOpen}
             onCloseMobile={() => setIsMobileSidebarOpen(false)}
+            isFullscreen={isFullscreen}
+            onToggleFullscreen={toggleFullscreen}
           />
 
           {/* Main Interactive Content */}

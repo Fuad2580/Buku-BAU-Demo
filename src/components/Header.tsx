@@ -10,7 +10,9 @@ import {
   Lock,
   FileSpreadsheet,
   Download,
-  Menu
+  Menu,
+  Maximize,
+  Minimize
 } from 'lucide-react';
 import { ClinicSettings, CartItem } from '../types';
 
@@ -38,6 +40,8 @@ interface HeaderProps {
   isSyncing: boolean;
   onLockApp?: () => void;
   onOpenMobileMenu?: () => void;
+  isFullscreen?: boolean;
+  onToggleFullscreen?: () => void;
 }
 
 export const Header: React.FC<HeaderProps> = ({
@@ -54,6 +58,8 @@ export const Header: React.FC<HeaderProps> = ({
   isSyncing,
   onLockApp,
   onOpenMobileMenu,
+  isFullscreen,
+  onToggleFullscreen,
 }) => {
   const totalCartCount = cartItems.reduce((sum, item) => sum + item.quantity, 0);
 
@@ -84,6 +90,16 @@ export const Header: React.FC<HeaderProps> = ({
               <MapPin className="w-3.5 h-3.5 text-[#E8BF87]" />
               <span>50+ Cabang</span>
             </button>
+            {onToggleFullscreen && (
+              <button 
+                onClick={onToggleFullscreen}
+                className="hover:text-white flex items-center gap-1 transition cursor-pointer text-rose-200 border-l border-white/10 pl-3"
+                title={isFullscreen ? "Keluar Layar Penuh" : "Mode Layar Penuh (Toolbar Hilang)"}
+              >
+                {isFullscreen ? <Minimize className="w-3.5 h-3.5 text-[#E8BF87]" /> : <Maximize className="w-3.5 h-3.5 text-[#E8BF87]" />}
+                <span>{isFullscreen ? 'Keluar Fullscreen' : 'Layar Penuh'}</span>
+              </button>
+            )}
           </div>
         </div>
       </div>
@@ -152,6 +168,31 @@ export const Header: React.FC<HeaderProps> = ({
 
         {/* Action Buttons */}
         <div className="flex items-center gap-2">
+          {/* Fullscreen Button */}
+          {onToggleFullscreen && (
+            <button
+              onClick={onToggleFullscreen}
+              title={isFullscreen ? "Keluar Layar Penuh" : "Mode Layar Penuh (Hilangkan Toolbar Chrome)"}
+              className={`p-2 sm:px-3 sm:py-2 rounded-xl text-xs font-medium flex items-center gap-1.5 transition border cursor-pointer ${
+                isFullscreen
+                  ? 'bg-rose-500/30 hover:bg-rose-500/40 text-white border-rose-400/60 shadow-[0_0_12px_rgba(229,57,101,0.35)]'
+                  : 'bg-white/10 hover:bg-white/20 text-rose-200 hover:text-white border-white/10'
+              }`}
+            >
+              {isFullscreen ? (
+                <>
+                  <Minimize className="w-3.5 h-3.5 text-[#FFD285]" />
+                  <span className="hidden sm:inline">Normal</span>
+                </>
+              ) : (
+                <>
+                  <Maximize className="w-3.5 h-3.5 text-[#FFD285]" />
+                  <span className="hidden sm:inline">Full Screen</span>
+                </>
+              )}
+            </button>
+          )}
+
           {/* Sync Button */}
           <button
             onClick={onRefreshData}
