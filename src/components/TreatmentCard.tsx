@@ -203,7 +203,7 @@ export const TreatmentCard: React.FC<TreatmentCardProps> = ({
             ) : (
               <>
                 <Plus className="w-4 h-4 text-[#FFD285]" />
-                <span>+ Tambah ke Estimasi Biaya</span>
+                <span>Tambah Estimasi Biaya</span>
               </>
             )}
           </button>

@@ -143,7 +143,7 @@ export const PhotoLightboxModal: React.FC<PhotoLightboxModalProps> = ({
               ) : (
                 <>
                   <Calculator className="w-4 h-4" />
-                  <span>+ Tambah ke Estimasi Biaya</span>
+                  <span>Tambah Estimasi Biaya</span>
                 </>
               )}
             </button>

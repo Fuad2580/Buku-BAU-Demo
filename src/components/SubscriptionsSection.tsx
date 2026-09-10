@@ -254,7 +254,7 @@ export const SubscriptionsSection: React.FC<SubscriptionsSectionProps> = ({
                                   ? 'bg-emerald-600 text-white' 
                                   : 'bg-gradient-to-r from-[#E53965] to-[#B02848] text-white border border-rose-300/40 hover:brightness-110'
                               }`}
-                              title="Tambah ke Estimasi Biaya"
+                              title="Tambah Estimasi Biaya"
                             >
                               {inCart ? <Check className="w-3.5 h-3.5" /> : <Plus className="w-3.5 h-3.5" />}
                               <span>{inCart ? '✓' : '+ Estimasi'}</span>
@@ -310,7 +310,7 @@ export const SubscriptionsSection: React.FC<SubscriptionsSectionProps> = ({
                                   ? 'bg-emerald-600 text-white' 
                                   : 'bg-gradient-to-r from-[#E53965] to-[#B02848] text-white border border-rose-300/40 hover:brightness-110'
                               }`}
-                              title="Tambah ke Estimasi Biaya"
+                              title="Tambah Estimasi Biaya"
                             >
                               {inCart ? <Check className="w-3.5 h-3.5" /> : <Plus className="w-3.5 h-3.5" />}
                               <span>{inCart ? '✓' : '+ Estimasi'}</span>
@@ -369,7 +369,7 @@ export const SubscriptionsSection: React.FC<SubscriptionsSectionProps> = ({
                                   ? 'bg-emerald-600 text-white' 
                                   : 'bg-gradient-to-r from-[#E53965] to-[#B02848] text-white border border-rose-300/40 hover:brightness-110'
                               }`}
-                              title="Tambah ke Estimasi Biaya"
+                              title="Tambah Estimasi Biaya"
                             >
                               {inCart ? <Check className="w-3.5 h-3.5" /> : <Plus className="w-3.5 h-3.5" />}
                               <span>{inCart ? '✓' : '+ Estimasi'}</span>
@@ -428,7 +428,7 @@ export const SubscriptionsSection: React.FC<SubscriptionsSectionProps> = ({
                                   ? 'bg-emerald-600 text-white' 
                                   : 'bg-gradient-to-r from-[#E53965] to-[#B02848] text-white'
                               }`}
-                              title="Tambah ke Estimasi Biaya"
+                              title="Tambah Estimasi Biaya"
                             >
                               {inCart ? <Check className="w-3 h-3" /> : <Plus className="w-3 h-3" />}
                               <span>{inCart ? '✓' : '+ Estimasi'}</span>
