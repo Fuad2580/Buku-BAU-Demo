@@ -18,6 +18,7 @@ interface SinglePromosSectionProps {
 export const SinglePromosSection: React.FC<SinglePromosSectionProps> = ({
   singlePromos,
   isMemberPrice,
+  settings,
   searchQuery = '',
   skinGoalFilter = '',
   cartItems = [],
@@ -102,50 +103,50 @@ export const SinglePromosSection: React.FC<SinglePromosSectionProps> = ({
   };
 
   return (
-    <div className="space-y-6 text-stone-800">
+    <div className="space-y-6 text-rose-100">
       
       {/* Intro Header */}
-      <div className="bg-white rounded-3xl p-6 border border-stone-200/90 shadow-sm flex flex-col md:flex-row items-start md:items-center justify-between gap-4 relative overflow-visible">
+      <div className="bg-[#1a030a]/80 backdrop-blur-2xl rounded-3xl p-6 border border-rose-500/25 shadow-xl flex flex-col md:flex-row items-start md:items-center justify-between gap-4 relative overflow-visible">
         <CardLightFlare topPosition="center" />
         <div>
           <div className="flex items-center gap-2 mb-1 flex-wrap">
-            <span className="text-[10px] uppercase font-bold tracking-widest px-2.5 py-0.5 rounded-full bg-gradient-to-r from-[#E6C994] to-[#C9A86A] text-stone-950 shadow-sm">
-              Buku BAU Hal. 9 - 10
+            <span className="text-[10px] uppercase font-bold tracking-widest px-2.5 py-0.5 rounded-full bg-gradient-to-r from-[#FFD285] to-[#E5A84D] text-stone-950 shadow-sm">
+              {settings.singlePromoPageBadge || 'Buku BAU Hal. 9 - 10'}
             </span>
-            <span className="text-xs font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-md">
-              Harga Satuan Promo
+            <span className="text-xs font-bold text-emerald-300 bg-emerald-950/60 border border-emerald-500/40 px-2 py-0.5 rounded-md">
+              {settings.singlePromoTagBadge || 'Harga Satuan Promo'}
             </span>
             {searchQuery && (
-              <span className="text-xs font-semibold text-[#8C1D35] bg-rose-50 border border-rose-200 px-2 py-0.5 rounded-md flex items-center gap-1">
-                <Search className="w-3 h-3" />
+              <span className="text-xs font-semibold text-rose-200 bg-rose-950/60 border border-rose-500/40 px-2 py-0.5 rounded-md flex items-center gap-1">
+                <Search className="w-3 h-3 text-[#FFD285]" />
                 Pencarian: "{searchQuery}"
               </span>
             )}
             {skinGoalFilter && (
-              <span className="text-xs font-semibold text-amber-900 bg-amber-50 border border-amber-200 px-2 py-0.5 rounded-md flex items-center gap-1">
-                <Sparkles className="w-3 h-3 text-amber-600" />
+              <span className="text-xs font-semibold text-amber-200 bg-amber-950/60 border border-amber-500/40 px-2 py-0.5 rounded-md flex items-center gap-1">
+                <Sparkles className="w-3 h-3 text-[#FFD285]" />
                 Goal: {skinGoalFilter}
               </span>
             )}
           </div>
-          <h2 className="text-2xl font-serif font-bold text-stone-900">
-            Promo Single Treatment
+          <h2 className="text-2xl font-serif font-bold text-white">
+            {settings.singlePromoTitle || 'Promo Single Treatment'}
           </h2>
-          <p className="text-xs sm:text-sm text-stone-600 mt-1 font-normal">
-            Pilihan perawatan satuan dengan harga spesial. Hemat lebih banyak untuk member terdaftar.
+          <p className="text-xs sm:text-sm text-rose-200/80 mt-1 font-normal">
+            {settings.singlePromoSubtitle || 'Pilihan perawatan satuan dengan harga spesial. Hemat lebih banyak untuk member terdaftar.'}
           </p>
         </div>
 
         {/* Group Filter Buttons */}
-        <div className="flex flex-wrap gap-1.5 p-1 bg-stone-100 border border-stone-200 rounded-2xl">
+        <div className="flex flex-wrap gap-1.5 p-1.5 bg-black/50 border border-rose-500/20 rounded-2xl">
           {groups.map((grp) => (
             <button
               key={grp}
               onClick={() => setSelectedGroup(grp)}
               className={`px-3 py-1.5 rounded-xl text-xs font-bold transition cursor-pointer ${
                 selectedGroup === grp
-                  ? 'bg-gradient-to-r from-[#8C1D35] to-[#B02848] text-white shadow-sm border-t border-[#FFAEC2]/40'
-                  : 'text-stone-600 hover:text-stone-900 hover:bg-white'
+                  ? 'bg-gradient-to-r from-[#FFD285] to-[#E5A84D] text-stone-950 shadow-[0_0_12px_rgba(255,210,133,0.35)]'
+                  : 'text-rose-200/80 hover:text-white hover:bg-white/10'
               }`}
             >
               {grp}
@@ -156,24 +157,24 @@ export const SinglePromosSection: React.FC<SinglePromosSectionProps> = ({
 
       {/* Special Highlights: Botox 5% & Filler Threadlift 10% */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div className="bg-rose-50/70 p-4 rounded-2xl border border-rose-200/80 flex items-center justify-between shadow-xs">
+        <div className="bg-gradient-to-r from-[#2a040e]/90 to-[#1d0309]/90 backdrop-blur-xl p-4 rounded-2xl border border-rose-500/30 flex items-center justify-between shadow-lg">
           <div>
-            <span className="text-[10px] font-bold text-[#8C1D35] uppercase tracking-wide">Voucher Diskon</span>
-            <h4 className="text-base font-bold font-serif text-stone-900">Botox Premium (min. 50 unit)</h4>
-            <p className="text-xs text-stone-600">Diskon 5% • Maksimal Potongan 150 RB</p>
+            <span className="text-[10px] font-bold text-[#FFD285] uppercase tracking-wide">Voucher Diskon</span>
+            <h4 className="text-base font-bold font-serif text-white">Botox Premium (min. 50 unit)</h4>
+            <p className="text-xs text-rose-200/70">Diskon 5% • Maksimal Potongan 150 RB</p>
           </div>
-          <span className="px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-[#8C1D35] to-[#B02848] text-white text-sm font-extrabold shadow-sm border-t border-[#FFAEC2]/40">
+          <span className="px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-[#E53965] to-[#B02848] text-white text-sm font-extrabold shadow-md border-t border-rose-300/40">
             Diskon 5%
           </span>
         </div>
 
-        <div className="bg-amber-50/70 p-4 rounded-2xl border border-amber-200/80 flex items-center justify-between shadow-xs">
+        <div className="bg-gradient-to-r from-[#2a040e]/90 to-[#1d0309]/90 backdrop-blur-xl p-4 rounded-2xl border border-amber-500/30 flex items-center justify-between shadow-lg">
           <div>
-            <span className="text-[10px] font-bold text-amber-900 uppercase tracking-wide">Voucher Diskon</span>
-            <h4 className="text-base font-bold font-serif text-stone-900">Filler & Threadlift Benang</h4>
-            <p className="text-xs text-stone-600">Diskon 10% • Maksimal Potongan 400 RB</p>
+            <span className="text-[10px] font-bold text-amber-300 uppercase tracking-wide">Voucher Diskon</span>
+            <h4 className="text-base font-bold font-serif text-white">Filler & Threadlift Benang</h4>
+            <p className="text-xs text-rose-200/70">Diskon 10% • Maksimal Potongan 400 RB</p>
           </div>
-          <span className="px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-[#C9A86A] to-[#B08F52] text-stone-950 text-sm font-extrabold shadow-sm">
+          <span className="px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-[#FFD285] to-[#E5A84D] text-stone-950 text-sm font-extrabold shadow-md">
             Diskon 10%
           </span>
         </div>
@@ -181,12 +182,12 @@ export const SinglePromosSection: React.FC<SinglePromosSectionProps> = ({
 
       {/* Table of Single Promos */}
       {filteredPromos.length === 0 ? (
-        <div className="py-16 text-center bg-white rounded-3xl border border-stone-200 p-8 shadow-xs">
-          <Sparkles className="w-10 h-10 text-stone-300 mx-auto mb-3" />
-          <h3 className="text-base font-bold text-stone-800">
+        <div className="py-16 text-center bg-[#1a030a]/80 backdrop-blur-2xl rounded-3xl border border-rose-500/25 p-8 shadow-xl">
+          <Sparkles className="w-10 h-10 text-rose-400/40 mx-auto mb-3" />
+          <h3 className="text-base font-bold text-white">
             Tidak ditemukan treatment satuan yang cocok dengan filter
           </h3>
-          <p className="text-xs text-stone-500 mt-1 max-w-sm mx-auto">
+          <p className="text-xs text-rose-200/70 mt-1 max-w-sm mx-auto">
             {searchQuery ? `Tidak ada hasil untuk pencarian "${searchQuery}".` : 'Coba ubah kategori grup atau reset filter.'}
           </p>
           {onClearFilter && (
@@ -195,7 +196,7 @@ export const SinglePromosSection: React.FC<SinglePromosSectionProps> = ({
                 setSelectedGroup('Semua');
                 onClearFilter();
               }}
-              className="mt-4 px-4 py-2 rounded-xl bg-[#8C1D35] text-white text-xs font-bold hover:bg-[#73172B] transition cursor-pointer inline-flex items-center gap-1.5"
+              className="mt-4 px-4 py-2 rounded-xl bg-gradient-to-r from-[#E53965] to-[#B02848] text-white text-xs font-bold hover:opacity-90 transition cursor-pointer inline-flex items-center gap-1.5 shadow-md"
             >
               <RotateCcw className="w-3.5 h-3.5" />
               <span>Reset Filter Pencarian</span>
@@ -203,12 +204,12 @@ export const SinglePromosSection: React.FC<SinglePromosSectionProps> = ({
           )}
         </div>
       ) : (
-        <div className="bg-white rounded-3xl border border-stone-200/90 shadow-sm overflow-visible relative">
+        <div className="bg-[#1a030a]/80 backdrop-blur-2xl rounded-3xl border border-rose-500/25 shadow-2xl overflow-visible relative">
           <CardLightFlare topPosition="center" />
           <div className="overflow-x-auto rounded-3xl">
             <table className="w-full text-left border-collapse">
               <thead>
-                <tr className="bg-stone-50 text-stone-700 text-xs font-bold font-serif uppercase tracking-wider border-b border-stone-200">
+                <tr className="bg-black/50 text-rose-200 text-xs font-bold font-serif uppercase tracking-wider border-b border-rose-500/20">
                   <th className="p-3.5 pl-5">Treatment</th>
                   <th className="p-3.5">Kategori Grup</th>
                   <th className="p-3.5">Harga Normal</th>
@@ -218,7 +219,7 @@ export const SinglePromosSection: React.FC<SinglePromosSectionProps> = ({
                   <th className="p-3.5 pr-5 text-right">Aksi & Estimasi</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-stone-100 text-xs text-stone-700">
+              <tbody className="divide-y divide-rose-500/10 text-xs text-rose-100/90">
                 {filteredPromos.map((item, index) => {
                   const discount = item.originalPrice > item.memberPrice 
                     ? Math.round((1 - (item.memberPrice / item.originalPrice)) * 100)
@@ -227,8 +228,8 @@ export const SinglePromosSection: React.FC<SinglePromosSectionProps> = ({
                   const treatmentForCart = mapToTreatmentItem(item);
 
                   return (
-                    <tr key={item.id} className="hover:bg-stone-50/80 transition">
-                      <td className="p-3.5 pl-5 font-bold text-stone-900 relative">
+                    <tr key={item.id} className="hover:bg-white/[0.04] transition">
+                      <td className="p-3.5 pl-5 font-bold text-white relative">
                         <div 
                           className="inline-block cursor-pointer relative group/item"
                           onClick={() => handleOpenPhoto(item)}
@@ -239,23 +240,23 @@ export const SinglePromosSection: React.FC<SinglePromosSectionProps> = ({
                           }}
                           onMouseLeave={() => setHoveredPhoto(null)}
                         >
-                          <span className="group-hover/item:text-[#8C1D35] transition flex items-center gap-1.5 font-bold">
+                          <span className="group-hover/item:text-[#FFD285] transition flex items-center gap-1.5 font-bold">
                             {item.name}
                             {item.photoUrl && (
-                              <span className="p-1 rounded-md bg-rose-50 group-hover/item:bg-rose-100 text-[#8C1D35] transition">
+                              <span className="p-1 rounded-md bg-white/10 group-hover/item:bg-white/20 text-[#FFD285] transition">
                                 <ImageIcon className="w-3.5 h-3.5" />
                               </span>
                             )}
                           </span>
 
-                          {/* Hover preview tooltip: for top rows (index < 3), opens downwards so it NEVER gets cut off! */}
+                          {/* Hover preview tooltip */}
                           {hoveredPhoto?.id === item.id && (
                             <div 
-                              className={`absolute left-0 z-50 w-64 bg-white rounded-2xl shadow-2xl border border-stone-200 p-2.5 animate-in fade-in zoom-in-95 pointer-events-none ${
+                              className={`absolute left-0 z-50 w-64 bg-[#1e040c]/95 backdrop-blur-2xl rounded-2xl shadow-2xl border border-rose-500/30 p-2.5 animate-in fade-in zoom-in-95 pointer-events-none ${
                                 index < 3 ? 'top-full mt-2' : '-top-2 transform -translate-y-full'
                               }`}
                             >
-                              <div className="aspect-4/3 rounded-xl overflow-hidden bg-stone-100 mb-1.5 border border-stone-200">
+                              <div className="aspect-4/3 rounded-xl overflow-hidden bg-black/40 mb-1.5 border border-rose-500/20">
                                 <img 
                                   src={hoveredPhoto.url} 
                                   alt={hoveredPhoto.name}
@@ -263,44 +264,44 @@ export const SinglePromosSection: React.FC<SinglePromosSectionProps> = ({
                                   referrerPolicy="no-referrer"
                                 />
                               </div>
-                              <p className="text-xs font-bold text-stone-900 font-serif truncate">{hoveredPhoto.name}</p>
-                              <span className="text-[10px] text-stone-500 block">Klik untuk foto besar & tambah ke estimasi</span>
+                              <p className="text-xs font-bold text-white font-serif truncate">{hoveredPhoto.name}</p>
+                              <span className="text-[10px] text-rose-300/70 block">Klik untuk foto besar & tambah ke estimasi</span>
                             </div>
                           )}
                         </div>
                       </td>
 
                       <td className="p-3.5">
-                        <span className="inline-block px-2 py-0.5 rounded-md bg-stone-100 text-stone-700 text-[11px] font-medium border border-stone-200">
+                        <span className="inline-block px-2 py-0.5 rounded-md bg-white/5 text-rose-200 text-[11px] font-medium border border-rose-500/20">
                           {item.group}
                         </span>
                       </td>
 
-                      <td className="p-3.5 text-stone-400 line-through">
+                      <td className="p-3.5 text-rose-300/40 line-through">
                         {item.originalPrice} RB
                       </td>
 
-                      <td className={`p-3.5 font-semibold ${!isMemberPrice ? 'text-[#8C1D35] font-bold text-sm' : 'text-stone-600'}`}>
+                      <td className={`p-3.5 font-semibold ${!isMemberPrice ? 'text-[#FFD285] font-bold text-sm' : 'text-rose-200/80'}`}>
                         {item.nonMemberPrice} RB
                       </td>
 
                       <td className="p-3.5">
                         <div className="flex items-center gap-1.5">
-                          <span className={`font-bold ${isMemberPrice ? 'text-sm text-[#8C1D35]' : 'text-stone-900'}`}>
+                          <span className={`font-bold ${isMemberPrice ? 'text-sm text-[#FFD285]' : 'text-rose-200/90'}`}>
                             {item.memberPrice} RB
                           </span>
                           {discount > 0 && (
-                            <span className="text-[10px] font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-1.5 py-0.2 rounded">
+                            <span className="text-[10px] font-bold text-emerald-300 bg-emerald-950/60 border border-emerald-500/40 px-1.5 py-0.2 rounded">
                               -{discount}%
                             </span>
                           )}
                         </div>
                       </td>
 
-                      <td className="p-3.5 text-stone-500 italic text-[11px]">
+                      <td className="p-3.5 text-rose-300/60 italic text-[11px]">
                         {item.outletRestricted ? (
-                          <span className="flex items-center gap-1 text-amber-700 font-medium">
-                            <MapPin className="w-3 h-3 text-amber-600 shrink-0" />
+                          <span className="flex items-center gap-1 text-[#FFD285] font-medium">
+                            <MapPin className="w-3 h-3 text-[#FFD285] shrink-0" />
                             {item.outletRestricted}
                           </span>
                         ) : (
@@ -315,10 +316,10 @@ export const SinglePromosSection: React.FC<SinglePromosSectionProps> = ({
                             <button
                               type="button"
                               onClick={() => handleOpenPhoto(item)}
-                              className="px-2.5 py-1 rounded-xl bg-stone-100 hover:bg-stone-200 text-stone-700 hover:text-[#8C1D35] text-[11px] font-semibold transition border border-stone-200 flex items-center gap-1 cursor-pointer"
+                              className="px-2.5 py-1 rounded-xl bg-white/5 hover:bg-white/15 text-rose-200 hover:text-white text-[11px] font-semibold transition border border-rose-500/20 flex items-center gap-1 cursor-pointer"
                               title="Lihat Foto Treatment"
                             >
-                              <ImageIcon className="w-3 h-3 text-[#8C1D35]" />
+                              <ImageIcon className="w-3 h-3 text-[#FFD285]" />
                               <span>Foto</span>
                             </button>
                           )}
@@ -328,10 +329,10 @@ export const SinglePromosSection: React.FC<SinglePromosSectionProps> = ({
                             <button
                               type="button"
                               onClick={() => onToggleCart(treatmentForCart)}
-                              className={`px-3 py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-1.5 cursor-pointer shadow-xs ${
+                              className={`px-3 py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-1.5 cursor-pointer shadow-md ${
                                 inCart
-                                  ? 'bg-emerald-600 hover:bg-emerald-700 text-white'
-                                  : 'bg-[#8C1D35] hover:bg-[#73172B] text-white border-t border-[#FFAEC2]/30'
+                                  ? 'bg-emerald-600 hover:bg-emerald-500 text-white'
+                                  : 'bg-gradient-to-r from-[#E53965] to-[#B02848] hover:opacity-95 text-white border-t border-rose-300/30'
                               }`}
                             >
                               {inCart ? (

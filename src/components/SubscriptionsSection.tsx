@@ -18,6 +18,7 @@ interface SubscriptionsSectionProps {
 export const SubscriptionsSection: React.FC<SubscriptionsSectionProps> = ({
   subscriptions,
   isMemberPrice,
+  settings,
   searchQuery = '',
   skinGoalFilter = '',
   cartItems = [],
@@ -79,66 +80,68 @@ export const SubscriptionsSection: React.FC<SubscriptionsSectionProps> = ({
   };
 
   return (
-    <div className="space-y-6 text-stone-800">
+    <div className="space-y-6 text-rose-100">
       
       {/* Header Banner */}
-      <div className="bg-white rounded-3xl p-6 border border-stone-200/90 shadow-sm flex flex-col md:flex-row items-start md:items-center justify-between gap-4 relative overflow-visible">
+      <div className="bg-[#1a030a]/80 backdrop-blur-2xl rounded-3xl p-6 border border-rose-500/25 shadow-xl flex flex-col md:flex-row items-start md:items-center justify-between gap-4 relative overflow-visible">
         <CardLightFlare topPosition="center" />
         <div>
           <div className="flex items-center gap-2 mb-1 flex-wrap">
-            <span className="text-[10px] uppercase font-bold tracking-widest px-2.5 py-0.5 rounded-full bg-gradient-to-r from-[#E6C994] to-[#C9A86A] text-stone-950 shadow-sm">
-              Buku BAU Hal. 72 - 80
+            <span className="text-[10px] uppercase font-bold tracking-widest px-2.5 py-0.5 rounded-full bg-gradient-to-r from-[#FFD285] to-[#E5A84D] text-stone-950 shadow-sm">
+              {settings.subscriptionPageBadge || 'Buku BAU Hal. 72 - 80'}
             </span>
-            <span className="text-xs font-bold text-[#8C1D35] bg-rose-50 border border-rose-200 px-2.5 py-0.5 rounded-md">
-              Maksimal Hemat
+            <span className="text-xs font-bold text-[#FFD285] bg-rose-950/60 border border-rose-500/40 px-2.5 py-0.5 rounded-md">
+              {settings.subscriptionTagBadge || 'Maksimal Hemat'}
             </span>
             {searchQuery && (
-              <span className="text-xs font-semibold text-[#8C1D35] bg-rose-50 border border-rose-200 px-2 py-0.5 rounded-md flex items-center gap-1">
-                <Search className="w-3 h-3" />
+              <span className="text-xs font-semibold text-rose-200 bg-rose-950/60 border border-rose-500/40 px-2 py-0.5 rounded-md flex items-center gap-1">
+                <Search className="w-3 h-3 text-[#FFD285]" />
                 Pencarian: "{searchQuery}"
               </span>
             )}
             {skinGoalFilter && (
-              <span className="text-xs font-semibold text-amber-900 bg-amber-50 border border-amber-200 px-2 py-0.5 rounded-md flex items-center gap-1">
-                <Sparkles className="w-3 h-3 text-amber-600" />
+              <span className="text-xs font-semibold text-amber-200 bg-amber-950/60 border border-amber-500/40 px-2 py-0.5 rounded-md flex items-center gap-1">
+                <Sparkles className="w-3 h-3 text-[#FFD285]" />
                 Goal: {skinGoalFilter}
               </span>
             )}
           </div>
-          <h2 className="text-2xl font-serif font-bold text-stone-900">
-            Paket Treatment Subscription (Langganan Sesi)
+          <h2 className="text-2xl font-serif font-bold text-white">
+            {settings.subscriptionTitle || 'Paket Treatment Subscription (Langganan Sesi)'}
           </h2>
-          <p className="text-xs sm:text-sm text-stone-600 mt-1 font-normal">
-            Dapatkan harga per sesi jauh lebih murah dengan berlangganan paket 3x, 6x, hingga 12x sesi perawatan rutin.
+          <p className="text-xs sm:text-sm text-rose-200/80 mt-1 font-normal">
+            {settings.subscriptionSubtitle || 'Dapatkan harga per sesi jauh lebih murah dengan berlangganan paket 3x, 6x, hingga 12x sesi perawatan rutin.'}
           </p>
         </div>
 
         {/* Validity terms info */}
-        <div className="bg-stone-50 p-3.5 rounded-2xl border border-stone-200 text-xs space-y-1">
-          <p className="font-bold text-[#8C1D35] flex items-center gap-1">
-            <Calendar className="w-3.5 h-3.5 text-[#8C1D35]" />
-            Masa Berlaku Paket:
+        <div className="bg-black/50 p-3.5 rounded-2xl border border-rose-500/20 text-xs space-y-1">
+          <p className="font-bold text-[#FFD285] flex items-center gap-1">
+            <Calendar className="w-3.5 h-3.5 text-[#FFD285]" />
+            {settings.subscriptionTermsTitle || 'Masa Berlaku Paket:'}
           </p>
-          <p className="text-stone-600 text-[11px]">• Paket 3x: berlaku hingga 5 bulan</p>
-          <p className="text-stone-600 text-[11px]">• Paket 6x: berlaku hingga 8 bulan</p>
-          <p className="text-stone-600 text-[11px]">• Paket 12x: berlaku hingga 14 bulan</p>
+          {(settings.subscriptionTermsList || '• Paket 3x: berlaku hingga 5 bulan\n• Paket 6x: berlaku hingga 8 bulan\n• Paket 12x: berlaku hingga 14 bulan')
+            .split('\n')
+            .map((term, i) => (
+              <p key={i} className="text-rose-200/70 text-[11px]">{term.trim()}</p>
+            ))}
         </div>
       </div>
 
       {/* Subscription Grid */}
       {filteredSubscriptions.length === 0 ? (
-        <div className="py-16 text-center bg-white rounded-3xl border border-stone-200 p-8 shadow-xs">
-          <Sparkles className="w-10 h-10 text-stone-300 mx-auto mb-3" />
-          <h3 className="text-base font-bold text-stone-800">
+        <div className="py-16 text-center bg-[#1a030a]/80 backdrop-blur-2xl rounded-3xl border border-rose-500/25 p-8 shadow-xl">
+          <Sparkles className="w-10 h-10 text-rose-400/40 mx-auto mb-3" />
+          <h3 className="text-base font-bold text-white">
             Tidak ditemukan paket langganan yang cocok dengan filter
           </h3>
-          <p className="text-xs text-stone-500 mt-1 max-w-sm mx-auto">
+          <p className="text-xs text-rose-200/70 mt-1 max-w-sm mx-auto">
             {searchQuery ? `Tidak ada hasil untuk pencarian "${searchQuery}".` : 'Coba ubah kata kunci atau reset filter.'}
           </p>
           {onClearFilter && (
             <button
               onClick={onClearFilter}
-              className="mt-4 px-4 py-2 rounded-xl bg-[#8C1D35] text-white text-xs font-bold hover:bg-[#73172B] transition cursor-pointer inline-flex items-center gap-1.5"
+              className="mt-4 px-4 py-2 rounded-xl bg-gradient-to-r from-[#E53965] to-[#B02848] text-white text-xs font-bold hover:opacity-90 transition cursor-pointer inline-flex items-center gap-1.5 shadow-md"
             >
               <RotateCcw className="w-3.5 h-3.5" />
               <span>Reset Filter Pencarian</span>
@@ -150,16 +153,16 @@ export const SubscriptionsSection: React.FC<SubscriptionsSectionProps> = ({
           {filteredSubscriptions.map((sub, index) => (
             <div
               key={sub.id}
-              className="bg-white rounded-3xl border border-stone-200/90 p-5 shadow-sm hover:shadow-xl hover:border-rose-300/80 transition-all duration-300 flex flex-col justify-between relative overflow-visible"
+              className="bg-gradient-to-b from-[#34081b]/95 via-[#230512]/95 to-[#1c030e]/95 backdrop-blur-2xl rounded-3xl border border-rose-400/40 p-5 shadow-xl hover:border-rose-300/80 hover:shadow-[0_0_30px_rgba(229,57,101,0.25)] transition-all duration-300 flex flex-col justify-between relative overflow-visible"
             >
               <CardLightFlare topPosition="center" />
               <div>
                 <div className="flex items-center justify-between gap-2 mb-2">
-                  <span className="text-[10px] uppercase font-bold tracking-widest text-[#8C1D35] bg-rose-50 px-2.5 py-0.5 rounded-md border border-rose-200/70">
+                  <span className="text-[10px] uppercase font-bold tracking-widest text-[#FFE29A] bg-[#4a0d24] px-2.5 py-0.5 rounded-lg border border-rose-400/50 shadow-xs">
                     Subscription
                   </span>
-                  <span className="text-xs text-stone-500 font-medium">
-                    Harga 1x Sesi: <strong className="text-stone-900">{sub.singlePrice} RB</strong>
+                  <span className="text-xs text-rose-100 font-medium">
+                    Harga 1x Sesi: <strong className="text-white font-bold">{sub.singlePrice} RB</strong>
                   </span>
                 </div>
 
@@ -171,22 +174,22 @@ export const SubscriptionsSection: React.FC<SubscriptionsSectionProps> = ({
                   onMouseLeave={() => setHoveredSubId(null)}
                 >
                   <div className="flex items-start justify-between gap-2">
-                    <h3 className="font-serif font-bold text-base text-stone-900 leading-snug hover:text-[#8C1D35] transition flex-1">
+                    <h3 className="font-serif font-bold text-base sm:text-lg text-white leading-snug hover:text-[#FFE29A] transition flex-1 drop-shadow-xs">
                       {sub.treatmentName}
                     </h3>
                     {sub.photoUrl && (
-                      <span className="inline-flex items-center gap-1 text-[10px] font-semibold text-stone-600 bg-stone-100 hover:bg-stone-200 px-2 py-0.5 rounded-full border border-stone-200 transition shrink-0">
-                        <ImageIcon className="w-3 h-3 text-[#8C1D35]" />
+                      <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-rose-100 bg-rose-900/60 hover:bg-rose-800/80 px-2.5 py-0.5 rounded-full border border-rose-400/40 transition shrink-0 shadow-xs">
+                        <ImageIcon className="w-3.5 h-3.5 text-[#FFD285]" />
                         <span>Foto</span>
                       </span>
                     )}
                   </div>
 
                   {hoveredSubId === sub.id && sub.photoUrl && (
-                    <div className={`absolute left-0 z-50 w-64 bg-white rounded-2xl shadow-2xl border border-stone-200 p-2.5 animate-in fade-in zoom-in-95 pointer-events-none ${
+                    <div className={`absolute left-0 z-50 w-64 bg-[#260512] backdrop-blur-2xl rounded-2xl shadow-2xl border border-rose-400/60 p-2.5 animate-in fade-in zoom-in-95 pointer-events-none ${
                       index < 3 ? 'top-full mt-2' : '-top-2 transform -translate-y-full'
                     }`}>
-                      <div className="aspect-4/3 rounded-xl overflow-hidden bg-stone-100 mb-1.5 border border-stone-200">
+                      <div className="aspect-4/3 rounded-xl overflow-hidden bg-black/40 mb-1.5 border border-rose-400/30">
                         <img 
                           src={sub.photoUrl} 
                           alt={sub.treatmentName}
@@ -194,8 +197,8 @@ export const SubscriptionsSection: React.FC<SubscriptionsSectionProps> = ({
                           referrerPolicy="no-referrer"
                         />
                       </div>
-                      <p className="text-xs font-bold text-stone-900 font-serif truncate">{sub.treatmentName}</p>
-                      <span className="text-[10px] text-stone-500">Klik untuk foto besar</span>
+                      <p className="text-xs font-bold text-white font-serif truncate">{sub.treatmentName}</p>
+                      <span className="text-[10px] text-rose-200 block">Klik untuk foto besar</span>
                     </div>
                   )}
                 </div>
@@ -223,19 +226,19 @@ export const SubscriptionsSection: React.FC<SubscriptionsSectionProps> = ({
                     };
 
                     return (
-                      <div className="p-2.5 rounded-2xl bg-stone-50 border border-stone-200/80 flex items-center justify-between gap-2">
+                      <div className="p-3 rounded-2xl bg-gradient-to-r from-[#400c22]/90 to-[#2c0717]/90 border border-rose-400/35 shadow-sm flex items-center justify-between gap-2">
                         <div>
-                          <span className="text-xs font-bold text-stone-900 block">Paket 3x Sesi</span>
-                          <span className="text-[10px] text-stone-400 line-through">
+                          <span className="text-xs font-bold text-white block">Paket 3x Sesi</span>
+                          <span className="text-[11px] text-rose-200/80 font-semibold line-through">
                             {sub.package3x.original} RB
                           </span>
                         </div>
                         <div className="text-right flex items-center gap-2">
                           <div>
-                            <span className="text-sm font-extrabold text-[#8C1D35] block">
+                            <span className="text-sm font-black text-[#FFD285] block drop-shadow-xs">
                               {isMemberPrice ? sub.package3x.member : sub.package3x.nonMember} RB
                             </span>
-                            <span className="text-[10px] text-emerald-700 font-bold block">
+                            <span className="text-[11px] text-emerald-300 font-extrabold block">
                               ({isMemberPrice ? sub.package3x.perSessionMember : sub.package3x.perSessionNonMember} RB/sesi)
                             </span>
                           </div>
@@ -243,14 +246,14 @@ export const SubscriptionsSection: React.FC<SubscriptionsSectionProps> = ({
                             <button
                               type="button"
                               onClick={() => onToggleCart(itemForCart)}
-                              className={`px-2 py-1 rounded-lg text-[11px] font-bold transition flex items-center gap-1 cursor-pointer shrink-0 shadow-2xs ${
+                              className={`px-2.5 py-1.5 rounded-xl text-xs font-black transition flex items-center gap-1 cursor-pointer shrink-0 shadow-md ${
                                 inCart 
                                   ? 'bg-emerald-600 text-white' 
-                                  : 'bg-[#8C1D35] hover:bg-[#73172B] text-white'
+                                  : 'bg-gradient-to-r from-[#E53965] to-[#B02848] text-white border border-rose-300/40 hover:brightness-110'
                               }`}
                               title="Tambah ke Estimasi Biaya"
                             >
-                              {inCart ? <Check className="w-3 h-3" /> : <Plus className="w-3 h-3" />}
+                              {inCart ? <Check className="w-3.5 h-3.5" /> : <Plus className="w-3.5 h-3.5" />}
                               <span>{inCart ? '✓' : '+ Estimasi'}</span>
                             </button>
                           )}
@@ -279,19 +282,19 @@ export const SubscriptionsSection: React.FC<SubscriptionsSectionProps> = ({
                     };
 
                     return (
-                      <div className="p-2.5 rounded-2xl bg-stone-50 border border-stone-200/80 flex items-center justify-between gap-2">
+                      <div className="p-3 rounded-2xl bg-gradient-to-r from-[#400c22]/90 to-[#2c0717]/90 border border-rose-400/35 shadow-sm flex items-center justify-between gap-2">
                         <div>
-                          <span className="text-xs font-bold text-stone-900 block">Paket 4x Sesi</span>
-                          <span className="text-[10px] text-stone-400 line-through">
+                          <span className="text-xs font-bold text-white block">Paket 4x Sesi</span>
+                          <span className="text-[11px] text-rose-200/80 font-semibold line-through">
                             {sub.package4x.original} RB
                           </span>
                         </div>
                         <div className="text-right flex items-center gap-2">
                           <div>
-                            <span className="text-sm font-extrabold text-[#8C1D35] block">
+                            <span className="text-sm font-black text-[#FFD285] block drop-shadow-xs">
                               {isMemberPrice ? sub.package4x.member : sub.package4x.nonMember} RB
                             </span>
-                            <span className="text-[10px] text-emerald-700 font-bold block">
+                            <span className="text-[11px] text-emerald-300 font-extrabold block">
                               ({isMemberPrice ? sub.package4x.perSessionMember : sub.package4x.perSessionNonMember} RB/sesi)
                             </span>
                           </div>
@@ -299,14 +302,14 @@ export const SubscriptionsSection: React.FC<SubscriptionsSectionProps> = ({
                             <button
                               type="button"
                               onClick={() => onToggleCart(itemForCart)}
-                              className={`px-2 py-1 rounded-lg text-[11px] font-bold transition flex items-center gap-1 cursor-pointer shrink-0 shadow-2xs ${
+                              className={`px-2.5 py-1.5 rounded-xl text-xs font-black transition flex items-center gap-1 cursor-pointer shrink-0 shadow-md ${
                                 inCart 
                                   ? 'bg-emerald-600 text-white' 
-                                  : 'bg-[#8C1D35] hover:bg-[#73172B] text-white'
+                                  : 'bg-gradient-to-r from-[#E53965] to-[#B02848] text-white border border-rose-300/40 hover:brightness-110'
                               }`}
                               title="Tambah ke Estimasi Biaya"
                             >
-                              {inCart ? <Check className="w-3 h-3" /> : <Plus className="w-3 h-3" />}
+                              {inCart ? <Check className="w-3.5 h-3.5" /> : <Plus className="w-3.5 h-3.5" />}
                               <span>{inCart ? '✓' : '+ Estimasi'}</span>
                             </button>
                           )}
@@ -335,22 +338,22 @@ export const SubscriptionsSection: React.FC<SubscriptionsSectionProps> = ({
                     };
 
                     return (
-                      <div className="p-2.5 rounded-2xl bg-rose-50/70 border border-rose-200/80 flex items-center justify-between gap-2">
+                      <div className="p-3 rounded-2xl bg-gradient-to-r from-[#4d0f28]/95 to-[#33081b]/95 border border-rose-400/50 shadow-sm flex items-center justify-between gap-2">
                         <div>
                           <div className="flex items-center gap-1">
-                            <span className="text-xs font-bold text-stone-900">Paket 6x Sesi</span>
-                            <span className="text-[9px] font-extrabold text-white bg-gradient-to-r from-rose-600 to-red-600 px-1.5 py-0.2 rounded">Hemat</span>
+                            <span className="text-xs font-bold text-white">Paket 6x Sesi</span>
+                            <span className="text-[9px] font-extrabold text-white bg-gradient-to-r from-rose-600 to-red-600 px-1.5 py-0.2 rounded shadow-xs">Hemat</span>
                           </div>
-                          <span className="text-[10px] text-stone-400 line-through block">
+                          <span className="text-[11px] text-rose-200/80 font-semibold line-through block">
                             {sub.package6x.original} RB
                           </span>
                         </div>
                         <div className="text-right flex items-center gap-2">
                           <div>
-                            <span className="text-sm font-extrabold text-[#8C1D35] block">
+                            <span className="text-sm font-black text-[#FFD285] block drop-shadow-xs">
                               {isMemberPrice ? sub.package6x.member : sub.package6x.nonMember} RB
                             </span>
-                            <span className="text-[10px] text-emerald-700 font-bold block">
+                            <span className="text-[11px] text-emerald-300 font-extrabold block">
                               ({isMemberPrice ? sub.package6x.perSessionMember : sub.package6x.perSessionNonMember} RB/sesi)
                             </span>
                           </div>
@@ -358,14 +361,14 @@ export const SubscriptionsSection: React.FC<SubscriptionsSectionProps> = ({
                             <button
                               type="button"
                               onClick={() => onToggleCart(itemForCart)}
-                              className={`px-2 py-1 rounded-lg text-[11px] font-bold transition flex items-center gap-1 cursor-pointer shrink-0 shadow-2xs ${
+                              className={`px-2.5 py-1.5 rounded-xl text-xs font-black transition flex items-center gap-1 cursor-pointer shrink-0 shadow-md ${
                                 inCart 
                                   ? 'bg-emerald-600 text-white' 
-                                  : 'bg-[#8C1D35] hover:bg-[#73172B] text-white'
+                                  : 'bg-gradient-to-r from-[#E53965] to-[#B02848] text-white border border-rose-300/40 hover:brightness-110'
                               }`}
                               title="Tambah ke Estimasi Biaya"
                             >
-                              {inCart ? <Check className="w-3 h-3" /> : <Plus className="w-3 h-3" />}
+                              {inCart ? <Check className="w-3.5 h-3.5" /> : <Plus className="w-3.5 h-3.5" />}
                               <span>{inCart ? '✓' : '+ Estimasi'}</span>
                             </button>
                           )}
@@ -394,22 +397,22 @@ export const SubscriptionsSection: React.FC<SubscriptionsSectionProps> = ({
                     };
 
                     return (
-                      <div className="p-2.5 rounded-2xl bg-amber-50/80 border border-amber-200 flex items-center justify-between gap-2">
+                      <div className="p-3 rounded-2xl bg-gradient-to-r from-[#442308]/95 to-[#2d1504]/95 border border-amber-400/50 shadow-sm flex items-center justify-between gap-2">
                         <div>
                           <div className="flex items-center gap-1">
-                            <span className="text-xs font-bold text-stone-900">Paket 12x Sesi</span>
-                            <span className="text-[9px] font-extrabold text-stone-950 bg-gradient-to-r from-[#E6C994] to-[#C9A86A] px-1.5 py-0.2 rounded">Super Hemat</span>
+                            <span className="text-xs font-bold text-white">Paket 12x Sesi</span>
+                            <span className="text-[9px] font-extrabold text-stone-950 bg-gradient-to-r from-[#FFD285] to-[#E5A84D] px-1.5 py-0.2 rounded shadow-xs">Super Hemat</span>
                           </div>
-                          <span className="text-[10px] text-stone-400 line-through block">
+                          <span className="text-[11px] text-amber-200/80 font-semibold line-through block">
                             {sub.package12x.original} RB
                           </span>
                         </div>
                         <div className="text-right flex items-center gap-2">
                           <div>
-                            <span className="text-sm font-extrabold text-[#8C1D35] block">
+                            <span className="text-sm font-black text-[#FFD285] block drop-shadow-xs">
                               {isMemberPrice ? sub.package12x.member : sub.package12x.nonMember} RB
                             </span>
-                            <span className="text-[10px] text-emerald-700 font-bold block">
+                            <span className="text-[11px] text-emerald-300 font-extrabold block">
                               ({isMemberPrice ? sub.package12x.perSessionMember : sub.package12x.perSessionNonMember} RB/sesi)
                             </span>
                           </div>
@@ -417,10 +420,10 @@ export const SubscriptionsSection: React.FC<SubscriptionsSectionProps> = ({
                             <button
                               type="button"
                               onClick={() => onToggleCart(itemForCart)}
-                              className={`px-2 py-1 rounded-lg text-[11px] font-bold transition flex items-center gap-1 cursor-pointer shrink-0 shadow-2xs ${
+                              className={`px-2 py-1 rounded-lg text-[11px] font-bold transition flex items-center gap-1 cursor-pointer shrink-0 shadow-md ${
                                 inCart 
                                   ? 'bg-emerald-600 text-white' 
-                                  : 'bg-[#8C1D35] hover:bg-[#73172B] text-white'
+                                  : 'bg-gradient-to-r from-[#E53965] to-[#B02848] text-white'
                               }`}
                               title="Tambah ke Estimasi Biaya"
                             >
@@ -437,17 +440,17 @@ export const SubscriptionsSection: React.FC<SubscriptionsSectionProps> = ({
               </div>
 
               {/* Card Footer */}
-              <div className="mt-5 pt-3 border-t border-stone-100 flex items-center justify-between">
-                <span className="text-[11px] text-stone-500 font-medium">
+              <div className="mt-5 pt-3 border-t border-rose-500/15 flex items-center justify-between">
+                <span className="text-[11px] text-rose-300/60 font-medium">
                   Bisa cicilan 0% Paylater
                 </span>
                 {sub.photoUrl && (
                   <button
                     type="button"
                     onClick={() => handleOpenPhoto(sub)}
-                    className="px-3 py-1.5 rounded-xl bg-stone-100 hover:bg-stone-200 text-stone-700 hover:text-[#8C1D35] text-xs font-bold flex items-center gap-1.5 transition border border-stone-200 cursor-pointer"
+                    className="px-3 py-1.5 rounded-xl bg-white/10 hover:bg-white/20 text-rose-200 hover:text-white text-xs font-bold flex items-center gap-1.5 transition border border-rose-500/20 cursor-pointer"
                   >
-                    <ImageIcon className="w-3.5 h-3.5 text-[#8C1D35]" />
+                    <ImageIcon className="w-3.5 h-3.5 text-[#FFD285]" />
                     <span>Lihat Foto</span>
                   </button>
                 )}

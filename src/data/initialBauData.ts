@@ -4,20 +4,37 @@ export const DEFAULT_APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfyc
 
 export const initialClinicSettings: ClinicSettings = {
   clinicName: "SOZO Skin Clinic",
-  promoTitle: "Merdeka Berani Glowing",
+  promoTitle: "Rona Cantik Bersemi",
   promoSubtitle: "Dapatkan kulit sehat, cerah, dan bebas masalah dengan penawaran treatment terbaik. Tersedia Cicilan 0% Paylater & Cashback hingga 500 RB!",
   promoBadge: "Promo Spesial Buku BAU 2026",
   paymentPartners: "Indodana • Kredivo • Atome • SPayLater • BCA • BRI • Mandiri",
-  tagline: "Merdeka Berani Glowing - Cicilan 0% Paylater & Cashback hingga 500 RB",
-  periodText: "Berlaku untuk booking periode 1 - 31 Agustus 2026",
+  tagline: "Cicilan 0% Paylater & Cashback hingga 500 RB",
+  periodText: "Berlaku untuk booking periode 1 - 30 September 2026",
   bookingDp: 50000,
   serviceChargePercent: 5,
   serviceChargeMax: 150000,
   packageValidityMonths: 6,
   csWhatsappNumber: "6281234567890",
-  accessPassword: "sozo",
+  accessPassword: "sozoskinjayajaya",
   webAppUrl: DEFAULT_APPS_SCRIPT_URL,
   lastSyncedAt: new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }),
+
+  subscriptionPageBadge: "Buku BAU Hal. 72 - 80",
+  subscriptionTagBadge: "Maksimal Hemat",
+  subscriptionTitle: "Paket Treatment Subscription (Langganan Sesi)",
+  subscriptionSubtitle: "Dapatkan harga per sesi jauh lebih murah dengan berlangganan paket 3x, 6x, hingga 12x sesi perawatan rutin.",
+  subscriptionTermsTitle: "Masa Berlaku Paket:",
+  subscriptionTermsList: "• Paket 3x: berlaku hingga 5 bulan\n• Paket 6x: berlaku hingga 8 bulan\n• Paket 12x: berlaku hingga 14 bulan",
+
+  singlePromoPageBadge: "Buku BAU Hal. 9 - 10",
+  singlePromoTagBadge: "Harga Satuan Promo",
+  singlePromoTitle: "Promo Single Treatment",
+  singlePromoSubtitle: "Pilihan perawatan satuan dengan harga spesial. Hemat lebih banyak untuk member terdaftar.",
+
+  skincarePageBadge: "Buku BAU Hal. 82 - 85",
+  skincareTagBadge: "FREE Exclusive SOZO Pouch",
+  skincareTitle: "Paket Skincare Kit Bundling",
+  skincareSubtitle: "Formula dermatologis teruji klinis untuk perawatan harian di rumah. Sudah termasuk PPN 11%.",
 };
 
 export const initialCategories: Category[] = [

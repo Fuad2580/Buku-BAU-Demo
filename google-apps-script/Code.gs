@@ -124,7 +124,27 @@ function setupSpreadsheet() {
     ["SERVICE_CHARGE_MAX", "150000", "Batas Maksimal Service Charge (Rupiah)"],
     ["VALIDITY_MONTHS", "6", "Masa Berlaku Paket (Bulan)"],
     ["WHATSAPP_CS", "6281234567890", "Nomor WhatsApp CS untuk Booking Order"],
-    ["ACCESS_PASSWORD", "sozo", "Password untuk Membuka Web App Buku Menu (Kosongkan jika ingin publik)"]
+    ["ACCESS_PASSWORD", "sozo", "Password untuk Membuka Web App Buku Menu (Kosongkan jika ingin publik)"],
+
+    // Banner Kustomisasi Subscription
+    ["SUBSCRIPTION_PAGE_BADGE", "Buku BAU Hal. 72 - 80", "Badge Halaman Subscription (misal: Buku BAU Hal. 72 - 80)"],
+    ["SUBSCRIPTION_TAG_BADGE", "Maksimal Hemat", "Badge Tag Subscription (misal: Maksimal Hemat)"],
+    ["SUBSCRIPTION_TITLE", "Paket Treatment Subscription (Langganan Sesi)", "Judul Banner Paket Subscription"],
+    ["SUBSCRIPTION_SUBTITLE", "Dapatkan harga per sesi jauh lebih murah dengan berlangganan paket 3x, 6x, hingga 12x sesi perawatan rutin.", "Deskripsi / Narasi di Bawah Judul Subscription"],
+    ["SUBSCRIPTION_TERMS_TITLE", "Masa Berlaku Paket:", "Judul Kotak Informasi Masa Berlaku"],
+    ["SUBSCRIPTION_TERMS_LIST", "• Paket 3x: berlaku hingga 5 bulan\n• Paket 6x: berlaku hingga 8 bulan\n• Paket 12x: berlaku hingga 14 bulan", "Poin-poin Masa Berlaku Paket Subscription (Gunakan baris baru/Enter)"],
+
+    // Banner Kustomisasi Single Promo
+    ["SINGLE_PROMO_PAGE_BADGE", "Buku BAU Hal. 9 - 10", "Badge Halaman Single Promo (misal: Buku BAU Hal. 9 - 10)"],
+    ["SINGLE_PROMO_TAG_BADGE", "Harga Satuan Promo", "Badge Tag Single Promo (misal: Harga Satuan Promo)"],
+    ["SINGLE_PROMO_TITLE", "Promo Single Treatment", "Judul Banner Single Promo"],
+    ["SINGLE_PROMO_SUBTITLE", "Pilihan perawatan satuan dengan harga spesial. Hemat lebih banyak untuk member terdaftar.", "Deskripsi Single Promo"],
+
+    // Banner Kustomisasi Skincare Kit
+    ["SKINCARE_PAGE_BADGE", "Buku BAU Hal. 82 - 85", "Badge Halaman Skincare Kit (misal: Buku BAU Hal. 82 - 85)"],
+    ["SKINCARE_TAG_BADGE", "FREE Exclusive SOZO Pouch", "Badge Tag Skincare Kit (misal: FREE Exclusive SOZO Pouch)"],
+    ["SKINCARE_TITLE", "Paket Skincare Kit Bundling", "Judul Banner Skincare Kit"],
+    ["SKINCARE_SUBTITLE", "Formula dermatologis teruji klinis untuk perawatan harian di rumah. Sudah termasuk PPN 11%.", "Deskripsi Skincare Kit"]
   ];
   sheetConfig.getRange(2, 1, configData.length, 3).setValues(configData);
   sheetConfig.autoResizeColumns(1, 3);
@@ -614,7 +634,21 @@ function getFallbackBauData(warningMsg) {
       SERVICE_CHARGE_MAX: "150000",
       VALIDITY_MONTHS: "6",
       WHATSAPP_CS: "6281234567890",
-      ACCESS_PASSWORD: "sozo"
+      ACCESS_PASSWORD: "sozo",
+      SUBSCRIPTION_PAGE_BADGE: "Buku BAU Hal. 72 - 80",
+      SUBSCRIPTION_TAG_BADGE: "Maksimal Hemat",
+      SUBSCRIPTION_TITLE: "Paket Treatment Subscription (Langganan Sesi)",
+      SUBSCRIPTION_SUBTITLE: "Dapatkan harga per sesi jauh lebih murah dengan berlangganan paket 3x, 6x, hingga 12x sesi perawatan rutin.",
+      SUBSCRIPTION_TERMS_TITLE: "Masa Berlaku Paket:",
+      SUBSCRIPTION_TERMS_LIST: "• Paket 3x: berlaku hingga 5 bulan\n• Paket 6x: berlaku hingga 8 bulan\n• Paket 12x: berlaku hingga 14 bulan",
+      SINGLE_PROMO_PAGE_BADGE: "Buku BAU Hal. 9 - 10",
+      SINGLE_PROMO_TAG_BADGE: "Harga Satuan Promo",
+      SINGLE_PROMO_TITLE: "Promo Single Treatment",
+      SINGLE_PROMO_SUBTITLE: "Pilihan perawatan satuan dengan harga spesial. Hemat lebih banyak untuk member terdaftar.",
+      SKINCARE_PAGE_BADGE: "Buku BAU Hal. 82 - 85",
+      SKINCARE_TAG_BADGE: "FREE Exclusive SOZO Pouch",
+      SKINCARE_TITLE: "Paket Skincare Kit Bundling",
+      SKINCARE_SUBTITLE: "Formula dermatologis teruji klinis untuk perawatan harian di rumah. Sudah termasuk PPN 11%."
     },
     categories: [
       { id: "treatment-recommendation", name: "Treatment Recommendation", description: "Kumpulan rekomendasi treatment terfavorit, paling dicari, dan terbukti efektif pilihan dokter dermatologis SOZO.", pdfOrPhotoUrl: "https://images.unsplash.com/photo-1512290900672-1f4f9f257a41?auto=format&fit=crop&w=1200&q=80", badge: "Paling Diminati", order: 1 },

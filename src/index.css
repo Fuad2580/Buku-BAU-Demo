@@ -57,3 +57,46 @@
   animation: shimmerGleam 4s ease-in-out infinite;
 }
 
+/* Custom sleek cosmic scrollbar matching the dark luxury theme */
+.cosmic-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: #8C1D35 rgba(20, 2, 7, 0.7);
+}
+
+.cosmic-scrollbar::-webkit-scrollbar {
+  height: 6px;
+  width: 6px;
+}
+
+.cosmic-scrollbar::-webkit-scrollbar-track {
+  background: rgba(20, 2, 7, 0.7);
+  border-radius: 9999px;
+  margin: 0 4px;
+}
+
+.cosmic-scrollbar::-webkit-scrollbar-thumb {
+  background: #8C1D35;
+  border-radius: 9999px;
+  border: 1px solid rgba(229, 57, 101, 0.3);
+}
+
+.cosmic-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #E53965;
+}
+
+/* Global scrollbar fallback to prevent native bright white scrollbars */
+::-webkit-scrollbar {
+  height: 6px;
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: rgba(20, 2, 7, 0.8);
+}
+::-webkit-scrollbar-thumb {
+  background: #8C1D35;
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #B02848;
+}
+

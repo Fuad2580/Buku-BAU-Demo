@@ -16,6 +16,7 @@ interface SkincareKitsSectionProps {
 
 export const SkincareKitsSection: React.FC<SkincareKitsSectionProps> = ({
   kits,
+  settings,
   searchQuery = '',
   skinGoalFilter = '',
   cartItems = [],
@@ -91,67 +92,67 @@ export const SkincareKitsSection: React.FC<SkincareKitsSectionProps> = ({
   };
 
   return (
-    <div className="space-y-6 text-stone-800">
+    <div className="space-y-6 text-rose-100">
       
       {/* Header Banner */}
-      <div className="bg-white rounded-3xl p-6 border border-stone-200/90 shadow-sm flex flex-col md:flex-row items-start md:items-center justify-between gap-4 relative overflow-visible">
+      <div className="bg-[#1a030a]/80 backdrop-blur-2xl rounded-3xl p-6 border border-rose-500/25 shadow-xl flex flex-col md:flex-row items-start md:items-center justify-between gap-4 relative overflow-visible">
         <CardLightFlare topPosition="center" />
         <div>
           <div className="flex items-center gap-2 mb-1 flex-wrap">
-            <span className="text-[10px] uppercase font-bold tracking-widest px-2.5 py-0.5 rounded-full bg-gradient-to-r from-[#E6C994] to-[#C9A86A] text-stone-950 shadow-sm">
-              Buku BAU Hal. 82 - 85
+            <span className="text-[10px] uppercase font-bold tracking-widest px-2.5 py-0.5 rounded-full bg-gradient-to-r from-[#FFD285] to-[#E5A84D] text-stone-950 shadow-sm">
+              {settings.skincarePageBadge || 'Buku BAU Hal. 82 - 85'}
             </span>
-            <span className="text-xs font-bold text-[#8C1D35] bg-rose-50 border border-rose-200 px-2.5 py-0.5 rounded-md flex items-center gap-1">
-              <Gift className="w-3 h-3 text-[#8C1D35]" />
-              FREE Exclusive SOZO Pouch
+            <span className="text-xs font-bold text-[#FFD285] bg-rose-950/60 border border-rose-500/40 px-2.5 py-0.5 rounded-md flex items-center gap-1">
+              <Gift className="w-3 h-3 text-[#FFD285]" />
+              {settings.skincareTagBadge || 'FREE Exclusive SOZO Pouch'}
             </span>
             {searchQuery && (
-              <span className="text-xs font-semibold text-[#8C1D35] bg-rose-50 border border-rose-200 px-2 py-0.5 rounded-md flex items-center gap-1">
-                <Search className="w-3 h-3" />
+              <span className="text-xs font-semibold text-rose-200 bg-rose-950/60 border border-rose-500/40 px-2 py-0.5 rounded-md flex items-center gap-1">
+                <Search className="w-3 h-3 text-[#FFD285]" />
                 Pencarian: "{searchQuery}"
               </span>
             )}
             {skinGoalFilter && (
-              <span className="text-xs font-semibold text-amber-900 bg-amber-50 border border-amber-200 px-2 py-0.5 rounded-md flex items-center gap-1">
-                <Sparkles className="w-3 h-3 text-amber-600" />
+              <span className="text-xs font-semibold text-amber-200 bg-amber-950/60 border border-amber-500/40 px-2 py-0.5 rounded-md flex items-center gap-1">
+                <Sparkles className="w-3 h-3 text-[#FFD285]" />
                 Goal: {skinGoalFilter}
               </span>
             )}
           </div>
-          <h2 className="text-2xl font-serif font-bold text-stone-900">
-            Paket Skincare Kit Bundling
+          <h2 className="text-2xl font-serif font-bold text-white">
+            {settings.skincareTitle || 'Paket Skincare Kit Bundling'}
           </h2>
-          <p className="text-xs sm:text-sm text-stone-600 mt-1 font-normal">
-            Formula dermatologis teruji klinis untuk perawatan harian di rumah. Sudah termasuk PPN 11%.
+          <p className="text-xs sm:text-sm text-rose-200/80 mt-1 font-normal">
+            {settings.skincareSubtitle || 'Formula dermatologis teruji klinis untuk perawatan harian di rumah. Sudah termasuk PPN 11%.'}
           </p>
         </div>
 
         {/* Free gift banner */}
-        <div className="bg-stone-50 p-3.5 rounded-2xl border border-stone-200 text-xs flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-r from-[#8C1D35] to-[#B02848] text-white flex items-center justify-center font-bold border-t border-[#FFAEC2]/40 shadow-xs">
+        <div className="bg-black/50 p-3.5 rounded-2xl border border-rose-500/20 text-xs flex items-center gap-3">
+          <div className="w-10 h-10 rounded-xl bg-gradient-to-r from-[#E53965] to-[#B02848] text-white flex items-center justify-center font-bold border-t border-[#FFAEC2]/40 shadow-sm">
             <Gift className="w-5 h-5" />
           </div>
           <div>
-            <span className="font-bold text-stone-900 block">BONUS FREE POUCH</span>
-            <span className="text-stone-500 text-[11px]">Setiap pembelian paket skincare di seluruh klinik</span>
+            <span className="font-bold text-white block">BONUS FREE POUCH</span>
+            <span className="text-rose-300/70 text-[11px]">Setiap pembelian paket skincare di seluruh klinik</span>
           </div>
         </div>
       </div>
 
       {/* Skincare Cards */}
       {filteredKits.length === 0 ? (
-        <div className="py-16 text-center bg-white rounded-3xl border border-stone-200 p-8 shadow-xs">
-          <Sparkles className="w-10 h-10 text-stone-300 mx-auto mb-3" />
-          <h3 className="text-base font-bold text-stone-800">
+        <div className="py-16 text-center bg-[#1a030a]/80 backdrop-blur-2xl rounded-3xl border border-rose-500/25 p-8 shadow-xl">
+          <Sparkles className="w-10 h-10 text-rose-400/40 mx-auto mb-3" />
+          <h3 className="text-base font-bold text-white">
             Tidak ditemukan paket skincare yang cocok dengan filter
           </h3>
-          <p className="text-xs text-stone-500 mt-1 max-w-sm mx-auto">
+          <p className="text-xs text-rose-200/70 mt-1 max-w-sm mx-auto">
             {searchQuery ? `Tidak ada hasil untuk pencarian "${searchQuery}".` : 'Coba ubah kata kunci atau reset filter.'}
           </p>
           {onClearFilter && (
             <button
               onClick={onClearFilter}
-              className="mt-4 px-4 py-2 rounded-xl bg-[#8C1D35] text-white text-xs font-bold hover:bg-[#73172B] transition cursor-pointer inline-flex items-center gap-1.5"
+              className="mt-4 px-4 py-2 rounded-xl bg-gradient-to-r from-[#E53965] to-[#B02848] text-white text-xs font-bold hover:opacity-90 transition cursor-pointer inline-flex items-center gap-1.5 shadow-md"
             >
               <RotateCcw className="w-3.5 h-3.5" />
               <span>Reset Filter Pencarian</span>
@@ -170,16 +171,16 @@ export const SkincareKitsSection: React.FC<SkincareKitsSectionProps> = ({
             return (
               <div
                 key={kit.id}
-                className="bg-white rounded-3xl border border-stone-200/90 p-5 shadow-sm hover:shadow-xl hover:border-rose-300/80 transition-all duration-300 flex flex-col justify-between relative overflow-visible"
+                className="bg-gradient-to-b from-[#34081b]/95 via-[#230512]/95 to-[#1c030e]/95 backdrop-blur-2xl rounded-3xl border border-rose-400/40 p-5 shadow-xl hover:border-rose-300/80 hover:shadow-[0_0_30px_rgba(229,57,101,0.25)] transition-all duration-300 flex flex-col justify-between relative overflow-visible"
               >
                 <CardLightFlare topPosition="center" />
                 <div>
                   <div className="flex items-center justify-between gap-2 mb-2 flex-wrap">
-                    <span className="text-[10px] uppercase font-bold tracking-widest text-[#8C1D35] bg-rose-50 px-2.5 py-0.5 rounded-md border border-rose-200/70">
+                    <span className="text-[10px] uppercase font-bold tracking-widest text-[#FFE29A] bg-[#4a0d24] px-2.5 py-0.5 rounded-lg border border-rose-400/50 shadow-xs">
                       Bundling Kit
                     </span>
                     {discount > 0 && (
-                      <span className="text-xs font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-md">
+                      <span className="text-xs font-black text-emerald-200 bg-emerald-900/90 px-2 py-0.5 rounded-md border border-emerald-400/60 shadow-xs">
                         Hemat {discount}%
                       </span>
                     )}
@@ -193,22 +194,22 @@ export const SkincareKitsSection: React.FC<SkincareKitsSectionProps> = ({
                     onMouseLeave={() => setHoveredKitId(null)}
                   >
                     <div className="flex items-start justify-between gap-2">
-                      <h3 className="font-serif font-bold text-base text-stone-900 leading-snug hover:text-[#8C1D35] transition flex-1">
+                      <h3 className="font-serif font-bold text-base sm:text-lg text-white leading-snug hover:text-[#FFE29A] transition flex-1 drop-shadow-xs">
                         {kit.name}
                       </h3>
                       {kit.photoUrl && (
-                        <span className="inline-flex items-center gap-1 text-[10px] font-semibold text-stone-600 bg-stone-100 hover:bg-stone-200 px-2 py-0.5 rounded-full border border-stone-200 transition shrink-0">
-                          <ImageIcon className="w-3 h-3 text-[#8C1D35]" />
+                        <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-rose-100 bg-rose-900/60 hover:bg-rose-800/80 px-2.5 py-0.5 rounded-full border border-rose-400/40 transition shrink-0 shadow-xs">
+                          <ImageIcon className="w-3.5 h-3.5 text-[#FFD285]" />
                           <span>Foto</span>
                         </span>
                       )}
                     </div>
 
                     {hoveredKitId === kit.id && kit.photoUrl && (
-                      <div className={`absolute left-0 z-50 w-64 bg-white rounded-2xl shadow-2xl border border-stone-200 p-2.5 animate-in fade-in zoom-in-95 pointer-events-none ${
+                      <div className={`absolute left-0 z-50 w-64 bg-[#260512] backdrop-blur-2xl rounded-2xl shadow-2xl border border-rose-400/60 p-2.5 animate-in fade-in zoom-in-95 pointer-events-none ${
                         index < 3 ? 'top-full mt-2' : '-top-2 transform -translate-y-full'
                       }`}>
-                        <div className="aspect-4/3 rounded-xl overflow-hidden bg-stone-100 mb-1.5 border border-stone-200">
+                        <div className="aspect-4/3 rounded-xl overflow-hidden bg-black/40 mb-1.5 border border-rose-400/30">
                           <img 
                             src={kit.photoUrl} 
                             alt={kit.name}
@@ -216,31 +217,31 @@ export const SkincareKitsSection: React.FC<SkincareKitsSectionProps> = ({
                             referrerPolicy="no-referrer"
                           />
                         </div>
-                        <p className="text-xs font-bold text-stone-900 font-serif truncate">{kit.name}</p>
-                        <span className="text-[10px] text-stone-500">Klik untuk foto besar</span>
+                        <p className="text-xs font-bold text-white font-serif truncate">{kit.name}</p>
+                        <span className="text-[10px] text-rose-200 block">Klik untuk foto besar</span>
                       </div>
                     )}
                   </div>
 
-                  {/* Price */}
-                  <div className="mt-3 p-3 rounded-2xl bg-stone-50 border border-stone-200/80">
-                    <span className="text-[10px] text-stone-400 block line-through">
+                  {/* Price - Brightened */}
+                  <div className="mt-3 p-3.5 rounded-2xl bg-gradient-to-b from-[#400c22]/90 to-[#2c0717]/90 border border-rose-400/35 shadow-inner">
+                    <span className="text-[11px] text-rose-200/80 font-semibold block line-through">
                       {formatRupiah(kit.originalPrice)}
                     </span>
-                    <span className="text-lg font-serif font-extrabold text-[#8C1D35] block">
+                    <span className="text-xl font-serif font-black text-[#FFD285] block drop-shadow-[0_2px_8px_rgba(255,210,133,0.3)]">
                       {formatRupiah(kit.promoPrice)}
                     </span>
-                    <span className="text-[10px] text-stone-500 font-medium mt-0.5 block">
+                    <span className="text-[11px] text-rose-200 font-medium mt-0.5 block">
                       Harga sudah termasuk PPN 11%
                     </span>
                   </div>
 
-                  {/* Included Items list */}
-                  <div className="mt-4 space-y-1.5">
-                    <span className="text-xs font-bold text-stone-800 block">Isi Paket:</span>
+                  {/* Included Items list - High Contrast */}
+                  <div className="mt-4 p-3 rounded-2xl bg-black/30 border border-rose-400/25 space-y-2">
+                    <span className="text-xs font-extrabold text-[#FFE29A] block">Isi Paket:</span>
                     {kit.items.map((item, idx) => (
-                      <div key={idx} className="flex items-center gap-2 text-xs text-stone-600">
-                        <span className="w-1.5 h-1.5 rounded-full bg-[#8C1D35] shrink-0"></span>
+                      <div key={idx} className="flex items-center gap-2 text-xs text-white font-medium">
+                        <span className="w-2 h-2 rounded-full bg-[#FF4D7E] shrink-0 shadow-[0_0_6px_#FF4D7E]"></span>
                         <span className="leading-tight">{item}</span>
                       </div>
                     ))}
@@ -248,26 +249,26 @@ export const SkincareKitsSection: React.FC<SkincareKitsSectionProps> = ({
 
                   {/* Free gift tag */}
                   {kit.freeGift && (
-                    <div className="mt-3 p-2 rounded-xl bg-amber-50 border border-amber-200 flex items-center gap-2 text-xs text-amber-900">
-                      <Gift className="w-3.5 h-3.5 text-amber-600 shrink-0" />
-                      <span>Free: <strong>{kit.freeGift}</strong></span>
+                    <div className="mt-3 p-2.5 rounded-xl bg-amber-950/70 border border-amber-500/40 flex items-center gap-2 text-xs text-amber-200">
+                      <Gift className="w-3.5 h-3.5 text-[#FFD285] shrink-0" />
+                      <span>Free: <strong className="text-white font-bold">{kit.freeGift}</strong></span>
                     </div>
                   )}
                 </div>
 
                 {/* Add to Estimation Button */}
-                <div className="mt-5 pt-3 border-t border-stone-100 flex items-center justify-between gap-2">
-                  <span className="text-[11px] text-stone-500 font-medium">
+                <div className="mt-5 pt-3 border-t border-rose-400/30 flex items-center justify-between gap-2">
+                  <span className="text-xs text-rose-200 font-medium">
                     Stok Klinik
                   </span>
                   {onToggleCart && (
                     <button
                       type="button"
                       onClick={() => onToggleCart(treatmentForCart)}
-                      className={`px-3.5 py-2 rounded-xl text-xs font-bold transition flex items-center gap-1.5 cursor-pointer shadow-xs ${
+                      className={`px-4 py-2 rounded-xl text-xs font-black transition flex items-center gap-1.5 cursor-pointer shadow-md ${
                         inCart
                           ? 'bg-emerald-600 hover:bg-emerald-700 text-white'
-                          : 'bg-[#8C1D35] hover:bg-[#73172B] text-white border-t border-[#FFAEC2]/30'
+                          : 'bg-gradient-to-r from-[#E53965] to-[#B02848] text-white hover:brightness-110 border border-rose-300/40'
                       }`}
                     >
                       {inCart ? (

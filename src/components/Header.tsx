@@ -7,7 +7,10 @@ import {
   RefreshCw, 
   Search, 
   ExternalLink, 
-  Lock 
+  Lock,
+  FileSpreadsheet,
+  Download,
+  Menu
 } from 'lucide-react';
 import { ClinicSettings, CartItem } from '../types';
 
@@ -31,8 +34,10 @@ interface HeaderProps {
   onOpenAppsScriptGuide: () => void;
   onOpenBranches: () => void;
   onRefreshData: () => void;
+  onDownloadExcel?: () => void;
   isSyncing: boolean;
   onLockApp?: () => void;
+  onOpenMobileMenu?: () => void;
 }
 
 export const Header: React.FC<HeaderProps> = ({
@@ -45,13 +50,15 @@ export const Header: React.FC<HeaderProps> = ({
   onOpenAppsScriptGuide,
   onOpenBranches,
   onRefreshData,
+  onDownloadExcel,
   isSyncing,
   onLockApp,
+  onOpenMobileMenu,
 }) => {
   const totalCartCount = cartItems.reduce((sum, item) => sum + item.quantity, 0);
 
   return (
-    <header className="sticky top-0 z-40 bg-gradient-to-r from-[#420C17] via-[#6B1D2F] to-[#330812] text-white shadow-lg border-b border-[#521321] relative overflow-hidden">
+    <header className="sticky top-0 z-40 bg-gradient-to-r from-[#2a040e]/95 via-[#4a0e1c]/95 to-[#24030b]/95 text-white shadow-xl border-b border-rose-500/20 backdrop-blur-xl relative overflow-hidden">
       {/* Background Micro Sparkle Accent */}
       <div className="absolute top-2 right-1/3 pointer-events-none animate-twinkle opacity-40 hidden md:block">
         <SparkleStar className="w-3.5 h-3.5 text-[#FCE3B4]" />
@@ -61,7 +68,7 @@ export const Header: React.FC<HeaderProps> = ({
       </div>
 
       {/* Top Utility Bar */}
-      <div className="bg-[#2E0810]/90 py-1.5 px-4 text-[11px] text-rose-200 border-b border-white/5 backdrop-blur-xs">
+      <div className="bg-black/40 py-1.5 px-4 text-[11px] text-rose-200 border-b border-white/5 backdrop-blur-sm">
         <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-2">
           <div className="flex items-center gap-2">
             <span className="inline-block w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
@@ -69,13 +76,23 @@ export const Header: React.FC<HeaderProps> = ({
             <span className="text-white/40">•</span>
             <span className="text-stone-300">Update Terakhir: {settings.lastSyncedAt || 'Hari ini'}</span>
           </div>
-          <div className="flex items-center gap-4 text-xs">
+          <div className="flex items-center gap-3 text-xs flex-wrap">
+            {onDownloadExcel && (
+              <button 
+                onClick={onDownloadExcel}
+                title="Download file Excel Buku BAU September 2026 (.xlsx)"
+                className="text-emerald-300 hover:text-white font-medium flex items-center gap-1.5 bg-emerald-950/70 hover:bg-emerald-900 px-2.5 py-0.5 rounded-md border border-emerald-500/40 transition cursor-pointer"
+              >
+                <FileSpreadsheet className="w-3.5 h-3.5 text-emerald-400" />
+                <span className="font-semibold">Download Excel (.xlsx)</span>
+              </button>
+            )}
             <button 
               onClick={onOpenBranches}
               className="hover:text-white flex items-center gap-1 transition cursor-pointer"
             >
               <MapPin className="w-3 h-3 text-[#E8BF87]" />
-              <span>50+ Cabang Outlet</span>
+              <span>50+ Cabang</span>
             </button>
             <span className="text-white/30">|</span>
             <button 
@@ -83,7 +100,7 @@ export const Header: React.FC<HeaderProps> = ({
               className="text-[#E8BF87] font-semibold hover:underline flex items-center gap-1 cursor-pointer"
             >
               <Code2 className="w-3 h-3" />
-              <span>Apps Script (Code.gs) Deploy Guide</span>
+              <span>Apps Script Deploy</span>
             </button>
           </div>
         </div>
@@ -91,9 +108,19 @@ export const Header: React.FC<HeaderProps> = ({
 
       {/* Main Brand Bar */}
       <div className="max-w-7xl mx-auto px-4 py-3 sm:px-6 flex flex-wrap items-center justify-between gap-4 relative z-10">
-        {/* Logo & Title */}
+        {/* Mobile Hamburger & Logo & Title */}
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#8C2941] via-[#5C1626] to-[#380A15] border border-[#E6C994]/50 flex items-center justify-center shadow-[0_0_12px_rgba(201,168,106,0.3)] relative">
+          {onOpenMobileMenu && (
+            <button
+              onClick={onOpenMobileMenu}
+              className="lg:hidden p-2 rounded-xl bg-white/10 hover:bg-white/20 text-rose-200 hover:text-white border border-rose-500/30 transition cursor-pointer"
+              aria-label="Buka Menu"
+            >
+              <Menu className="w-5 h-5 text-[#FFD285]" />
+            </button>
+          )}
+
+          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#8C2941] via-[#5C1626] to-[#380A15] border border-[#E6C994]/50 flex items-center justify-center shadow-[0_0_12px_rgba(201,168,106,0.3)] relative shrink-0">
             <span className="font-serif font-bold text-xl text-transparent bg-clip-text bg-gradient-to-b from-[#FFF3D6] to-[#E6C994] tracking-wider">S</span>
             <div className="absolute -top-1 -right-1 animate-twinkle-fast pointer-events-none">
               <SparkleStar className="w-2.5 h-2.5 text-[#FDE047]" />
@@ -101,15 +128,15 @@ export const Header: React.FC<HeaderProps> = ({
           </div>
           <div>
             <div className="flex items-center gap-2">
-              <h1 className="font-serif text-xl sm:text-2xl font-bold tracking-tight text-white leading-none">
+              <h1 className="font-serif text-lg sm:text-xl font-bold tracking-tight text-white leading-none">
                 SOZO SKIN CLINIC
               </h1>
-              <span className="text-[10px] uppercase font-bold tracking-widest px-2 py-0.5 rounded-full bg-gradient-to-r from-[#F6D29A] to-[#C9A86A] text-stone-900 shadow-xs flex items-center gap-1">
+              <span className="text-[10px] uppercase font-bold tracking-widest px-2 py-0.5 rounded-full bg-gradient-to-r from-[#F6D29A] to-[#C9A86A] text-stone-900 shadow-xs flex items-center gap-1 hidden sm:inline-flex">
                 <Sparkles className="w-2.5 h-2.5" />
                 BAU BOOK
               </span>
             </div>
-            <p className="text-xs text-rose-200/90 font-light mt-0.5">
+            <p className="text-[11px] text-rose-200/80 font-light mt-0.5 hidden sm:block">
               Buku BAU, Rekomendasi Treatment & Promo Interaktif
             </p>
           </div>
@@ -143,6 +170,18 @@ export const Header: React.FC<HeaderProps> = ({
 
         {/* Action Buttons */}
         <div className="flex items-center gap-2">
+          {/* Download Excel Button */}
+          {onDownloadExcel && (
+            <button
+              onClick={onDownloadExcel}
+              title="Download Excel Source Buku BAU September 2026 (.xlsx)"
+              className="p-2 sm:px-3 sm:py-2 rounded-xl bg-emerald-700/80 hover:bg-emerald-600 text-xs font-semibold flex items-center gap-1.5 transition border border-emerald-400/40 text-white cursor-pointer shadow-xs"
+            >
+              <FileSpreadsheet className="w-3.5 h-3.5 text-emerald-200" />
+              <span className="hidden sm:inline">Download Excel</span>
+            </button>
+          )}
+
           {/* Sync Button */}
           <button
             onClick={onRefreshData}

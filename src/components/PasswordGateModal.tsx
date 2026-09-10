@@ -12,7 +12,9 @@ import {
   CheckCircle2, 
   HelpCircle,
   ExternalLink,
-  Sparkles
+  Sparkles,
+  FileSpreadsheet,
+  Download
 } from 'lucide-react';
 import { DEFAULT_APPS_SCRIPT_URL } from '../data/initialBauData';
 import { GalaxyBackground } from './GalaxyBackground';
@@ -34,6 +36,7 @@ interface PasswordGateModalProps {
   webAppUrl?: string;
   onRefreshFromAppsScript?: () => Promise<boolean>;
   onConnectAppsScriptUrl?: (url: string) => Promise<boolean>;
+  onDownloadExcel?: () => void;
   onUnlock: () => void;
 }
 
@@ -44,6 +47,7 @@ export const PasswordGateModal: React.FC<PasswordGateModalProps> = ({
   webAppUrl = '',
   onRefreshFromAppsScript,
   onConnectAppsScriptUrl,
+  onDownloadExcel,
   onUnlock,
 }) => {
   const [inputPassword, setInputPassword] = useState('');
@@ -401,6 +405,21 @@ export const PasswordGateModal: React.FC<PasswordGateModalProps> = ({
               )}
             </button>
           </form>
+
+          {/* Direct Download Excel Button */}
+          {onDownloadExcel && (
+            <div className="pt-1">
+              <button
+                type="button"
+                onClick={onDownloadExcel}
+                className="w-full py-2.5 px-4 rounded-xl bg-emerald-950/80 hover:bg-emerald-900/90 text-emerald-200 hover:text-white text-xs font-semibold flex items-center justify-center gap-2 border border-emerald-500/40 transition cursor-pointer shadow-xs"
+              >
+                <FileSpreadsheet className="w-4 h-4 text-emerald-400 shrink-0" />
+                <span>Download File Excel Buku BAU (.xlsx)</span>
+                <Download className="w-3.5 h-3.5 text-emerald-300 ml-auto" />
+              </button>
+            </div>
+          )}
 
           {/* URL Direct Connect Drawer (Bantuan jika Vercel belum di-redeploy) */}
           <div className="pt-2 border-t border-white/10 space-y-2">

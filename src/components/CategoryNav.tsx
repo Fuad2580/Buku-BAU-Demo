@@ -6,9 +6,10 @@ import {
   Package, 
   Layers,
   Search,
-  RotateCcw
+  RotateCcw,
+  ArrowUpDown
 } from 'lucide-react';
-import { Category } from '../types';
+import { Category, SortOption } from '../types';
 import { CardLightFlare } from './CardLightFlare';
 
 interface CategoryNavProps {
@@ -28,9 +29,12 @@ interface CategoryNavProps {
   };
   searchQuery?: string;
   onClearFilter?: () => void;
+  availableSkinGoals?: string[];
+  sortBy?: SortOption;
+  onSortChange?: (sort: SortOption) => void;
 }
 
-const SKIN_GOALS = [
+const DEFAULT_SKIN_GOALS = [
   "Semua Goals",
   "Glowing",
   "Pink Plumpy",
@@ -40,7 +44,8 @@ const SKIN_GOALS = [
   "Scar Free",
   "Face Slimming",
   "Body Slimming",
-  "Hair"
+  "Hair",
+  "Hair Removal"
 ];
 
 export const CategoryNav: React.FC<CategoryNavProps> = ({
@@ -55,124 +60,104 @@ export const CategoryNav: React.FC<CategoryNavProps> = ({
   countsByView,
   searchQuery,
   onClearFilter,
+  availableSkinGoals = DEFAULT_SKIN_GOALS,
+  sortBy = 'default',
+  onSortChange,
 }) => {
-  const hasActiveFilter = Boolean(searchQuery || skinGoalFilter || (activeView === 'packages' && selectedCategoryId !== 'all'));
+  const hasActiveFilter = Boolean(searchQuery || skinGoalFilter || (activeView === 'packages' && selectedCategoryId !== 'all') || sortBy !== 'default');
+  const goalsToRender = availableSkinGoals && availableSkinGoals.length > 0 ? availableSkinGoals : DEFAULT_SKIN_GOALS;
 
   return (
-    <div className="space-y-4 bg-white border border-stone-200/90 p-4 rounded-3xl shadow-sm relative overflow-visible">
+    <div className="space-y-4 bg-[#1a030a]/85 backdrop-blur-2xl border border-rose-500/25 p-4 sm:p-5 rounded-3xl shadow-[0_12px_40px_rgba(0,0,0,0.55)] relative overflow-visible">
       
       {/* Luminous lens flare light effect */}
-      <CardLightFlare topPosition="left-center" />
+      <CardLightFlare topPosition="center" />
 
-      {/* View Switcher Tabs (Paket, Single Promo, Subscription, Skincare) */}
-      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-stone-100 pb-3">
-        <div className="flex flex-wrap items-center gap-1.5 p-1 bg-stone-100/90 border border-stone-200/70 rounded-2xl">
-          <button
-            onClick={() => onChangeView('packages')}
-            className={`px-3.5 py-2 rounded-xl text-xs font-bold transition flex items-center gap-1.5 cursor-pointer ${
-              activeView === 'packages'
-                ? 'bg-gradient-to-r from-[#8C1D35] to-[#B02848] text-white shadow-md border-t border-[#FFAEC2]/40'
-                : 'text-stone-600 hover:text-stone-900 hover:bg-white'
-            }`}
-          >
-            <Layers className="w-3.5 h-3.5" />
-            <span>Paket Treatment Kategori</span>
-            {countsByView && (
-              <span className={`text-[10px] px-1.5 py-0.2 rounded-full font-mono font-bold ${
-                activeView === 'packages' ? 'bg-white/25 text-white' : 'bg-stone-200 text-stone-600'
-              }`}>
-                {countsByView.packages}
-              </span>
-            )}
-          </button>
-
-          <button
-            onClick={() => onChangeView('single-promos')}
-            className={`px-3.5 py-2 rounded-xl text-xs font-bold transition flex items-center gap-1.5 cursor-pointer ${
-              activeView === 'single-promos'
-                ? 'bg-gradient-to-r from-[#8C1D35] to-[#B02848] text-white shadow-md border-t border-[#FFAEC2]/40'
-                : 'text-stone-600 hover:text-stone-900 hover:bg-white'
-            }`}
-          >
-            <Tag className="w-3.5 h-3.5" />
-            <span>Promo Single Treatment</span>
-            {countsByView && (
-              <span className={`text-[10px] px-1.5 py-0.2 rounded-full font-mono font-bold ${
-                activeView === 'single-promos' ? 'bg-white/25 text-white' : 'bg-stone-200 text-stone-600'
-              }`}>
-                {countsByView.singlePromos}
-              </span>
-            )}
-          </button>
-
-          <button
-            onClick={() => onChangeView('subscriptions')}
-            className={`px-3.5 py-2 rounded-xl text-xs font-bold transition flex items-center gap-1.5 cursor-pointer ${
-              activeView === 'subscriptions'
-                ? 'bg-gradient-to-r from-[#8C1D35] to-[#B02848] text-white shadow-md border-t border-[#FFAEC2]/40'
-                : 'text-stone-600 hover:text-stone-900 hover:bg-white'
-            }`}
-          >
-            <Repeat className="w-3.5 h-3.5" />
-            <span>Langganan (3x / 6x / 12x)</span>
-            {countsByView && (
-              <span className={`text-[10px] px-1.5 py-0.2 rounded-full font-mono font-bold ${
-                activeView === 'subscriptions' ? 'bg-white/25 text-white' : 'bg-stone-200 text-stone-600'
-              }`}>
-                {countsByView.subscriptions}
-              </span>
-            )}
-          </button>
-
-          <button
-            onClick={() => onChangeView('skincare')}
-            className={`px-3.5 py-2 rounded-xl text-xs font-bold transition flex items-center gap-1.5 cursor-pointer ${
-              activeView === 'skincare'
-                ? 'bg-gradient-to-r from-[#8C1D35] to-[#B02848] text-white shadow-md border-t border-[#FFAEC2]/40'
-                : 'text-stone-600 hover:text-stone-900 hover:bg-white'
-            }`}
-          >
-            <Package className="w-3.5 h-3.5" />
-            <span>Paket Skincare Kit</span>
-            {countsByView && (
-              <span className={`text-[10px] px-1.5 py-0.2 rounded-full font-mono font-bold ${
-                activeView === 'skincare' ? 'bg-white/25 text-white' : 'bg-stone-200 text-stone-600'
-              }`}>
-                {countsByView.skincare}
-              </span>
-            )}
-          </button>
+      {/* Top Bar: Section Title & Sort / Reset Filters */}
+      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-rose-500/20 pb-3">
+        <div className="flex items-center gap-2.5">
+          <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-[#E53965]/30 to-[#8C1D35]/50 border border-rose-400/40 flex items-center justify-center shadow-[0_0_12px_rgba(229,57,101,0.25)]">
+            {activeView === 'packages' && <Layers className="w-4 h-4 text-[#FFD285]" />}
+            {activeView === 'single-promos' && <Tag className="w-4 h-4 text-[#FFD285]" />}
+            {activeView === 'subscriptions' && <Repeat className="w-4 h-4 text-[#FFD285]" />}
+            {activeView === 'skincare' && <Package className="w-4 h-4 text-[#FFD285]" />}
+          </div>
+          <div>
+            <div className="flex items-center gap-2">
+              <h2 className="font-serif font-bold text-sm sm:text-base text-white tracking-wide">
+                {activeView === 'packages' && 'Katalog Paket Treatment'}
+                {activeView === 'single-promos' && 'Katalog Promo Single Treatment'}
+                {activeView === 'subscriptions' && 'Katalog Paket Langganan'}
+                {activeView === 'skincare' && 'Katalog Skincare Kit Bundling'}
+              </h2>
+              {countsByView && (
+                <span className="text-[11px] px-2 py-0.5 rounded-full font-mono font-bold bg-[#FFD285] text-stone-950 shadow-xs">
+                  {activeView === 'packages' && countsByView.packages}
+                  {activeView === 'single-promos' && countsByView.singlePromos}
+                  {activeView === 'subscriptions' && countsByView.subscriptions}
+                  {activeView === 'skincare' && countsByView.skincare}
+                </span>
+              )}
+            </div>
+            <p className="text-[11px] text-rose-300/60 hidden sm:block">
+              Filter dan urutkan treatment berdasarkan kebutuhan & prioritas
+            </p>
+          </div>
         </div>
 
-        {/* Reset Filter Button if any filter is active */}
-        {hasActiveFilter && onClearFilter && (
-          <button
-            type="button"
-            onClick={onClearFilter}
-            className="text-xs font-bold text-[#8C1D35] hover:bg-rose-50 px-3 py-1.5 rounded-xl border border-rose-200 transition cursor-pointer flex items-center gap-1"
-          >
-            <RotateCcw className="w-3 h-3" />
-            <span>Reset Semua Filter</span>
-          </button>
-        )}
+        {/* Right Tools: Sort By & Reset Filter */}
+        <div className="flex items-center gap-2 flex-wrap">
+          {/* Sort Selector Dropdown */}
+          {onSortChange && (
+            <div className="flex items-center gap-1.5 bg-black/40 border border-rose-500/30 px-3 py-1.5 rounded-2xl shadow-xs">
+              <ArrowUpDown className="w-3.5 h-3.5 text-[#FFD285]" />
+              <span className="text-[11px] font-bold text-rose-200 hidden sm:inline">Urutkan:</span>
+              <select
+                value={sortBy}
+                onChange={(e) => onSortChange(e.target.value as SortOption)}
+                aria-label="Urutkan Treatment"
+                className="bg-transparent text-white text-xs font-semibold focus:outline-none cursor-pointer pr-1"
+              >
+                <option value="default" className="bg-[#1f040b] text-white">★ Rekomendasi BAU</option>
+                <option value="price-asc" className="bg-[#1f040b] text-white">🏷️ Harga: Terendah → Tertinggi</option>
+                <option value="price-desc" className="bg-[#1f040b] text-white">💎 Harga: Tertinggi → Terendah</option>
+                <option value="name-asc" className="bg-[#1f040b] text-white">🔤 Nama Treatment: A → Z</option>
+                <option value="name-desc" className="bg-[#1f040b] text-white">🔤 Nama Treatment: Z → A</option>
+                <option value="discount-desc" className="bg-[#1f040b] text-white">🔥 Diskon / Hemat Terbesar (%)</option>
+              </select>
+            </div>
+          )}
+
+          {/* Reset Filter Button if any filter is active */}
+          {hasActiveFilter && onClearFilter && (
+            <button
+              type="button"
+              onClick={onClearFilter}
+              className="text-xs font-bold text-rose-200 hover:text-white bg-rose-950/60 hover:bg-rose-900/80 px-3 py-1.5 rounded-xl border border-rose-500/40 transition cursor-pointer flex items-center gap-1 shadow-xs"
+            >
+              <RotateCcw className="w-3 h-3 text-[#FFD285]" />
+              <span className="hidden sm:inline">Reset Filter</span>
+            </button>
+          )}
+        </div>
       </div>
 
-      {/* Skin Goals Pills (Universal: available across ALL views) */}
-      <div className="flex items-center gap-1.5 overflow-x-auto max-w-full pb-1 scrollbar-thin">
-        <span className="text-xs font-bold text-stone-500 whitespace-nowrap mr-1 flex items-center gap-1">
-          <Sparkles className="w-3 h-3 text-[#C9A86A]" />
+      {/* Skin Goals Pills (Universal: available across ALL views) with dark cosmic scrollbar */}
+      <div className="flex items-center gap-1.5 overflow-x-auto max-w-full pb-2 cosmic-scrollbar">
+        <span className="text-xs font-bold text-rose-300/80 whitespace-nowrap mr-1 flex items-center gap-1">
+          <Sparkles className="w-3 h-3 text-[#FFD285]" />
           <span>Filter Goal:</span>
         </span>
-        {SKIN_GOALS.map((goal) => {
+        {goalsToRender.map((goal) => {
           const active = (goal === "Semua Goals" && !skinGoalFilter) || skinGoalFilter === goal;
           return (
             <button
               key={goal}
               onClick={() => onSelectSkinGoal(goal === "Semua Goals" ? "" : goal)}
-              className={`px-3 py-1 rounded-lg text-xs font-medium whitespace-nowrap transition cursor-pointer ${
+              className={`px-3 py-1.5 rounded-xl text-xs whitespace-nowrap transition cursor-pointer ${
                 active
-                  ? 'bg-gradient-to-r from-[#8C1D35] to-[#B02848] text-white shadow-sm font-bold border-t border-[#FFAEC2]/50'
-                  : 'bg-stone-100 text-stone-700 hover:text-stone-900 hover:bg-stone-200/80 border border-stone-200/80'
+                  ? 'bg-gradient-to-r from-rose-800 to-rose-950 text-white shadow-[0_0_15px_rgba(229,57,101,0.35)] font-bold border border-[#FFD285]/60 ring-1 ring-[#FFD285]/30'
+                  : 'bg-white/[0.05] text-rose-200/80 hover:text-white hover:bg-white/[0.1] border border-rose-500/20'
               }`}
             >
               {goal}
@@ -181,18 +166,18 @@ export const CategoryNav: React.FC<CategoryNavProps> = ({
         })}
       </div>
 
-      {/* Categories Horizontal Scroll / Carousel when in 'packages' view */}
+      {/* Categories Horizontal Scroll / Carousel when in 'packages' view with dark cosmic scrollbar */}
       {activeView === 'packages' && (
-        <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-thin scrollbar-thumb-stone-300">
+        <div className="flex items-center gap-2 overflow-x-auto pb-2 cosmic-scrollbar">
           <button
             onClick={() => onSelectCategory('all')}
-            className={`px-4 py-2.5 rounded-xl text-xs font-bold transition whitespace-nowrap flex items-center gap-2 cursor-pointer ${
+            className={`px-3.5 py-2 rounded-xl text-xs font-bold transition whitespace-nowrap flex items-center gap-2 cursor-pointer ${
               selectedCategoryId === 'all'
-                ? 'bg-gradient-to-r from-[#8C1D35] via-[#A82544] to-[#6E1225] text-white shadow-md border-t border-[#FFAEC2]/60'
-                : 'bg-stone-50 text-stone-700 hover:bg-stone-100 border border-stone-200'
+                ? 'bg-gradient-to-r from-[#FFD285] to-[#E5A84D] text-stone-950 shadow-[0_0_15px_rgba(255,210,133,0.35)] border border-amber-200'
+                : 'bg-white/[0.05] text-rose-200/80 hover:text-white hover:bg-white/[0.1] border border-rose-500/20'
             }`}
           >
-            <Sparkles className="w-3.5 h-3.5 text-[#C9A86A]" />
+            <Sparkles className="w-3.5 h-3.5 text-[#FFD285]" />
             <span>Semua Kategori</span>
           </button>
 
@@ -207,32 +192,28 @@ export const CategoryNav: React.FC<CategoryNavProps> = ({
                 onClick={() => onSelectCategory(cat.id)}
                 className={`px-3.5 py-2 rounded-xl text-xs font-semibold transition whitespace-nowrap flex items-center gap-2 cursor-pointer ${
                   active
-                    ? isRecommendation
-                      ? 'bg-gradient-to-r from-[#8C1D35] to-[#A82544] text-white shadow-md font-bold ring-2 ring-[#C9A86A] border-t border-[#FFAEC2]'
-                      : 'bg-gradient-to-r from-[#8C1D35] via-[#A82544] to-[#6E1225] text-white shadow-md font-bold border-t border-[#FFAEC2]/60'
+                    ? 'bg-gradient-to-r from-[#FFD285] to-[#E5A84D] text-stone-950 font-bold shadow-[0_0_18px_rgba(255,210,133,0.4)] border border-amber-200'
                     : isRecommendation
-                    ? 'bg-amber-50 text-amber-900 border border-amber-300/80 hover:bg-amber-100/80 font-bold shadow-2xs'
-                    : 'bg-stone-50 text-stone-700 hover:text-stone-900 hover:bg-stone-100 border border-stone-200'
+                    ? 'bg-rose-950/70 text-[#FFD285] border border-amber-500/40 hover:bg-rose-900/80 font-bold'
+                    : 'bg-white/[0.05] text-rose-200/80 hover:text-white hover:bg-white/[0.1] border border-rose-500/20'
                 }`}
               >
                 {isRecommendation && (
-                  <Sparkles className="w-3.5 h-3.5 text-amber-600 fill-amber-500" />
+                  <Sparkles className="w-3.5 h-3.5 text-[#FFD285] fill-[#FFD285]" />
                 )}
                 <span>{cat.name}</span>
                 {cat.badge && (
                   <span className={`text-[10px] px-1.5 py-0.5 rounded font-bold ${
                     active 
-                      ? 'bg-gradient-to-r from-[#FCE3B4] to-[#C9A86A] text-stone-950' 
-                      : isRecommendation
-                      ? 'bg-[#C9A86A] text-stone-950 font-extrabold'
-                      : 'bg-rose-100 text-[#8C1D35] border border-rose-200'
+                      ? 'bg-stone-950 text-[#FFD285]' 
+                      : 'bg-[#FFD285]/20 text-[#FFD285] border border-[#FFD285]/30'
                   }`}>
                     {cat.badge}
                   </span>
                 )}
                 {count > 0 && (
                   <span className={`text-[10px] px-1.5 py-0.2 rounded-full font-mono ${
-                    active ? 'bg-white/20 text-white' : isRecommendation ? 'bg-amber-200 text-amber-900 font-bold' : 'bg-stone-200 text-stone-600'
+                    active ? 'bg-stone-950/25 text-stone-950 font-bold' : 'bg-black/40 text-rose-300'
                   }`}>
                     {count}
                   </span>

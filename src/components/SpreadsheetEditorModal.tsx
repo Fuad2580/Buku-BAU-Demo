@@ -13,15 +13,20 @@ import {
   CheckCircle2,
   AlertCircle,
   Link as LinkIcon,
-  RotateCcw
+  RotateCcw,
+  Download
 } from 'lucide-react';
-import { Category, TreatmentItem, SinglePromoItem, ClinicSettings } from '../types';
+import { Category, TreatmentItem, SinglePromoItem, ClinicSettings, SubscriptionItem, SkincareKit, BranchLocation } from '../types';
 import { 
   initialCategories, 
   initialTreatments, 
   initialSinglePromos, 
-  initialClinicSettings 
+  initialClinicSettings,
+  initialSubscriptions,
+  initialBranches,
+  initialSkincareKits
 } from '../data/initialBauData';
+import { exportBauToExcel } from '../utils/excelExporter';
 
 interface SpreadsheetEditorModalProps {
   isOpen: boolean;
@@ -30,6 +35,9 @@ interface SpreadsheetEditorModalProps {
   treatments: TreatmentItem[];
   singlePromos: SinglePromoItem[];
   settings: ClinicSettings;
+  subscriptions?: SubscriptionItem[];
+  branches?: BranchLocation[];
+  skincareKits?: SkincareKit[];
   onSaveData: (data: {
     categories: Category[];
     treatments: TreatmentItem[];
@@ -46,16 +54,32 @@ export const SpreadsheetEditorModal: React.FC<SpreadsheetEditorModalProps> = ({
   treatments: initialTreatments,
   singlePromos: initialSinglePromos,
   settings: initialSettings,
+  subscriptions,
+  branches,
+  skincareKits,
   onSaveData,
   onFetchFromRemoteAppsScript,
 }) => {
-  const [activeTab, setActiveTab] = useState<'treatments' | 'categories' | 'single' | 'settings' | 'connect'>('treatments');
+  const [activeTab, setActiveTab] = useState<'treatments' | 'categories' | 'single' | 'settings' | 'connect' | 'excel'>('treatments');
   
   // Local state for editing
   const [categories, setCategories] = useState<Category[]>(initialCategories);
   const [treatments, setTreatments] = useState<TreatmentItem[]>(initialTreatments);
   const [singlePromos, setSinglePromos] = useState<SinglePromoItem[]>(initialSinglePromos);
   const [settings, setSettings] = useState<ClinicSettings>(initialSettings);
+
+  const handleDownloadExcel = () => {
+    exportBauToExcel(
+      settings,
+      categories,
+      treatments,
+      singlePromos,
+      subscriptions || initialSubscriptions,
+      branches || initialBranches,
+      skincareKits || initialSkincareKits,
+      'Buku_BAU_SOZO_September_2026.xlsx'
+    );
+  };
   
   // Remote Web App URL input
   const [remoteUrl, setRemoteUrl] = useState(initialSettings.webAppUrl || '');
@@ -200,16 +224,37 @@ export const SpreadsheetEditorModal: React.FC<SpreadsheetEditorModalProps> = ({
               </p>
             </div>
           </div>
-          <button
-            onClick={onClose}
-            className="w-8 h-8 rounded-xl bg-white/10 hover:bg-white/20 flex items-center justify-center text-white transition cursor-pointer"
-          >
-            <X className="w-4 h-4" />
-          </button>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={handleDownloadExcel}
+              className="px-3 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold flex items-center gap-1.5 transition shadow-xs cursor-pointer border border-emerald-400/40"
+              title="Unduh file Excel (.xlsx) dengan 7 sheet lengkap untuk Google Sheets"
+            >
+              <Download className="w-3.5 h-3.5 text-emerald-100" />
+              <span className="hidden sm:inline">Download Excel (.xlsx)</span>
+              <span className="sm:hidden">Excel</span>
+            </button>
+            <button
+              onClick={onClose}
+              className="w-8 h-8 rounded-xl bg-white/10 hover:bg-white/20 flex items-center justify-center text-white transition cursor-pointer"
+            >
+              <X className="w-4 h-4" />
+            </button>
+          </div>
         </div>
 
         {/* Tab Selector */}
         <div className="flex items-center gap-2 p-3 bg-stone-100 border-b border-stone-200 overflow-x-auto">
+          <button
+            onClick={() => setActiveTab('excel')}
+            className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-1.5 whitespace-nowrap cursor-pointer ${
+              activeTab === 'excel' ? 'bg-emerald-700 text-white shadow-xs' : 'text-emerald-800 hover:text-emerald-950 bg-emerald-100/80 border border-emerald-300/60'
+            }`}
+          >
+            <FileSpreadsheet className="w-3.5 h-3.5 text-emerald-600" />
+            <span>📥 Download & Panduan Excel (.xlsx)</span>
+          </button>
+
           <button
             onClick={() => setActiveTab('treatments')}
             className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-1.5 whitespace-nowrap cursor-pointer ${
@@ -748,6 +793,180 @@ export const SpreadsheetEditorModal: React.FC<SpreadsheetEditorModalProps> = ({
                   </div>
                 </div>
 
+                {/* Banner Section: Subscription */}
+                <div className="p-3 bg-rose-50/50 border border-rose-200 rounded-xl space-y-2.5">
+                  <div className="flex items-center justify-between">
+                    <span className="font-bold text-[#6B1D2F] block text-xs">
+                      Banner Paket Treatment Subscription (Langganan Sesi)
+                    </span>
+                    <span className="text-[10px] text-rose-800 bg-rose-100 px-2 py-0.5 rounded-full font-semibold">
+                      Tab: Pengaturan_Klinik
+                    </span>
+                  </div>
+                  <div className="grid grid-cols-2 gap-2.5">
+                    <div>
+                      <label className="font-semibold text-stone-700 block mb-1">Badge Halaman (Hal Buku BAU)</label>
+                      <input
+                        type="text"
+                        value={settings.subscriptionPageBadge || ''}
+                        onChange={(e) => setSettings({ ...settings, subscriptionPageBadge: e.target.value })}
+                        placeholder="Buku BAU Hal. 72 - 80"
+                        className="w-full p-2 bg-white rounded-xl border border-stone-300"
+                      />
+                    </div>
+                    <div>
+                      <label className="font-semibold text-stone-700 block mb-1">Badge Tag</label>
+                      <input
+                        type="text"
+                        value={settings.subscriptionTagBadge || ''}
+                        onChange={(e) => setSettings({ ...settings, subscriptionTagBadge: e.target.value })}
+                        placeholder="Maksimal Hemat"
+                        className="w-full p-2 bg-white rounded-xl border border-stone-300"
+                      />
+                    </div>
+                  </div>
+                  <div>
+                    <label className="font-semibold text-stone-700 block mb-1">Judul Banner Subscription</label>
+                    <input
+                      type="text"
+                      value={settings.subscriptionTitle || ''}
+                      onChange={(e) => setSettings({ ...settings, subscriptionTitle: e.target.value })}
+                      placeholder="Paket Treatment Subscription (Langganan Sesi)"
+                      className="w-full p-2 bg-white rounded-xl border border-stone-300 font-bold"
+                    />
+                  </div>
+                  <div>
+                    <label className="font-semibold text-stone-700 block mb-1">Deskripsi / Subjudul</label>
+                    <textarea
+                      value={settings.subscriptionSubtitle || ''}
+                      onChange={(e) => setSettings({ ...settings, subscriptionSubtitle: e.target.value })}
+                      placeholder="Dapatkan harga per sesi jauh lebih murah..."
+                      rows={2}
+                      className="w-full p-2 bg-white rounded-xl border border-stone-300"
+                    />
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5">
+                    <div>
+                      <label className="font-semibold text-stone-700 block mb-1">Judul Masa Berlaku</label>
+                      <input
+                        type="text"
+                        value={settings.subscriptionTermsTitle || ''}
+                        onChange={(e) => setSettings({ ...settings, subscriptionTermsTitle: e.target.value })}
+                        placeholder="Masa Berlaku Paket:"
+                        className="w-full p-2 bg-white rounded-xl border border-stone-300 font-semibold"
+                      />
+                    </div>
+                    <div>
+                      <label className="font-semibold text-stone-700 block mb-1">Poin-poin Masa Berlaku (Gunakan Baris Baru)</label>
+                      <textarea
+                        value={settings.subscriptionTermsList || ''}
+                        onChange={(e) => setSettings({ ...settings, subscriptionTermsList: e.target.value })}
+                        placeholder="• Paket 3x: berlaku hingga 5 bulan&#10;• Paket 6x: berlaku hingga 8 bulan&#10;• Paket 12x: berlaku hingga 14 bulan"
+                        rows={3}
+                        className="w-full p-2 bg-white rounded-xl border border-stone-300 text-[11px]"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Banner Section: Single Promo */}
+                <div className="p-3 bg-stone-100/80 border border-stone-200 rounded-xl space-y-2.5">
+                  <span className="font-bold text-stone-800 block text-xs">
+                    Banner Promo Single Treatment
+                  </span>
+                  <div className="grid grid-cols-2 gap-2.5">
+                    <div>
+                      <label className="font-semibold text-stone-700 block mb-1">Badge Halaman</label>
+                      <input
+                        type="text"
+                        value={settings.singlePromoPageBadge || ''}
+                        onChange={(e) => setSettings({ ...settings, singlePromoPageBadge: e.target.value })}
+                        placeholder="Buku BAU Hal. 9 - 10"
+                        className="w-full p-2 bg-white rounded-xl border border-stone-300"
+                      />
+                    </div>
+                    <div>
+                      <label className="font-semibold text-stone-700 block mb-1">Badge Tag</label>
+                      <input
+                        type="text"
+                        value={settings.singlePromoTagBadge || ''}
+                        onChange={(e) => setSettings({ ...settings, singlePromoTagBadge: e.target.value })}
+                        placeholder="Harga Satuan Promo"
+                        className="w-full p-2 bg-white rounded-xl border border-stone-300"
+                      />
+                    </div>
+                  </div>
+                  <div>
+                    <label className="font-semibold text-stone-700 block mb-1">Judul Banner</label>
+                    <input
+                      type="text"
+                      value={settings.singlePromoTitle || ''}
+                      onChange={(e) => setSettings({ ...settings, singlePromoTitle: e.target.value })}
+                      placeholder="Promo Single Treatment"
+                      className="w-full p-2 bg-white rounded-xl border border-stone-300 font-bold"
+                    />
+                  </div>
+                  <div>
+                    <label className="font-semibold text-stone-700 block mb-1">Deskripsi</label>
+                    <textarea
+                      value={settings.singlePromoSubtitle || ''}
+                      onChange={(e) => setSettings({ ...settings, singlePromoSubtitle: e.target.value })}
+                      placeholder="Pilihan perawatan satuan dengan harga spesial..."
+                      rows={2}
+                      className="w-full p-2 bg-white rounded-xl border border-stone-300"
+                    />
+                  </div>
+                </div>
+
+                {/* Banner Section: Skincare Kit */}
+                <div className="p-3 bg-stone-100/80 border border-stone-200 rounded-xl space-y-2.5">
+                  <span className="font-bold text-stone-800 block text-xs">
+                    Banner Paket Skincare Kit Bundling
+                  </span>
+                  <div className="grid grid-cols-2 gap-2.5">
+                    <div>
+                      <label className="font-semibold text-stone-700 block mb-1">Badge Halaman</label>
+                      <input
+                        type="text"
+                        value={settings.skincarePageBadge || ''}
+                        onChange={(e) => setSettings({ ...settings, skincarePageBadge: e.target.value })}
+                        placeholder="Buku BAU Hal. 82 - 85"
+                        className="w-full p-2 bg-white rounded-xl border border-stone-300"
+                      />
+                    </div>
+                    <div>
+                      <label className="font-semibold text-stone-700 block mb-1">Badge Tag</label>
+                      <input
+                        type="text"
+                        value={settings.skincareTagBadge || ''}
+                        onChange={(e) => setSettings({ ...settings, skincareTagBadge: e.target.value })}
+                        placeholder="FREE Exclusive SOZO Pouch"
+                        className="w-full p-2 bg-white rounded-xl border border-stone-300"
+                      />
+                    </div>
+                  </div>
+                  <div>
+                    <label className="font-semibold text-stone-700 block mb-1">Judul Banner</label>
+                    <input
+                      type="text"
+                      value={settings.skincareTitle || ''}
+                      onChange={(e) => setSettings({ ...settings, skincareTitle: e.target.value })}
+                      placeholder="Paket Skincare Kit Bundling"
+                      className="w-full p-2 bg-white rounded-xl border border-stone-300 font-bold"
+                    />
+                  </div>
+                  <div>
+                    <label className="font-semibold text-stone-700 block mb-1">Deskripsi</label>
+                    <textarea
+                      value={settings.skincareSubtitle || ''}
+                      onChange={(e) => setSettings({ ...settings, skincareSubtitle: e.target.value })}
+                      placeholder="Formula dermatologis teruji klinis..."
+                      rows={2}
+                      className="w-full p-2 bg-white rounded-xl border border-stone-300"
+                    />
+                  </div>
+                </div>
+
                 <div>
                   <label className="font-bold text-stone-700 block mb-1">Slogan / Tagline Header Web App</label>
                   <input
@@ -871,6 +1090,141 @@ export const SpreadsheetEditorModal: React.FC<SpreadsheetEditorModalProps> = ({
                     {remoteStatus}
                   </div>
                 )}
+              </div>
+            </div>
+          )}
+
+          {/* TAB 6: EXCEL SOURCE & DOWNLOAD GUIDE */}
+          {activeTab === 'excel' && (
+            <div className="max-w-4xl space-y-6">
+              {/* Primary Download Banner */}
+              <div className="bg-gradient-to-br from-emerald-800 via-emerald-700 to-teal-900 rounded-3xl p-6 text-white shadow-lg border border-emerald-500/30 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+                <div className="space-y-2 max-w-xl">
+                  <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/15 text-emerald-100 text-xs font-semibold backdrop-blur-xs border border-white/20">
+                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-300" />
+                    Format Resmi Buku BAU SOZO September 2026
+                  </div>
+                  <h4 className="font-serif text-2xl font-bold tracking-tight">
+                    File Excel Siap Download (.xlsx)
+                  </h4>
+                  <p className="text-emerald-100 text-xs sm:text-sm leading-relaxed">
+                    File ini telah dikonversi persis sesuai struktur 7 Sheet database web app ini, termasuk pembaruan internal memo terbaru (Rona Cantik Bersemi, password <code>sozoskinjayajaya</code>, periode September 2026, dan harga paket).
+                  </p>
+                </div>
+
+                <div className="flex flex-col gap-2 w-full md:w-auto shrink-0">
+                  <button
+                    onClick={handleDownloadExcel}
+                    className="px-6 py-3.5 rounded-2xl bg-white hover:bg-emerald-50 text-emerald-950 font-bold text-sm shadow-xl flex items-center justify-center gap-2 transition hover:scale-[1.02] cursor-pointer"
+                  >
+                    <Download className="w-5 h-5 text-emerald-700" />
+                    <span>Unduh Excel (.xlsx)</span>
+                  </button>
+                  <a
+                    href="/Buku_BAU_SOZO_September_2026.xlsx"
+                    download="Buku_BAU_SOZO_September_2026.xlsx"
+                    className="text-center text-xs text-emerald-200 hover:text-white underline"
+                  >
+                    Atau unduh direct link statis
+                  </a>
+                </div>
+              </div>
+
+              {/* Step by Step Guide: How to use with Google Sheets */}
+              <div className="bg-stone-50 rounded-2xl p-5 border border-stone-200 space-y-4">
+                <h4 className="font-serif text-base font-bold text-stone-900 flex items-center gap-2">
+                  <FileSpreadsheet className="w-5 h-5 text-emerald-700" />
+                  Cara Memakai File Excel Ini Sebagai Sumber Google Spreadsheet
+                </h4>
+
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
+                  <div className="bg-white p-4 rounded-xl border border-stone-200 shadow-2xs space-y-2">
+                    <div className="w-7 h-7 rounded-lg bg-emerald-100 text-emerald-800 font-bold flex items-center justify-center text-sm">
+                      1
+                    </div>
+                    <h5 className="font-bold text-stone-800">Unduh & Buka Google Sheets</h5>
+                    <p className="text-stone-600 text-[11px] leading-relaxed">
+                      Klik tombol hijau <strong>"Unduh Excel (.xlsx)"</strong> di atas. Kemudian buka <strong>Google Drive</strong> atau ketik <code>sheets.new</code> di browser Anda.
+                    </p>
+                  </div>
+
+                  <div className="bg-white p-4 rounded-xl border border-stone-200 shadow-2xs space-y-2">
+                    <div className="w-7 h-7 rounded-lg bg-emerald-100 text-emerald-800 font-bold flex items-center justify-center text-sm">
+                      2
+                    </div>
+                    <h5 className="font-bold text-stone-800">Impor ke Google Sheets</h5>
+                    <p className="text-stone-600 text-[11px] leading-relaxed">
+                      Klik menu <strong>File &gt; Impor &gt; Upload</strong>, lalu pilih file <code>Buku_BAU_SOZO_September_2026.xlsx</code>. Pilih lokasi impor: <strong>"Ganti spreadsheet"</strong>.
+                    </p>
+                  </div>
+
+                  <div className="bg-white p-4 rounded-xl border border-stone-200 shadow-2xs space-y-2">
+                    <div className="w-7 h-7 rounded-lg bg-emerald-100 text-emerald-800 font-bold flex items-center justify-center text-sm">
+                      3
+                    </div>
+                    <h5 className="font-bold text-stone-800">Deploy Apps Script (Code.gs)</h5>
+                    <p className="text-stone-600 text-[11px] leading-relaxed">
+                      Di Google Sheets Anda, klik <strong>Ekstensi &gt; Apps Script</strong>. Masukkan script dari modal <strong>Deploy Guide</strong>, lalu deploy sebagai Web App (Akses: <em>Siapa Saja / Anyone</em>).
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Breakdown of the 7 Sheets */}
+              <div className="bg-white rounded-2xl p-5 border border-stone-200 space-y-3">
+                <h4 className="font-serif text-sm font-bold text-stone-900">
+                  Rincian 7 Sheet yang Terdapat di Dalam File Excel:
+                </h4>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+                  <div className="p-3 bg-stone-50 rounded-xl border border-stone-200">
+                    <span className="font-bold text-[#6B1D2F] block">1. Sheet: Pengaturan_Klinik</span>
+                    <p className="text-stone-600 text-[11px] mt-0.5">
+                      Berisi parameter kunci seperti CLINIC_NAME, PROMO_TITLE ('Rona Cantik Bersemi'), PERIOD_TEXT, ACCESS_PASSWORD, WHATSAPP_CS, dll.
+                    </p>
+                  </div>
+
+                  <div className="p-3 bg-stone-50 rounded-xl border border-stone-200">
+                    <span className="font-bold text-[#6B1D2F] block">2. Sheet: Kategori</span>
+                    <p className="text-stone-600 text-[11px] mt-0.5">
+                      Berisi ID kategori, nama kategori, deskripsi, link banner foto / PDF halaman buku BAU, dan urutan tampilan.
+                    </p>
+                  </div>
+
+                  <div className="p-3 bg-stone-50 rounded-xl border border-stone-200">
+                    <span className="font-bold text-[#6B1D2F] block">3. Sheet: Daftar_Treatment</span>
+                    <p className="text-stone-600 text-[11px] mt-0.5">
+                      Daftar menu lengkap per kategori, Treatment Recommendation, skin goal, rincian tindakan, harga normal, non-member, dan member.
+                    </p>
+                  </div>
+
+                  <div className="p-3 bg-stone-50 rounded-xl border border-stone-200">
+                    <span className="font-bold text-[#6B1D2F] block">4. Sheet: Promo_Single</span>
+                    <p className="text-stone-600 text-[11px] mt-0.5">
+                      Promo satuan 5 grup (Glow & Rejuve, Slimming & Contouring, Acne & Scar, Anti-Aging, Hair Grow).
+                    </p>
+                  </div>
+
+                  <div className="p-3 bg-stone-50 rounded-xl border border-stone-200">
+                    <span className="font-bold text-[#6B1D2F] block">5. Sheet: Subscription_Paket</span>
+                    <p className="text-stone-600 text-[11px] mt-0.5">
+                      Paket langganan hemat sesi 3x, 6x, hingga 12x beserta hitungan harga per sesi.
+                    </p>
+                  </div>
+
+                  <div className="p-3 bg-stone-50 rounded-xl border border-stone-200">
+                    <span className="font-bold text-[#6B1D2F] block">6. Sheet: Daftar_Klinik_Cabang</span>
+                    <p className="text-stone-600 text-[11px] mt-0.5">
+                      Daftar seluruh 50+ cabang SOZO Skin Clinic di berbagai kota, alamat lengkap, dan jam operasional.
+                    </p>
+                  </div>
+
+                  <div className="p-3 bg-stone-50 rounded-xl border border-stone-200 sm:col-span-2">
+                    <span className="font-bold text-[#6B1D2F] block">7. Sheet: Skincare_Homecare</span>
+                    <p className="text-stone-600 text-[11px] mt-0.5">
+                      Paket bundling skincare homecare (Acne Smooth Skin Kit, Acne Calm & Clear, Deep Clear, Radiance Bright, Forever Young) + Free Exclusive SOZO Pouch.
+                    </p>
+                  </div>
+                </div>
               </div>
             </div>
           )}

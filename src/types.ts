@@ -117,6 +117,26 @@ export interface ClinicSettings {
   spreadsheetId?: string;
   webAppUrl?: string;
   lastSyncedAt?: string;
+
+  // Subscription Header Customization (from Spreadsheet Tab Pengaturan_Klinik)
+  subscriptionPageBadge?: string;
+  subscriptionTagBadge?: string;
+  subscriptionTitle?: string;
+  subscriptionSubtitle?: string;
+  subscriptionTermsTitle?: string;
+  subscriptionTermsList?: string;
+
+  // Single Treatment Header Customization
+  singlePromoPageBadge?: string;
+  singlePromoTagBadge?: string;
+  singlePromoTitle?: string;
+  singlePromoSubtitle?: string;
+
+  // Skincare Kits Header Customization
+  skincarePageBadge?: string;
+  skincareTagBadge?: string;
+  skincareTitle?: string;
+  skincareSubtitle?: string;
 }
 
 export interface CartItem {
@@ -124,3 +144,13 @@ export interface CartItem {
   quantity: number;
   priceType: 'member' | 'nonMember';
 }
+
+export type ActiveView = 'packages' | 'single-promos' | 'subscriptions' | 'skincare';
+
+export type SortOption = 
+  | 'default' 
+  | 'price-asc' 
+  | 'price-desc' 
+  | 'name-asc' 
+  | 'name-desc' 
+  | 'discount-desc';
