@@ -10,7 +10,7 @@ export interface TreatmentItem {
   badge?: string; // e.g. "Best Seller", "Hemat 50%", "Promo Merdeka"
   isNewPromo?: boolean;
   outletNotes?: string; // e.g. "Hanya tersedia di Arteri"
-  skinGoal?: string; // Glowing, Acne, Scar, Anti-Aging, Slimming, Hair
+  skinGoal?: string; // Glowing, Acne, Scar, Anti-Aging, Slimming, Hair Grow
   sessionsCount?: number;
   photoUrl?: string; // Link foto treatment untuk preview / popup saat di-hover
   unitPriceInRupiah?: number; // Optional exact price in IDR (e.g. for Skincare kit with non-round thousand IDR)

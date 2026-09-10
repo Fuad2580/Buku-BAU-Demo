@@ -44,7 +44,7 @@ const DEFAULT_SKIN_GOALS = [
   "Scar Free",
   "Face Slimming",
   "Body Slimming",
-  "Hair",
+  "Hair Grow",
   "Hair Removal"
 ];
 

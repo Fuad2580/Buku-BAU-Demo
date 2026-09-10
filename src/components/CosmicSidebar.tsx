@@ -69,14 +69,14 @@ export const CosmicSidebar: React.FC<CosmicSidebarProps> = ({
   ];
 
   const content = (
-    <aside className="w-64 sm:w-72 h-full flex flex-col justify-between p-4 sm:p-5 text-white select-none relative overflow-hidden backdrop-blur-2xl bg-[#1b030b]/85 border-r border-rose-500/20 shadow-[0_0_40px_rgba(0,0,0,0.6)]">
+    <aside className="w-64 sm:w-72 flex flex-col p-4 sm:p-5 text-white select-none relative overflow-hidden backdrop-blur-2xl bg-gradient-to-b from-[#2e0717]/95 via-[#200410]/95 to-[#150209]/95 border border-rose-400/35 rounded-3xl shadow-[0_16px_40px_rgba(0,0,0,0.55),0_0_25px_rgba(229,57,101,0.15)]">
       {/* Ambient background glow inside sidebar */}
-      <div className="absolute -top-20 -left-20 w-52 h-52 rounded-full bg-rose-600/15 blur-3xl pointer-events-none" />
-      <div className="absolute -bottom-20 -right-20 w-52 h-52 rounded-full bg-amber-500/10 blur-3xl pointer-events-none" />
+      <div className="absolute -top-16 -left-16 w-44 h-44 rounded-full bg-rose-600/20 blur-2xl pointer-events-none" />
+      <div className="absolute -bottom-16 -right-16 w-44 h-44 rounded-full bg-amber-500/15 blur-2xl pointer-events-none" />
 
       {/* Top Header / Brand Logo */}
-      <div className="space-y-6 relative z-10">
-        <div className="flex items-center justify-between pb-4 border-b border-rose-500/20">
+      <div className="space-y-4 relative z-10">
+        <div className="flex items-center justify-between pb-3.5 border-b border-rose-500/20">
           <div className="flex items-center gap-2.5">
             <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-[#941e38] to-[#db3360] flex items-center justify-center shadow-[0_0_15px_rgba(219,51,96,0.5)] border border-rose-300/40">
               <Sparkles className="w-4 h-4 text-[#FDE047]" />
@@ -85,7 +85,7 @@ export const CosmicSidebar: React.FC<CosmicSidebarProps> = ({
               <span className="text-xs font-extrabold tracking-[0.2em] text-transparent bg-clip-text bg-gradient-to-r from-amber-200 via-rose-100 to-amber-100 block font-serif">
                 DASHBOARD
               </span>
-              <span className="text-[10px] tracking-wider text-rose-300/70 font-semibold block uppercase">
+              <span className="text-[10px] tracking-wider text-rose-300/80 font-semibold block uppercase">
                 {settings.clinicName || 'SOZO Skin Clinic'}
               </span>
             </div>
@@ -161,40 +161,40 @@ export const CosmicSidebar: React.FC<CosmicSidebarProps> = ({
           })}
 
           {/* Quick External/Modal Navigation */}
-          <div className="pt-3 mt-3 border-t border-rose-500/20 space-y-1.5">
+          <div className="pt-2.5 mt-2.5 border-t border-rose-500/20">
             <button
               onClick={() => {
                 onOpenBranches();
                 if (onCloseMobile) onCloseMobile();
               }}
-              className="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-medium text-rose-200/75 hover:text-white hover:bg-white/[0.04] transition cursor-pointer"
+              className="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-medium text-rose-200/80 hover:text-white hover:bg-white/[0.06] transition cursor-pointer"
             >
               <MapPin className="w-4 h-4 text-[#FFD285]" />
               <span>50+ Cabang SOZO</span>
             </button>
           </div>
+
+          {/* Bottom Controls / Lock Session - Dinaikin immediately below 50+ Cabang */}
+          {settings.accessPassword && onLockApp && (
+            <div className="pt-2 mt-1 border-t border-rose-500/20">
+              <button
+                onClick={onLockApp}
+                className="w-full py-2.5 px-3 rounded-xl bg-white/[0.05] hover:bg-white/[0.1] text-xs font-medium text-rose-200/90 hover:text-white flex items-center justify-center gap-2 transition cursor-pointer border border-rose-500/30 shadow-xs"
+              >
+                <Lock className="w-3.5 h-3.5 text-[#FFD285]" />
+                <span>Kunci Sesi Menu</span>
+              </button>
+            </div>
+          )}
         </nav>
       </div>
-
-      {/* Bottom Controls */}
-      {settings.accessPassword && onLockApp && (
-        <div className="pt-3 border-t border-rose-500/20 relative z-10">
-          <button
-            onClick={onLockApp}
-            className="w-full py-2 px-3 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] text-[11px] text-rose-300/70 hover:text-rose-200 flex items-center justify-center gap-1.5 transition cursor-pointer border border-rose-500/20"
-          >
-            <Lock className="w-3.5 h-3.5 text-[#FFD285]" />
-            <span>Kunci Sesi Menu</span>
-          </button>
-        </div>
-      )}
     </aside>
   );
 
   return (
     <>
-      {/* Desktop Persistent Sidebar */}
-      <div className="hidden lg:block sticky top-0 h-screen shrink-0 z-30">
+      {/* Desktop Persistent Sidebar - Frozen / Sticky on scroll */}
+      <div className="hidden lg:block sticky top-28 shrink-0 z-30 self-start">
         {content}
       </div>
 
@@ -205,7 +205,7 @@ export const CosmicSidebar: React.FC<CosmicSidebarProps> = ({
             className="fixed inset-0 bg-black/70 backdrop-blur-sm"
             onClick={onCloseMobile}
           />
-          <div className="relative z-10 h-full animate-in slide-in-from-left duration-200">
+          <div className="relative z-10 h-full max-w-[280px] p-4 overflow-y-auto animate-in slide-in-from-left duration-200">
             {content}
           </div>
         </div>

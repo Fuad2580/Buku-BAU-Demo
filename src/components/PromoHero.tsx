@@ -1,7 +1,6 @@
 import React from 'react';
 import { Sparkles, ShieldCheck, Tag, CreditCard, Percent, ArrowRight } from 'lucide-react';
 import { ClinicSettings } from '../types';
-import { GalaxyBackground } from './GalaxyBackground';
 
 // Subtle 4-point luxury sparkle star
 const SparkleStar: React.FC<{ className?: string }> = ({ className = 'w-3 h-3 text-[#FDE047]' }) => (
@@ -47,9 +46,6 @@ export const PromoHero: React.FC<PromoHeroProps> = ({
   };
   return (
     <section className="relative overflow-hidden bg-gradient-to-r from-[#380712] via-[#5C1425] to-[#2B050E] text-white py-7 px-4 sm:px-6 shadow-inner border-b border-[#521321]">
-      {/* Interactive Galaxy Nebula Background with Cosmic Stardust */}
-      <GalaxyBackground className="absolute inset-0 z-0 opacity-85" intensity="subtle" />
-
       {/* Decorative Glow Elements & Sparkles */}
       <div className="absolute top-0 right-0 -mt-8 -mr-8 w-72 h-72 bg-[#E44176]/20 rounded-full blur-3xl pointer-events-none" />
       <div className="absolute bottom-0 left-1/4 -mb-10 w-80 h-40 bg-[#FFD382]/15 rounded-full blur-2xl pointer-events-none" />

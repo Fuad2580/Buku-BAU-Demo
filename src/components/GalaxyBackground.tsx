@@ -320,15 +320,19 @@ export const GalaxyBackground: React.FC<GalaxyBackgroundProps> = ({
     };
   }, [intensity]);
 
+  const isPositioned = className.includes('absolute') || className.includes('fixed');
+
   return (
-    <div className={`relative overflow-hidden bg-[#140207] ${className}`}>
-      {/* Layer 1: Deep Crimson Cosmic Base Gradient */}
-      <div 
-        className="absolute inset-0 pointer-events-none"
-        style={{
-          background: 'radial-gradient(ellipse at 50% 30%, #3d0817 0%, #24040d 45%, #120106 100%)',
-        }}
-      />
+    <div className={`${isPositioned ? '' : 'relative'} bg-[#140207] ${className}`}>
+      {/* Background Visual Layers (clipped strictly within background layer so position:sticky works on children) */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
+        {/* Layer 1: Deep Crimson Cosmic Base Gradient */}
+        <div 
+          className="absolute inset-0 pointer-events-none"
+          style={{
+            background: 'radial-gradient(ellipse at 50% 30%, #3d0817 0%, #24040d 45%, #120106 100%)',
+          }}
+        />
 
       {/* Layer 2: Glowing Pink/Magenta Cosmic Nebula Clouds */}
       <div 
@@ -485,11 +489,14 @@ export const GalaxyBackground: React.FC<GalaxyBackgroundProps> = ({
         ref={canvasRef}
         className="absolute inset-0 pointer-events-none w-full h-full"
       />
-
-      {/* Content wrapper */}
-      <div className="relative z-10 w-full h-full">
-        {children}
       </div>
+
+      {/* Content wrapper - natural overflow allowing sticky children to track window scroll */}
+      {children && (
+        <div className="relative z-10 w-full flex-1 flex flex-col">
+          {children}
+        </div>
+      )}
     </div>
   );
 };

@@ -73,7 +73,9 @@ export const SinglePromosSection: React.FC<SinglePromosSectionProps> = ({
           matchGoal = item.group === 'Acne & Scar';
         } else if (goal.includes('aging')) {
           matchGoal = item.group === 'Anti-Aging';
-        } else if (goal.includes('hair')) {
+        } else if (goal.includes('hair removal') || goal.includes('removal')) {
+          matchGoal = item.name.toLowerCase().includes('hair removal') || item.name.toLowerCase().includes('underarm') || item.name.toLowerCase().includes('ipl');
+        } else if (goal === 'hair grow' || goal === 'hair' || (goal.includes('hair') && !goal.includes('removal'))) {
           matchGoal = item.group === 'Hair Grow';
         } else {
           matchGoal = item.name.toLowerCase().includes(goal) || item.group.toLowerCase().includes(goal);

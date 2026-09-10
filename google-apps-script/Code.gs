@@ -248,8 +248,8 @@ function setupSpreadsheet() {
     ["bslim-03", "body-slimming", "3-in-1 Weight Control", "Body Slimming", "1x Ultrasculpt*, 14 Fat Block, 14 Crave Block", 2899, 1249, 1249, "Combo Suplemen", false, "", ""],
 
     // 10. Thick & Healthy Hair
-    ["hair-01", "thick-healthy-hair", "PRP Hair Growth Combo", "Hair", "1x PRP Hair, 1x Biolight Hair, 1x Custom Hair Serum (FREE), 1x Hair Vitamin", 2446, 1520, 1470, "Rekomendasi", false, "", ""],
-    ["hair-04", "thick-healthy-hair", "Japanese Onsen Spa* (60 Menit)", "Hair", "13 langkah relaksasi dan pembersihan mendalam kulit kepala (60 menit)", 1400, 599, 549, "Relaksasi", false, "Puri dan Mampang", ""],
+    ["hair-01", "thick-healthy-hair", "PRP Hair Growth Combo", "Hair Grow", "1x PRP Hair, 1x Biolight Hair, 1x Custom Hair Serum (FREE), 1x Hair Vitamin", 2446, 1520, 1470, "Rekomendasi", false, "", ""],
+    ["hair-04", "thick-healthy-hair", "Japanese Onsen Spa* (60 Menit)", "Hair Grow", "13 langkah relaksasi dan pembersihan mendalam kulit kepala (60 menit)", 1400, 599, 549, "Relaksasi", false, "Puri dan Mampang", ""],
 
     // 11. Botox Standard & Premium
     ["botox-02", "botox", "Botox Standard 50 Unit", "", "50 Unit Botox Standard untuk rahang masseter / kerutan", 3500, 2250, 2250, "Best Seller", false, "", ""],
@@ -680,7 +680,7 @@ function getFallbackBauData(warningMsg) {
       { id: "scar-01", categoryId: "scar-free", name: "Scar Fighter", skinGoal: "Scar Free", inclusions: ["1x Laser CO2 Scar - Full face", "1x Growth Factor Serum", "1x Subsisi"], originalPrice: 1997, nonMemberPrice: 1199, memberPrice: 1099, badge: "Bopeng", isNewPromo: false, outletNotes: "", photoUrl: "" },
       { id: "fslim-01", categoryId: "face-slimming", name: "Korean V Shape I", skinGoal: "Face Slimming", inclusions: ["2x Meso V Line", "2x Radiofrequency Face", "Botox Standard 40 Unit"], originalPrice: 5392, nonMemberPrice: 4049, memberPrice: 3949, badge: "V-Line", isNewPromo: false, outletNotes: "", photoUrl: "" },
       { id: "bslim-01", categoryId: "body-slimming", name: "Instant Slimming", skinGoal: "Body Slimming", inclusions: ["1x Meso Slim Body Premium", "1x Meso Metabolic Boost", "1x Radiofrequency Body"], originalPrice: 4896, nonMemberPrice: 2199, memberPrice: 2099, badge: "Best Seller", isNewPromo: false, outletNotes: "", photoUrl: "" },
-      { id: "hair-01", categoryId: "thick-healthy-hair", name: "PRP Hair Growth Combo", skinGoal: "Hair", inclusions: ["1x PRP Hair", "1x Biolight Hair", "1x Custom Hair Serum (FREE)", "1x Hair Vitamin"], originalPrice: 2446, nonMemberPrice: 1520, memberPrice: 1470, badge: "Rekomendasi", isNewPromo: false, outletNotes: "", photoUrl: "" },
+      { id: "hair-01", categoryId: "thick-healthy-hair", name: "PRP Hair Growth Combo", skinGoal: "Hair Grow", inclusions: ["1x PRP Hair", "1x Biolight Hair", "1x Custom Hair Serum (FREE)", "1x Hair Vitamin"], originalPrice: 2446, nonMemberPrice: 1520, memberPrice: 1470, badge: "Rekomendasi", isNewPromo: false, outletNotes: "", photoUrl: "" },
       { id: "botox-02", categoryId: "botox", name: "Botox Standard 50 Unit", skinGoal: "Botox", inclusions: ["50 Unit Botox Standard untuk rahang masseter / kerutan"], originalPrice: 3500, nonMemberPrice: 2250, memberPrice: 2250, badge: "Best Seller", isNewPromo: false, outletNotes: "", photoUrl: "" },
       { id: "hr-01", categoryId: "hair-removal", name: "Underarm Hair Removal (Buy 2 Get 3)", skinGoal: "Hair Removal", inclusions: ["3 Sesi Underarm Hair Removal IPL (Bayar 2 sesi)"], originalPrice: 747, nonMemberPrice: 349, memberPrice: 349, badge: "Beli 2 Dapat 3", isNewPromo: false, outletNotes: "", photoUrl: "" }
     ],

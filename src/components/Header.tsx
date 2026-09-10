@@ -58,7 +58,7 @@ export const Header: React.FC<HeaderProps> = ({
   const totalCartCount = cartItems.reduce((sum, item) => sum + item.quantity, 0);
 
   return (
-    <header className="sticky top-0 z-40 bg-gradient-to-r from-[#2a040e]/95 via-[#4a0e1c]/95 to-[#24030b]/95 text-white shadow-xl border-b border-rose-500/20 backdrop-blur-xl relative overflow-hidden">
+    <header className="sticky top-0 z-50 bg-gradient-to-r from-[#2a040e]/95 via-[#4a0e1c]/95 to-[#24030b]/95 text-white shadow-xl border-b border-rose-500/20 backdrop-blur-xl relative">
       {/* Background Micro Sparkle Accent */}
       <div className="absolute top-2 right-1/3 pointer-events-none animate-twinkle opacity-40 hidden md:block">
         <SparkleStar className="w-3.5 h-3.5 text-[#FCE3B4]" />
@@ -77,30 +77,12 @@ export const Header: React.FC<HeaderProps> = ({
             <span className="text-stone-300">Update Terakhir: {settings.lastSyncedAt || 'Hari ini'}</span>
           </div>
           <div className="flex items-center gap-3 text-xs flex-wrap">
-            {onDownloadExcel && (
-              <button 
-                onClick={onDownloadExcel}
-                title="Download file Excel Buku BAU September 2026 (.xlsx)"
-                className="text-emerald-300 hover:text-white font-medium flex items-center gap-1.5 bg-emerald-950/70 hover:bg-emerald-900 px-2.5 py-0.5 rounded-md border border-emerald-500/40 transition cursor-pointer"
-              >
-                <FileSpreadsheet className="w-3.5 h-3.5 text-emerald-400" />
-                <span className="font-semibold">Download Excel (.xlsx)</span>
-              </button>
-            )}
             <button 
               onClick={onOpenBranches}
-              className="hover:text-white flex items-center gap-1 transition cursor-pointer"
+              className="hover:text-white flex items-center gap-1 transition cursor-pointer text-rose-200"
             >
-              <MapPin className="w-3 h-3 text-[#E8BF87]" />
+              <MapPin className="w-3.5 h-3.5 text-[#E8BF87]" />
               <span>50+ Cabang</span>
-            </button>
-            <span className="text-white/30">|</span>
-            <button 
-              onClick={onOpenAppsScriptGuide}
-              className="text-[#E8BF87] font-semibold hover:underline flex items-center gap-1 cursor-pointer"
-            >
-              <Code2 className="w-3 h-3" />
-              <span>Apps Script Deploy</span>
             </button>
           </div>
         </div>
@@ -170,18 +152,6 @@ export const Header: React.FC<HeaderProps> = ({
 
         {/* Action Buttons */}
         <div className="flex items-center gap-2">
-          {/* Download Excel Button */}
-          {onDownloadExcel && (
-            <button
-              onClick={onDownloadExcel}
-              title="Download Excel Source Buku BAU September 2026 (.xlsx)"
-              className="p-2 sm:px-3 sm:py-2 rounded-xl bg-emerald-700/80 hover:bg-emerald-600 text-xs font-semibold flex items-center gap-1.5 transition border border-emerald-400/40 text-white cursor-pointer shadow-xs"
-            >
-              <FileSpreadsheet className="w-3.5 h-3.5 text-emerald-200" />
-              <span className="hidden sm:inline">Download Excel</span>
-            </button>
-          )}
-
           {/* Sync Button */}
           <button
             onClick={onRefreshData}

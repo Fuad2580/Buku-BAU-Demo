@@ -48,8 +48,10 @@ export const SubscriptionsSection: React.FC<SubscriptionsSectionProps> = ({
           matchGoal = tName.includes('acne') || tName.includes('scar') || tName.includes('peel') || tName.includes('subcision');
         } else if (goal.includes('aging')) {
           matchGoal = tName.includes('anti-aging') || tName.includes('botox') || tName.includes('filler') || tName.includes('rejur') || tName.includes('profhilo') || tName.includes('hifu');
-        } else if (goal.includes('hair')) {
-          matchGoal = tName.includes('hair');
+        } else if (goal.includes('hair removal') || goal.includes('removal')) {
+          matchGoal = tName.includes('removal') || tName.includes('underarm');
+        } else if (goal === 'hair grow' || goal === 'hair' || (goal.includes('hair') && !goal.includes('removal'))) {
+          matchGoal = tName.includes('hair') && !tName.includes('removal');
         } else {
           matchGoal = tName.includes(goal);
         }

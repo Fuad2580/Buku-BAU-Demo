@@ -232,7 +232,7 @@ export default function App() {
       "Scar Free",
       "Face Slimming",
       "Body Slimming",
-      "Hair",
+      "Hair Grow",
       "Hair Removal"
     ];
     const set = new Set<string>();
@@ -241,9 +241,11 @@ export default function App() {
     treatments.forEach((t) => {
       if (t.skinGoal && t.skinGoal.trim()) {
         const trimmed = t.skinGoal.trim();
-        const exists = Array.from(set).some((s) => s.toLowerCase() === trimmed.toLowerCase());
+        // If legacy data has "Hair", map it to "Hair Grow" in goals list
+        const normalizedGoal = trimmed.toLowerCase() === 'hair' ? 'Hair Grow' : trimmed;
+        const exists = Array.from(set).some((s) => s.toLowerCase() === normalizedGoal.toLowerCase());
         if (!exists) {
-          set.add(trimmed);
+          set.add(normalizedGoal);
         }
       }
     });
@@ -265,8 +267,8 @@ export default function App() {
         } else {
           const tGoal = t.skinGoal.toLowerCase().trim();
           const fGoal = skinGoalFilter.toLowerCase().trim();
-          if (fGoal === 'hair') {
-            matchGoal = tGoal.includes('hair') && !tGoal.includes('removal');
+          if (fGoal === 'hair' || fGoal === 'hair grow') {
+            matchGoal = (tGoal.includes('hair') || tGoal.includes('hair grow')) && !tGoal.includes('removal');
           } else if (fGoal === 'hair removal') {
             matchGoal = tGoal.includes('hair removal') || tGoal.includes('removal');
           } else {
@@ -328,8 +330,8 @@ export default function App() {
           matchGoal = false;
         } else {
           const tGoal = t.skinGoal.toLowerCase().trim();
-          if (goal === 'hair') {
-            matchGoal = tGoal.includes('hair') && !tGoal.includes('removal');
+          if (goal === 'hair' || goal === 'hair grow') {
+            matchGoal = (tGoal.includes('hair') || tGoal.includes('hair grow')) && !tGoal.includes('removal');
           } else if (goal === 'hair removal') {
             matchGoal = tGoal.includes('hair removal') || tGoal.includes('removal');
           } else {
@@ -657,7 +659,7 @@ export default function App() {
   }
 
   return (
-    <GalaxyBackground className="min-h-screen text-rose-100 flex flex-col antialiased relative selection:bg-[#E53965] selection:text-white overflow-x-hidden">
+    <GalaxyBackground className="min-h-screen text-rose-100 flex flex-col antialiased relative selection:bg-[#E53965] selection:text-white">
       
       {/* Toast Notification */}
       {toastMessage && (
