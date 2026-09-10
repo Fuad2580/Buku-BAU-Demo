@@ -68,7 +68,7 @@ export const CategoryNav: React.FC<CategoryNavProps> = ({
   const goalsToRender = availableSkinGoals && availableSkinGoals.length > 0 ? availableSkinGoals : DEFAULT_SKIN_GOALS;
 
   return (
-    <div className="space-y-4 bg-[#1a030a]/85 backdrop-blur-2xl border border-rose-500/25 p-4 sm:p-5 rounded-3xl shadow-[0_12px_40px_rgba(0,0,0,0.55)] relative overflow-visible">
+    <div className="space-y-4 bg-[#1a030a]/95 border border-rose-500/25 p-4 sm:p-5 rounded-3xl shadow-[0_12px_40px_rgba(0,0,0,0.55)] relative overflow-visible">
       
       {/* Luminous lens flare light effect */}
       <CardLightFlare topPosition="center" />

@@ -760,7 +760,7 @@ export default function App() {
 
                 {/* Treatment Cards Grid */}
                 {filteredTreatments.length === 0 ? (
-                  <div className="py-20 text-center bg-[#1a030a]/80 backdrop-blur-2xl rounded-3xl border border-rose-500/25 p-8 shadow-xl">
+                  <div className="py-20 text-center bg-[#1a030a]/95 rounded-3xl border border-rose-500/25 p-8 shadow-xl">
                     <Sparkles className="w-10 h-10 text-rose-400/40 mx-auto mb-3" />
                     <h3 className="text-base font-bold text-white">
                       Tidak ditemukan treatment yang sesuai kriteria pencarian

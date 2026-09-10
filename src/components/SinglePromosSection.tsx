@@ -108,7 +108,7 @@ export const SinglePromosSection: React.FC<SinglePromosSectionProps> = ({
     <div className="space-y-6 text-rose-100">
       
       {/* Intro Header */}
-      <div className="bg-[#1a030a]/80 backdrop-blur-2xl rounded-3xl p-6 border border-rose-500/25 shadow-xl flex flex-col md:flex-row items-start md:items-center justify-between gap-4 relative overflow-visible">
+      <div className="bg-[#1a030a]/95 rounded-3xl p-6 border border-rose-500/25 shadow-xl flex flex-col md:flex-row items-start md:items-center justify-between gap-4 relative overflow-visible">
         <CardLightFlare topPosition="center" />
         <div>
           <div className="flex items-center gap-2 mb-1 flex-wrap">
@@ -159,7 +159,7 @@ export const SinglePromosSection: React.FC<SinglePromosSectionProps> = ({
 
       {/* Special Highlights: Botox 5% & Filler Threadlift 10% */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div className="bg-gradient-to-r from-[#2a040e]/90 to-[#1d0309]/90 backdrop-blur-xl p-4 rounded-2xl border border-rose-500/30 flex items-center justify-between shadow-lg">
+        <div className="bg-gradient-to-r from-[#2a040e] to-[#1d0309] p-4 rounded-2xl border border-rose-500/30 flex items-center justify-between shadow-lg">
           <div>
             <span className="text-[10px] font-bold text-[#FFD285] uppercase tracking-wide">Voucher Diskon</span>
             <h4 className="text-base font-bold font-serif text-white">Botox Premium (min. 50 unit)</h4>
@@ -170,7 +170,7 @@ export const SinglePromosSection: React.FC<SinglePromosSectionProps> = ({
           </span>
         </div>
 
-        <div className="bg-gradient-to-r from-[#2a040e]/90 to-[#1d0309]/90 backdrop-blur-xl p-4 rounded-2xl border border-amber-500/30 flex items-center justify-between shadow-lg">
+        <div className="bg-gradient-to-r from-[#2a040e] to-[#1d0309] p-4 rounded-2xl border border-amber-500/30 flex items-center justify-between shadow-lg">
           <div>
             <span className="text-[10px] font-bold text-amber-300 uppercase tracking-wide">Voucher Diskon</span>
             <h4 className="text-base font-bold font-serif text-white">Filler & Threadlift Benang</h4>
@@ -206,7 +206,7 @@ export const SinglePromosSection: React.FC<SinglePromosSectionProps> = ({
           )}
         </div>
       ) : (
-        <div className="bg-[#1a030a]/80 backdrop-blur-2xl rounded-3xl border border-rose-500/25 shadow-2xl overflow-visible relative">
+        <div className="bg-[#1a030a]/95 rounded-3xl border border-rose-500/25 shadow-2xl overflow-visible relative">
           <CardLightFlare topPosition="center" />
           <div className="overflow-x-auto rounded-3xl">
             <table className="w-full text-left border-collapse">

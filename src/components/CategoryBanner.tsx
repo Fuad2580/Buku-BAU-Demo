@@ -39,7 +39,7 @@ export const CategoryBanner: React.FC<CategoryBannerProps> = ({
   };
 
   return (
-    <div className="bg-[#1a030a]/80 backdrop-blur-2xl rounded-3xl border border-rose-500/25 shadow-xl overflow-hidden mb-6 relative overflow-visible">
+    <div className="bg-[#1a030a]/95 rounded-3xl border border-rose-500/25 shadow-xl overflow-hidden mb-6 relative overflow-visible">
       
       {/* Luminous lens flare light effect */}
       <CardLightFlare topPosition="center" />

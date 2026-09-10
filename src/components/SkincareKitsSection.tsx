@@ -95,7 +95,7 @@ export const SkincareKitsSection: React.FC<SkincareKitsSectionProps> = ({
     <div className="space-y-6 text-rose-100">
       
       {/* Header Banner */}
-      <div className="bg-[#1a030a]/80 backdrop-blur-2xl rounded-3xl p-6 border border-rose-500/25 shadow-xl flex flex-col md:flex-row items-start md:items-center justify-between gap-4 relative overflow-visible">
+      <div className="bg-[#1a030a]/95 rounded-3xl p-6 border border-rose-500/25 shadow-xl flex flex-col md:flex-row items-start md:items-center justify-between gap-4 relative overflow-visible">
         <CardLightFlare topPosition="center" />
         <div>
           <div className="flex items-center gap-2 mb-1 flex-wrap">
@@ -171,7 +171,7 @@ export const SkincareKitsSection: React.FC<SkincareKitsSectionProps> = ({
             return (
               <div
                 key={kit.id}
-                className="bg-gradient-to-b from-[#34081b]/95 via-[#230512]/95 to-[#1c030e]/95 backdrop-blur-2xl rounded-3xl border border-rose-400/40 p-5 shadow-xl hover:border-rose-300/80 hover:shadow-[0_0_30px_rgba(229,57,101,0.25)] transition-all duration-300 flex flex-col justify-between relative overflow-visible"
+                className="bg-gradient-to-b from-[#34081b] via-[#230512] to-[#1c030e] rounded-3xl border border-rose-400/40 p-5 shadow-xl hover:border-rose-300/80 hover:shadow-[0_0_30px_rgba(229,57,101,0.25)] transition-all duration-200 flex flex-col justify-between relative overflow-visible"
               >
                 <CardLightFlare topPosition="center" />
                 <div>

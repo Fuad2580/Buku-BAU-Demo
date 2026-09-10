@@ -69,7 +69,7 @@ export const CosmicSidebar: React.FC<CosmicSidebarProps> = ({
   ];
 
   const content = (
-    <aside className="w-64 sm:w-72 flex flex-col p-4 sm:p-5 text-white select-none relative overflow-hidden backdrop-blur-2xl bg-gradient-to-b from-[#2e0717]/95 via-[#200410]/95 to-[#150209]/95 border border-rose-400/35 rounded-3xl shadow-[0_16px_40px_rgba(0,0,0,0.55),0_0_25px_rgba(229,57,101,0.15)]">
+    <aside className="w-64 sm:w-72 flex flex-col p-4 sm:p-5 text-white select-none relative overflow-hidden bg-gradient-to-b from-[#2e0717] via-[#200410] to-[#150209] border border-rose-400/35 rounded-3xl shadow-[0_16px_40px_rgba(0,0,0,0.55)]">
       {/* Ambient background glow inside sidebar */}
       <div className="absolute -top-16 -left-16 w-44 h-44 rounded-full bg-rose-600/20 blur-2xl pointer-events-none" />
       <div className="absolute -bottom-16 -right-16 w-44 h-44 rounded-full bg-amber-500/15 blur-2xl pointer-events-none" />

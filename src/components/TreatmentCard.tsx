@@ -24,7 +24,7 @@ export const TreatmentCard: React.FC<TreatmentCardProps> = ({
   const discountPercent = originalPrice > 0 ? Math.round((savingsAmount / originalPrice) * 100) : 0;
 
   return (
-    <div className={`bg-gradient-to-b from-[#34081b]/95 via-[#230512]/95 to-[#1c030e]/95 backdrop-blur-2xl rounded-3xl border transition-all duration-300 flex flex-col justify-between overflow-visible relative group shadow-[0_16px_45px_rgba(0,0,0,0.5),0_0_20px_rgba(229,57,101,0.1)] hover:shadow-[0_20px_55px_rgba(229,57,101,0.3)] ${
+    <div className={`bg-gradient-to-b from-[#34081b] via-[#230512] to-[#1c030e] rounded-3xl border transition-all duration-200 flex flex-col justify-between overflow-visible relative group shadow-[0_12px_36px_rgba(0,0,0,0.5)] hover:shadow-[0_16px_45px_rgba(229,57,101,0.25)] ${
       isInCart 
         ? 'border-emerald-400 ring-2 ring-emerald-400/50 shadow-[0_12px_40px_rgba(16,185,129,0.35)]' 
         : 'border-rose-400/40 hover:border-rose-300/80'
