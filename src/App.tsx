@@ -123,6 +123,25 @@ export default function App() {
   // Fullscreen support for tablets and mobile devices
   const { isFullscreen, toggleFullscreen, isSupported: isFullscreenSupported } = useFullscreen();
 
+  // Dynamic header height measurement for sticky frozen filter bar
+  const [headerHeight, setHeaderHeight] = useState<number>(88);
+
+  useEffect(() => {
+    const updateHeaderHeight = () => {
+      const el = document.getElementById('app-main-header');
+      if (el) {
+        setHeaderHeight(el.offsetHeight);
+      }
+    };
+    updateHeaderHeight();
+    window.addEventListener('resize', updateHeaderHeight);
+    const timer = setTimeout(updateHeaderHeight, 350);
+    return () => {
+      window.removeEventListener('resize', updateHeaderHeight);
+      clearTimeout(timer);
+    };
+  }, []);
+
   // State from local storage or initial data
   const [categories, setCategories] = useState<Category[]>(loadInitialCategories);
   const [treatments, setTreatments] = useState<TreatmentItem[]>(loadInitialTreatments);
@@ -800,6 +819,7 @@ export default function App() {
               availableSkinGoals={availableSkinGoals}
               sortBy={sortBy}
               onSortChange={setSortBy}
+              stickyTopOffset={headerHeight}
             />
 
             {/* VIEW 1: TREATMENT PACKAGES BY CATEGORY */}

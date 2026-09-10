@@ -64,7 +64,7 @@ export const Header: React.FC<HeaderProps> = ({
   const totalCartCount = cartItems.reduce((sum, item) => sum + item.quantity, 0);
 
   return (
-    <header className="sticky top-0 z-50 bg-gradient-to-r from-[#2a040e]/95 via-[#4a0e1c]/95 to-[#24030b]/95 text-white shadow-xl border-b border-rose-500/20 backdrop-blur-xl relative">
+    <header id="app-main-header" className="sticky top-0 z-50 bg-gradient-to-r from-[#2a040e]/95 via-[#4a0e1c]/95 to-[#24030b]/95 text-white shadow-xl border-b border-rose-500/20 backdrop-blur-xl relative">
       {/* Background Micro Sparkle Accent */}
       <div className="absolute top-2 right-1/3 pointer-events-none animate-twinkle opacity-40 hidden md:block">
         <SparkleStar className="w-3.5 h-3.5 text-[#FCE3B4]" />
